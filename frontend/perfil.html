@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Perfil — BE YOU</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .perfil-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+  }
+  .perfil-sidebar {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(28,22,20,.06);
+    height: fit-content;
+  }
+  .perfil-sidebar h3 {
+    font-family: var(--serif);
+    color: var(--magenta);
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+  }
+  .perfil-sidebar ul li { margin-bottom: 12px; }
+  .perfil-sidebar a {
+    color: var(--taupe);
+    font-size: .95rem;
+    transition: color .2s;
+  }
+  .perfil-sidebar a:hover, .perfil-sidebar a.active {
+    color: var(--magenta-2);
+    font-weight: 500;
+  }
+  .perfil-content {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(28,22,20,.06);
+  }
+  .perfil-content h2 {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    color: var(--ink);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .pedidos-list { display: flex; flex-direction: column; gap: 20px; }
+  .pedido-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: .9rem;
+    color: var(--taupe);
+  }
+  .pedido-status {
+    font-weight: 600;
+    color: var(--magenta);
+  }
+  .pedido-itens {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pedido-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .pedido-item-nome { font-size: .9rem; color: var(--ink); flex: 1; }
+  .pedido-item-qtd { font-size: .85rem; color: var(--taupe); }
+  @media (max-width: 768px) {
+    .perfil-container { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-row">
+    <a href="index.html" class="logo-link">
+      <img src="../img/logo_2.png" alt="BE YOU Maquiagem">
+    </a>
+    <div class="header-actions">
+      <a href="index.html" class="btn btn-ghost" style="color:var(--ink); border-color:var(--line)">Voltar à Loja</a>
+      <button class="header-action logout-btn" id="btnLogoutPerfil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="perfil-container">
+  <aside class="perfil-sidebar">
+    <h3>Minha Conta</h3>
+    <ul>
+      <li><a href="#dados" class="active" id="tabDados">Dados Pessoais</a></li>
+      <li><a href="#pedidos" id="tabPedidos">Meus Pedidos</a></li>
+    </ul>
+  </aside>
+
+  <section class="perfil-content" id="contentDados">
+    <h2>Dados Pessoais</h2>
+    <form id="formPerfil" class="modal-form" style="max-width: 500px;">
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" id="perfilNomeInput" required>
+      </div>
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="perfilEmailInput" required>
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" id="perfilTelefoneInput" required>
+      </div>
+      <div class="form-group">
+        <label>Nova Senha (deixe em branco para não alterar)</label>
+        <input type="password" id="perfilSenhaInput">
+      </div>
+      <p id="msgPerfil" style="font-size:.85rem; margin-top:8px;"></p>
+      <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Salvar Alterações</button>
+    </form>
+  </section>
+
+  <section class="perfil-content" id="contentPedidos" style="display:none;">
+    <h2>Meus Pedidos</h2>
+    <div id="pedidosContainer" class="pedidos-list">
+      <p style="color:var(--taupe)">Carregando pedidos...</p>
+    </div>
+  </section>
+</main>
+
+<script>
+  const API_BASE = 'http://localhost:3000/api';
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('btnLogoutPerfil').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
+    window.location.href = 'index.html';
+  });
+
+  // Tabs logic
+  const tabDados = document.getElementById('tabDados');
+  const tabPedidos = document.getElementById('tabPedidos');
+  const contentDados = document.getElementById('contentDados');
+  const contentPedidos = document.getElementById('contentPedidos');
+
+  tabDados.addEventListener('click', (e) => {
+    e.preventDefault();
+    tabDados.classList.add('active');
+    tabPedidos.classList.remove('active');
+    contentDados.style.display = 'block';
+    contentPedidos.style.display = 'none';
+  });
+
+  tabPedidos.addEventListener('click', (e) => {
+    e.preventDefault();
+    tabPedidos.classList.add('active');
+    tabDados.classList.remove('active');
+    contentPedidos.style.display = 'block';
+    contentDados.style.display = 'none';
+    carregarPedidos();
+  });
+
+  // Load Profile Data
+  async function carregarPerfil() {
+    try {
+      const res = await fetch(`${API_BASE}/usuarios/perfil`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const user = await res.json();
+        document.getElementById('perfilNomeInput').value = user.nome;
+        document.getElementById('perfilEmailInput').value = user.email;
+        document.getElementById('perfilTelefoneInput').value = user.telefone;
+      }
+    } catch(err) { console.error(err); }
+  }
+  carregarPerfil();
+
+  // Save Profile Data
+  document.getElementById('formPerfil').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('perfilNomeInput').value;
+    const email = document.getElementById('perfilEmailInput').value;
+    const telefone = document.getElementById('perfilTelefoneInput').value;
+    const senha = document.getElementById('perfilSenhaInput').value;
+    const msg = document.getElementById('msgPerfil');
+    
+    const body = { nome, email, telefone };
+    if(senha) body.senha = senha;
+
+    try {
+      const u = JSON.parse(localStorage.getItem('usuario'));
+      const res = await fetch(`${API_BASE}/usuarios/${u.codUsuario}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        msg.textContent = 'Perfil atualizado com sucesso! ✓';
+        msg.style.color = '#38a169';
+        // update localstorage
+        u.nome = nome; u.email = email;
+        localStorage.setItem('usuario', JSON.stringify(u));
+      } else {
+        const data = await res.json();
+        msg.textContent = data.erro || 'Erro ao atualizar.';
+        msg.style.color = '#e53e3e';
+      }
+    } catch (err) {
+      msg.textContent = 'Erro de conexão.';
+      msg.style.color = '#e53e3e';
+    }
+  });
+
+  // Load Orders
+  async function carregarPedidos() {
+    const container = document.getElementById('pedidosContainer');
+    try {
+      const res = await fetch(`${API_BASE}/pedidos/meus-pedidos`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const pedidos = await res.json();
+        if(pedidos.length === 0) {
+          container.innerHTML = '<p>Você ainda não fez nenhum pedido.</p>';
+          return;
+        }
+        
+        container.innerHTML = pedidos.map(p => `
+          <div class="pedido-card">
+            <div class="pedido-header">
+              <span>Pedido #${p.codPedido} — ${new Date(p.dataPedido).toLocaleDateString()}</span>
+              <span class="pedido-status">${p.status}</span>
+            </div>
+            <div class="pedido-itens">
+              ${p.itensPedido.map(i => `
+                <div class="pedido-item">
+                  <div class="pedido-item-nome">${i.produtoItem ? i.produtoItem.nome : 'Produto excluído'}</div>
+                  <div class="pedido-item-qtd">${i.quantidade}x R$ ${parseFloat(i.precoUnitario).toFixed(2).replace('.',',')}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div style="margin-top: 16px; text-align: right; font-weight: 600; color:var(--ink);">
+              Total: R$ ${parseFloat(p.valorTotal).toFixed(2).replace('.',',')}
+            </div>
+            ${p.entregaPedido ? `
+              <div style="margin-top:10px; font-size:.85rem; color:var(--taupe-light); border-top:1px solid var(--line); padding-top:10px;">
+                <strong>Entrega:</strong> ${p.entregaPedido.statusEntrega} — Previsão: ${p.entregaPedido.dataEstimada ? new Date(p.entregaPedido.dataEstimada).toLocaleDateString() : 'N/A'}<br>
+                Rastreio: ${p.entregaPedido.codigoRastreio || 'Aguardando envio'}
+              </div>
+            ` : ''}
+          </div>
+        `).join('');
+      } else {
+         container.innerHTML = '<p style="color:#e53e3e">Erro ao carregar pedidos.</p>';
+      }
+    } catch (err) {
+      container.innerHTML = '<p style="color:#e53e3e">Erro de conexão.</p>';
+    }
+  }
+
+  // Auto-switch tabs if hash is #pedidos
+  if(window.location.hash === '#pedidos') {
+    tabPedidos.click();
+  }
+</script>
+</body>
+</html>
