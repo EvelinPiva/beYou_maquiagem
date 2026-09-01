@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — BE YOU</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .checkout-container {
+    max-width: 1100px;
+    margin: 40px auto 80px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+  }
+  .checkout-col {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(28,22,20,.06);
+    height: fit-content;
+  }
+  h2.checkout-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    color: var(--ink);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .form-section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: var(--magenta);
+    margin-top: 24px;
+  }
+  .form-section-title:first-child { margin-top: 0; }
+  
+  /* Order Summary Styles */
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .summary-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .summary-item-name { font-size: .9rem; font-weight: 500; color: var(--ink); }
+  .summary-item-qty { font-size: .8rem; color: var(--taupe); }
+  .summary-item-price { font-size: .95rem; font-weight: 500; color: var(--ink); }
+  
+  .summary-totals {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: .95rem;
+    color: var(--taupe);
+  }
+  .summary-total {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin-top: 4px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  
+  @media (max-width: 900px) {
+    .checkout-container { grid-template-columns: 1fr; }
+    .checkout-col:nth-child(2) { order: -1; } /* Show summary first on mobile */
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-row" style="justify-content: center;">
+    <a href="index.html" class="logo-link">
+      <img src="../img/logo_2.png" alt="BE YOU Maquiagem">
+    </a>
+  </div>
+</header>
+
+<main class="checkout-container">
+  
+  <!-- Left Column: Form -->
+  <section class="checkout-col">
+    <h2 class="checkout-title">Finalizar Compra</h2>
+    
+    <div id="loginWarning" style="display:none; background:var(--blush); padding:20px; border-radius:10px; margin-bottom:24px; text-align:center;">
+      <p style="margin-bottom:12px; font-weight:500;">Você precisa estar logada para finalizar a compra.</p>
+      <a href="index.html" class="btn btn-primary">Fazer Login</a>
+    </div>
+
+    <form id="formCheckout" class="modal-form" style="display:none;">
+      <h3 class="form-section-title">Endereço de Entrega</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="cep">CEP *</label>
+          <input type="text" id="cep" placeholder="00000-000" maxlength="9" required>
+          <span class="field-hint" id="cepHint"></span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="logradouro">Rua / Logradouro *</label>
+        <input type="text" id="logradouro" required readonly style="background:var(--cream-2)">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="numero">Número *</label>
+          <input type="text" id="numero" required>
+        </div>
+        <div class="form-group">
+          <label for="complemento">Complemento</label>
+          <input type="text" id="complemento" placeholder="Apto, Bloco...">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bairro">Bairro *</label>
+          <input type="text" id="bairro" required readonly style="background:var(--cream-2)">
+        </div>
+        <div class="form-group">
+          <label for="localidade">Cidade *</label>
+          <input type="text" id="localidade" required readonly style="background:var(--cream-2)">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="uf">Estado *</label>
+          <input type="text" id="uf" required readonly style="background:var(--cream-2)">
+        </div>
+      </div>
+
+      <h3 class="form-section-title">Pagamento (Simulação)</h3>
+      <p style="font-size:.85rem; color:var(--taupe); margin-bottom:16px;">Para esta demonstração, o pagamento será processado via PIX simulado e o pedido entrará como Pendente.</p>
+      
+      <p id="msgCheckout" class="form-erro"></p>
+      <button type="submit" class="btn btn-primary" style="margin-top:20px; font-size:1.05rem; padding:16px;">Confirmar Pedido</button>
+    </form>
+  </section>
+  
+  <!-- Right Column: Summary -->
+  <aside class="checkout-col">
+    <h2 class="checkout-title">Resumo do Pedido</h2>
+    <div id="checkoutItems"></div>
+    
+    <div class="summary-totals">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="checkSubtotal">R$ 0,00</span>
+      </div>
+      <div class="summary-row">
+        <span>Frete</span>
+        <span id="checkFrete">R$ 0,00</span>
+      </div>
+      <div class="summary-row summary-total">
+        <span>Total</span>
+        <span id="checkTotal">R$ 0,00</span>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<script>
+  const API_BASE = 'http://localhost:3000/api';
+  const token = localStorage.getItem('token');
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  // Check login state
+  if (!token) {
+    document.getElementById('loginWarning').style.display = 'block';
+  } else {
+    document.getElementById('formCheckout').style.display = 'flex';
+  }
+
+  // Check empty cart
+  if (cart.length === 0) {
+    document.getElementById('checkoutItems').innerHTML = '<p style="color:var(--taupe)">Sua sacola está vazia.</p>';
+    document.getElementById('formCheckout').style.display = 'none';
+  }
+
+  // Render Cart Summary
+  let subtotal = 0;
+  const itemsHtml = cart.map(item => {
+    const p = parseFloat(item.preco);
+    subtotal += p * item.quantidade;
+    return `
+      <div class="summary-item">
+        <div class="summary-item-info">
+          <span class="summary-item-name">${item.nome}</span>
+          <span class="summary-item-qty">Qtd: ${item.quantidade}</span>
+        </div>
+        <span class="summary-item-price">R$ ${(p * item.quantidade).toFixed(2).replace('.',',')}</span>
+      </div>
+    `;
+  }).join('');
+  
+  document.getElementById('checkoutItems').innerHTML = itemsHtml;
+  
+  const frete = subtotal >= 150 ? 0 : 15.90;
+  const total = subtotal + frete;
+
+  document.getElementById('checkSubtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.',',')}`;
+  document.getElementById('checkFrete').textContent = frete === 0 ? 'Grátis' : `R$ ${frete.toFixed(2).replace('.',',')}`;
+  document.getElementById('checkTotal').textContent = `R$ ${total.toFixed(2).replace('.',',')}`;
+
+  // ViaCEP Integration
+  const inputCep = document.getElementById('cep');
+  const cepHint = document.getElementById('cepHint');
+  
+  inputCep.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 5) v = v.replace(/^(\d{5})(\d)/, "$1-$2");
+    e.target.value = v;
+    
+    if (v.length === 9) {
+      buscarCep(v.replace('-', ''));
+    } else {
+      limparEndereco();
+      cepHint.textContent = '';
+    }
+  });
+
+  async function buscarCep(cepStr) {
+    cepHint.textContent = 'Buscando...';
+    cepHint.className = 'field-hint';
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cepStr}/json/`);
+      const data = await res.json();
+      
+      if (data.erro) {
+        cepHint.textContent = 'CEP não encontrado.';
+        cepHint.className = 'field-hint err';
+        limparEndereco();
+      } else {
+        cepHint.textContent = 'CEP válido ✓';
+        cepHint.className = 'field-hint ok';
+        
+        document.getElementById('logradouro').value = data.logradouro;
+        document.getElementById('bairro').value = data.bairro;
+        document.getElementById('localidade').value = data.localidade;
+        document.getElementById('uf').value = data.uf;
+        
+        document.getElementById('numero').focus();
+      }
+    } catch (err) {
+      cepHint.textContent = 'Erro ao buscar CEP.';
+      cepHint.className = 'field-hint err';
+    }
+  }
+
+  function limparEndereco() {
+    document.getElementById('logradouro').value = '';
+    document.getElementById('bairro').value = '';
+    document.getElementById('localidade').value = '';
+    document.getElementById('uf').value = '';
+  }
+
+  // Submit Order
+  document.getElementById('formCheckout').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btnSubmit = e.target.querySelector('button[type="submit"]');
+    const msg = document.getElementById('msgCheckout');
+    
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Processando...';
+    msg.textContent = '';
+
+    const endereco = {
+      cep: document.getElementById('cep').value.replace('-', ''),
+      logradouro: document.getElementById('logradouro').value,
+      numero: document.getElementById('numero').value,
+      complemento: document.getElementById('complemento').value,
+      bairro: document.getElementById('bairro').value,
+      localidade: document.getElementById('localidade').value,
+      uf: document.getElementById('uf').value
+    };
+
+    const itensPedido = cart.map(i => ({ idProduto: i.codProduto, quantidade: i.quantidade }));
+
+    try {
+      const res = await fetch(`${API_BASE}/pedidos`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ itens: itensPedido, endereco })
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        // Clear cart
+        localStorage.removeItem('cart');
+        document.querySelector('.checkout-container').innerHTML = `
+          <div style="grid-column: 1/-1; text-align:center; padding: 60px 20px; background:var(--white); border-radius:16px;">
+            <svg viewBox="0 0 64 64" fill="none" stroke="#38a169" stroke-width="2" style="width:80px; height:80px; margin:0 auto 20px;"><circle cx="32" cy="32" r="28"/><path d="M20 32l8 8 16-16"/></svg>
+            <h2 style="font-family:var(--serif); font-size:2rem; color:var(--ink); margin-bottom:12px;">Pedido Realizado!</h2>
+            <p style="color:var(--taupe); margin-bottom:24px;">Seu pedido #${data.pedido.codPedido} foi criado com sucesso.</p>
+            <a href="perfil.html#pedidos" class="btn btn-primary">Acompanhar Pedido</a>
+          </div>
+        `;
+      } else {
+        msg.textContent = data.erro || 'Erro ao processar pedido.';
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'Confirmar Pedido';
+      }
+    } catch (err) {
+      msg.textContent = 'Erro de conexão.';
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Confirmar Pedido';
+    }
+  });
+</script>
+</body>
+</html>

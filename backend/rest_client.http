@@ -1,0 +1,394 @@
+### BE YOU Maquiagem — API REST Client
+### Uso: VS Code com extensão "REST Client"
+### Base URL: http://localhost:3000/api
+
+@base = http://localhost:3000/api
+@token = COLE_SEU_TOKEN_JWT_AQUI
+
+# ──────────────────────────────────────────────────────────
+# 🏥 SAÚDE DA API
+# ──────────────────────────────────────────────────────────
+
+### Verificar se API está online
+GET http://localhost:3000
+
+# ──────────────────────────────────────────────────────────
+# 🔐 AUTENTICAÇÃO
+# ──────────────────────────────────────────────────────────
+
+### Login de usuário
+POST {{base}}/login
+Content-Type: application/json
+
+{
+    "email": "admin@beyou.com",
+    "senha": "Admin@123"
+}
+
+###
+
+### Login de cliente
+POST {{base}}/login
+Content-Type: application/json
+
+{
+    "email": "cliente@teste.com",
+    "senha": "Teste@123"
+}
+
+# ──────────────────────────────────────────────────────────
+# 👤 USUÁRIOS
+# ──────────────────────────────────────────────────────────
+
+### Cadastrar novo usuário (PÚBLICO)
+POST {{base}}/usuarios
+Content-Type: application/json
+
+{
+    "nome": "Maria Silva",
+    "email": "maria@teste.com",
+    "senha": "Senha@123",
+    "telefone": "(48) 99999-1234",
+    "cpf": "529.982.247-25",
+    "identidade": "1234567"
+}
+
+###
+
+### Listar todos os usuários (ADMIN)
+GET {{base}}/usuarios
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar perfil do usuário logado (PRIVADO)
+GET {{base}}/usuarios/perfil
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar usuário por ID (ADMIN)
+GET {{base}}/usuarios/1
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar usuário — PUT completo (PRIVADO)
+PUT {{base}}/usuarios/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nome": "Maria Silva Atualizada",
+    "email": "maria@teste.com",
+    "telefone": "(48) 98888-5678"
+}
+
+###
+
+### Atualizar usuário — PATCH parcial (PRIVADO)
+PATCH {{base}}/usuarios/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "telefone": "(48) 97777-0000"
+}
+
+###
+
+### Deletar usuário (ADMIN)
+DELETE {{base}}/usuarios/1
+Authorization: Bearer {{token}}
+
+# ──────────────────────────────────────────────────────────
+# 🏷️ CATEGORIAS
+# ──────────────────────────────────────────────────────────
+
+### Listar categorias (PÚBLICO)
+GET {{base}}/categorias
+
+###
+
+### Buscar categoria por nome (PÚBLICO)
+GET {{base}}/categorias/buscar?nome=Rosto
+
+###
+
+### Buscar categoria por ID (PÚBLICO)
+GET {{base}}/categorias/1
+
+###
+
+### Criar categoria (ADMIN)
+POST {{base}}/categorias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nome": "Rosto",
+    "descricao": "Bases, corretivos, pós e primers para preparação e acabamento do rosto"
+}
+
+###
+
+### Atualizar categoria — PUT (ADMIN)
+PUT {{base}}/categorias/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nome": "Rosto",
+    "descricao": "Produtos para preparação e acabamento facial"
+}
+
+###
+
+### Atualizar categoria — PATCH (ADMIN)
+PATCH {{base}}/categorias/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "descricao": "Descrição atualizada"
+}
+
+###
+
+### Deletar categoria (ADMIN)
+DELETE {{base}}/categorias/1
+Authorization: Bearer {{token}}
+
+# ──────────────────────────────────────────────────────────
+# 💄 PRODUTOS
+# ──────────────────────────────────────────────────────────
+
+### Listar produtos (PÚBLICO)
+GET {{base}}/produtos
+
+###
+
+### Buscar produto por nome e/ou categoria (PÚBLICO)
+GET {{base}}/produtos/buscar?nome=batom&categoria=Lábios
+
+###
+
+### Buscar produto por ID (PÚBLICO)
+GET {{base}}/produtos/1
+
+###
+
+### Criar produto (ADMIN)
+POST {{base}}/produtos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "idCategoria": 2,
+    "nome": "Batom Velvet Matte Rouge",
+    "descricao": "Batom líquido matte de longa duração em 12 tons intensos",
+    "preco": 69.90,
+    "imagem_url": "https://exemplo.com/batom.jpg"
+}
+
+###
+
+### Atualizar produto — PUT (ADMIN)
+PUT {{base}}/produtos/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "idCategoria": 2,
+    "nome": "Batom Velvet Matte Rouge Editado",
+    "descricao": "Descrição atualizada",
+    "preco": 79.90,
+    "ativo": true
+}
+
+###
+
+### Atualizar produto — PATCH (ADMIN)
+PATCH {{base}}/produtos/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "preco": 59.90
+}
+
+###
+
+### Desativar produto (ADMIN)
+DELETE {{base}}/produtos/1
+Authorization: Bearer {{token}}
+
+# ──────────────────────────────────────────────────────────
+# 📦 ESTOQUE
+# ──────────────────────────────────────────────────────────
+
+### Listar estoque (ADMIN)
+GET {{base}}/estoque
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar estoque por ID (ADMIN)
+GET {{base}}/estoque/1
+Authorization: Bearer {{token}}
+
+###
+
+### Dar entrada no estoque (ADMIN)
+POST {{base}}/estoque
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "idProduto": 1,
+    "quantidade": 50,
+    "tipo": "ENTRADA",
+    "quantidade_minima": 5
+}
+
+###
+
+### Dar saída do estoque (ADMIN)
+POST {{base}}/estoque
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "idProduto": 1,
+    "quantidade": 5,
+    "tipo": "SAIDA"
+}
+
+###
+
+### Atualizar estoque — PUT (ADMIN)
+PUT {{base}}/estoque/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "quantidade_atual": 30,
+    "quantidade_minima": 10
+}
+
+###
+
+### Atualizar estoque — PATCH (ADMIN)
+PATCH {{base}}/estoque/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "quantidade_minima": 8
+}
+
+# ──────────────────────────────────────────────────────────
+# 🛒 PEDIDOS
+# ──────────────────────────────────────────────────────────
+
+### Criar pedido (PRIVADO — cliente logado)
+POST {{base}}/pedidos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "itens": [
+        { "idProduto": 1, "quantidade": 2 },
+        { "idProduto": 2, "quantidade": 1 }
+    ],
+    "endereco": {
+        "cep": "88010-000",
+        "logradouro": "Rua Felipe Schmidt",
+        "complemento": "Apto 101",
+        "bairro": "Centro",
+        "localidade": "Florianópolis",
+        "uf": "SC",
+        "numero": "123"
+    }
+}
+
+###
+
+### Meus pedidos (PRIVADO — cliente logado)
+GET {{base}}/pedidos/meus-pedidos
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os pedidos (ADMIN)
+GET {{base}}/pedidos
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status do pedido (ADMIN)
+PATCH {{base}}/pedidos/1/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "status": "PAGO"
+}
+
+# ──────────────────────────────────────────────────────────
+# 🚚 ENTREGAS
+# ──────────────────────────────────────────────────────────
+
+### Listar entregas (ADMIN)
+GET {{base}}/entregas
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar entrega por ID (ADMIN)
+GET {{base}}/entregas/1
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar entrega — PUT (ADMIN)
+PUT {{base}}/entregas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "codigoRastreio": "BR123456789BR",
+    "statusEntrega": "EM_TRANSITO",
+    "dataEstimada": "2026-09-10"
+}
+
+###
+
+### Atualizar entrega — PATCH (ADMIN)
+PATCH {{base}}/entregas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "statusEntrega": "ENTREGUE"
+}
+
+# ──────────────────────────────────────────────────────────
+# 📊 RELATÓRIOS
+# ──────────────────────────────────────────────────────────
+
+### Vendas por Categoria (ADMIN)
+GET {{base}}/relatorios/vendas
+Authorization: Bearer {{token}}
+
+###
+
+### Faturamento Mensal (ADMIN)
+GET {{base}}/relatorios/faturamento
+Authorization: Bearer {{token}}
+
+###
+
+### Resumo de Estoque (ADMIN)
+GET {{base}}/relatorios/estoque
+Authorization: Bearer {{token}}

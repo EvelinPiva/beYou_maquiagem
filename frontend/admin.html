@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão — BE YOU Admin</title>
+<meta name="description" content="Painel administrativo BE YOU Maquiagem">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root { --sidebar-w: 240px; }
+  body { background: var(--cream-2); display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .adm-header {
+    background: var(--ink);
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .adm-header .brand {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--cream);
+    letter-spacing: .02em;
+  }
+  .adm-header .brand span { color: var(--rose); }
+  .adm-header-right { display: flex; align-items: center; gap: 16px; }
+  .adm-header-right .user-chip {
+    background: rgba(255,255,255,.08);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: .82rem;
+    color: var(--cream);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .adm-header a.back-link {
+    font-size: .82rem;
+    color: var(--rose);
+    text-decoration: underline;
+    transition: color .2s;
+  }
+  .adm-header a.back-link:hover { color: #fff; }
+  .adm-header button.logout-adm {
+    font-size: .82rem;
+    color: var(--taupe-light);
+    transition: color .2s;
+  }
+  .adm-header button.logout-adm:hover { color: var(--rose); }
+
+  /* ── LAYOUT ── */
+  .adm-layout {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .adm-sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--line);
+    padding: 24px 0;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .adm-sidebar h3 {
+    font-size: .7rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--taupe-light);
+    padding: 0 20px;
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+  .adm-sidebar h3:first-child { margin-top: 0; }
+  .adm-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 20px;
+    font-size: .88rem;
+    color: var(--taupe);
+    transition: background .15s, color .15s;
+    border-left: 3px solid transparent;
+    text-align: left;
+  }
+  .adm-nav-btn:hover { background: var(--cream-2); color: var(--ink); }
+  .adm-nav-btn.active {
+    background: var(--blush);
+    color: var(--magenta-2);
+    border-left-color: var(--magenta);
+    font-weight: 600;
+  }
+  .adm-nav-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* ── CONTENT ── */
+  .adm-content {
+    flex: 1;
+    padding: 32px;
+    overflow-x: hidden;
+  }
+
+  /* ── PANEL ── */
+  .adm-panel { display: none; }
+  .adm-panel.active { display: block; }
+
+  .panel-title {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    color: var(--ink);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ── CARD ── */
+  .adm-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(28,22,20,.05);
+    margin-bottom: 28px;
+  }
+  .adm-card h3 {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ── FORMS ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .form-grid.cols-1 { grid-template-columns: 1fr; }
+  .fg { display: flex; flex-direction: column; gap: 6px; }
+  .fg.full { grid-column: 1 / -1; }
+  .fg label { font-size: .8rem; font-weight: 500; color: var(--ink-soft); }
+  .fg input, .fg select, .fg textarea {
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 13px;
+    font-family: var(--sans);
+    font-size: .9rem;
+    color: var(--ink);
+    background: var(--cream);
+    transition: border-color .2s;
+  }
+  .fg input:focus, .fg select:focus, .fg textarea:focus {
+    border-color: var(--magenta);
+    outline: none;
+    background: var(--white);
+  }
+  .fg textarea { resize: vertical; min-height: 80px; }
+  .form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+  /* ── BUTTONS ── */
+  .btn-admin { display:inline-flex; align-items:center; gap:6px; padding: 9px 18px; border-radius: 8px; font-size: .85rem; font-weight: 600; transition: all .2s; cursor: pointer; }
+  .btn-admin.primary { background: var(--magenta); color: #fff; }
+  .btn-admin.primary:hover { background: var(--magenta-2); }
+  .btn-admin.outline { border: 1.5px solid var(--line); color: var(--ink-soft); }
+  .btn-admin.outline:hover { border-color: var(--magenta); color: var(--magenta); }
+  .btn-admin.danger { background: #fee2e2; color: #991b1b; }
+  .btn-admin.danger:hover { background: #fca5a5; }
+  .btn-admin.success { background: #d1fae5; color: #065f46; }
+  .btn-admin.success:hover { background: #6ee7b7; }
+  .btn-admin.sm { padding: 5px 11px; font-size: .78rem; }
+
+  /* ── MSG FEEDBACK ── */
+  .form-msg {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: .84rem;
+    margin-top: 10px;
+    display: none;
+  }
+  .form-msg.ok { background: #d1fae5; color: #065f46; display: block; }
+  .form-msg.err { background: #fee2e2; color: #991b1b; display: block; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .87rem;
+  }
+  .data-table th {
+    background: var(--cream-2);
+    padding: 11px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--taupe);
+    font-size: .78rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .data-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+    vertical-align: middle;
+  }
+  .data-table tr:hover td { background: var(--cream); }
+  .data-table td:first-child { font-weight: 600; color: var(--ink); }
+
+  /* ── BADGE ── */
+  .badge-ok { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 999px; font-size: .74rem; font-weight: 600; }
+  .badge-alert { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 999px; font-size: .74rem; font-weight: 600; }
+  .badge-info { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 999px; font-size: .74rem; font-weight: 600; }
+
+  /* ── SEARCH BAR ── */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .search-bar input, .search-bar select {
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: .88rem;
+    color: var(--ink);
+    background: var(--white);
+    flex: 1;
+    min-width: 160px;
+  }
+  .search-bar input:focus, .search-bar select:focus { border-color: var(--magenta); outline: none; }
+
+  /* ── CHART ── */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px; }
+  .chart-box { position: relative; height: 280px; }
+
+  /* ── STATS ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(28,22,20,.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stat-card .stat-label { font-size: .75rem; color: var(--taupe); text-transform: uppercase; letter-spacing: .06em; }
+  .stat-card .stat-value { font-family: var(--serif); font-size: 1.8rem; color: var(--magenta); font-weight: 500; }
+
+  @media (max-width: 900px) {
+    .adm-sidebar { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .adm-content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HEADER ADMIN                               -->
+<!-- ═══════════════════════════════════════════ -->
+<header class="adm-header">
+  <div class="brand">BE <span>YOU</span> · Gestão</div>
+  <div class="adm-header-right">
+    <div class="user-chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 5-6 8-6s6.4 2 8 6"/></svg>
+      <span id="headerUserName">Admin</span>
+    </div>
+    <a href="index.html" class="back-link">← Voltar à Loja</a>
+    <button class="logout-adm" id="btnLogoutAdm">Sair</button>
+  </div>
+</header>
+
+<div class="adm-layout">
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SIDEBAR                                    -->
+  <!-- ═══════════════════════════════════════════ -->
+  <aside class="adm-sidebar">
+    <h3>Visão Geral</h3>
+    <button class="adm-nav-btn active" data-panel="dashboard" id="btn-dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+
+    <h3>Produtos</h3>
+    <button class="adm-nav-btn" data-panel="prod-cadastrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar Produto
+    </button>
+    <button class="adm-nav-btn" data-panel="prod-listar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Listar Produtos
+    </button>
+    <button class="adm-nav-btn" data-panel="prod-consultar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Consultar por Cód/Nome
+    </button>
+    <button class="adm-nav-btn" data-panel="prod-atualizar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Atualizar (PUT)
+    </button>
+    <button class="adm-nav-btn" data-panel="prod-patch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Atualizar Parcial (PATCH)
+    </button>
+    <button class="adm-nav-btn" data-panel="prod-apagar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      Apagar Produto
+    </button>
+
+    <h3>Categorias</h3>
+    <button class="adm-nav-btn" data-panel="cat-cadastrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar Categoria
+    </button>
+    <button class="adm-nav-btn" data-panel="cat-listar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Listar Categorias
+    </button>
+
+    <h3>Estoque</h3>
+    <button class="adm-nav-btn" data-panel="estoque-mov">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2.27a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/></svg>
+      Movimentar Estoque
+    </button>
+    <button class="adm-nav-btn" data-panel="estoque-listar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Consultar Estoque
+    </button>
+
+    <h3>Pedidos</h3>
+    <button class="adm-nav-btn" data-panel="pedidos-listar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      Listar Pedidos
+    </button>
+
+    <h3>Relatórios</h3>
+    <button class="adm-nav-btn" data-panel="rel-graficos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Gráficos / Relatórios
+    </button>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- CONTEÚDO PRINCIPAL                         -->
+  <!-- ═══════════════════════════════════════════ -->
+  <main class="adm-content">
+
+    <!-- ────────── DASHBOARD ────────── -->
+    <section class="adm-panel active" id="panel-dashboard">
+      <h2 class="panel-title">📊 Dashboard</h2>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-label">Total de Produtos</span>
+          <span class="stat-value" id="statProdutos">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total de Pedidos</span>
+          <span class="stat-value" id="statPedidos">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Categorias</span>
+          <span class="stat-value" id="statCategorias">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Itens em Alerta</span>
+          <span class="stat-value" id="statAlerta" style="color:#991b1b">—</span>
+        </div>
+      </div>
+      <div class="chart-grid">
+        <div class="adm-card">
+          <h3>Vendas por Categoria</h3>
+          <div class="chart-box"><canvas id="chartCategorias"></canvas></div>
+        </div>
+        <div class="adm-card">
+          <h3>Faturamento Mensal</h3>
+          <div class="chart-box"><canvas id="chartFaturamento"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: CADASTRAR ────────── -->
+    <section class="adm-panel" id="panel-prod-cadastrar">
+      <h2 class="panel-title">💄 Cadastrar Produto</h2>
+      <div class="adm-card">
+        <h3>Novo Produto</h3>
+        <form id="formCadProduto" class="form-grid" novalidate>
+          <div class="fg">
+            <label>Nome do Produto *</label>
+            <input type="text" id="cpNome" placeholder="Ex: Batom Velvet Rouge" required>
+          </div>
+          <div class="fg">
+            <label>Categoria *</label>
+            <select id="cpCategoria" required>
+              <option value="">Selecione...</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Preço (R$) *</label>
+            <input type="number" id="cpPreco" placeholder="0.00" step="0.01" min="0" required>
+          </div>
+          <div class="fg">
+            <label>URL da Imagem</label>
+            <input type="url" id="cpImagem" placeholder="https://...">
+          </div>
+          <div class="fg full">
+            <label>Descrição</label>
+            <textarea id="cpDescricao" placeholder="Descreva o produto..."></textarea>
+          </div>
+          <div class="form-actions full">
+            <button type="submit" class="btn-admin primary">+ Cadastrar Produto</button>
+            <button type="reset" class="btn-admin outline">Limpar</button>
+          </div>
+        </form>
+        <div class="form-msg" id="msgCadProduto"></div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: LISTAR ────────── -->
+    <section class="adm-panel" id="panel-prod-listar">
+      <h2 class="panel-title">📋 Listar Produtos</h2>
+      <div class="adm-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="margin-bottom:0; border:none; padding:0;">Todos os Produtos</h3>
+          <button class="btn-admin primary sm" onclick="carregarListaProdutos()">↻ Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="tabelaProdutos">
+            <thead>
+              <tr>
+                <th>ID</th><th>Nome</th><th>Categoria</th><th>Preço</th><th>Estoque</th><th>Status</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="7" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: CONSULTAR ────────── -->
+    <section class="adm-panel" id="panel-prod-consultar">
+      <h2 class="panel-title">🔍 Consultar Produto por Código ou Nome</h2>
+      <div class="adm-card">
+        <h3>Buscar Produto</h3>
+        <div class="search-bar">
+          <input type="number" id="buscarProdId" placeholder="Buscar por ID (código)..." min="1">
+          <input type="text" id="buscarProdNome" placeholder="Buscar por nome...">
+          <button class="btn-admin primary" onclick="consultarProduto()">Buscar</button>
+          <button class="btn-admin outline" onclick="limparConsultaProd()">Limpar</button>
+        </div>
+        <div id="resultadoProduto"></div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: PUT ────────── -->
+    <section class="adm-panel" id="panel-prod-atualizar">
+      <h2 class="panel-title">✏️ Atualizar Produto (PUT — Completo)</h2>
+      <div class="adm-card">
+        <h3>Preencha todos os campos para substituição completa</h3>
+        <form id="formPutProduto" class="form-grid" novalidate>
+          <div class="fg">
+            <label>ID do Produto *</label>
+            <input type="number" id="putProdId" placeholder="Ex: 3" required min="1">
+          </div>
+          <div class="fg">
+            <label>Categoria *</label>
+            <select id="putProdCat" required>
+              <option value="">Selecione...</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Nome *</label>
+            <input type="text" id="putProdNome" placeholder="Nome completo do produto" required>
+          </div>
+          <div class="fg">
+            <label>Preço (R$) *</label>
+            <input type="number" id="putProdPreco" placeholder="0.00" step="0.01" required>
+          </div>
+          <div class="fg">
+            <label>URL da Imagem</label>
+            <input type="url" id="putProdImg" placeholder="https://...">
+          </div>
+          <div class="fg">
+            <label>Ativo?</label>
+            <select id="putProdAtivo">
+              <option value="true">Sim (ativo)</option>
+              <option value="false">Não (inativo)</option>
+            </select>
+          </div>
+          <div class="fg full">
+            <label>Descrição</label>
+            <textarea id="putProdDescricao"></textarea>
+          </div>
+          <div class="form-actions full">
+            <button type="submit" class="btn-admin primary">Salvar (PUT)</button>
+          </div>
+        </form>
+        <div class="form-msg" id="msgPutProduto"></div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: PATCH ────────── -->
+    <section class="adm-panel" id="panel-prod-patch">
+      <h2 class="panel-title">🖊️ Atualizar Parcial (PATCH)</h2>
+      <div class="adm-card">
+        <h3>Preencha apenas os campos que deseja alterar</h3>
+        <form id="formPatchProduto" class="form-grid" novalidate>
+          <div class="fg full">
+            <label>ID do Produto *</label>
+            <input type="number" id="patchProdId" placeholder="Ex: 3" required min="1">
+          </div>
+          <div class="fg">
+            <label>Novo Nome (opcional)</label>
+            <input type="text" id="patchProdNome" placeholder="Deixe em branco para não alterar">
+          </div>
+          <div class="fg">
+            <label>Novo Preço (opcional)</label>
+            <input type="number" id="patchProdPreco" placeholder="Ex: 59.90" step="0.01">
+          </div>
+          <div class="fg">
+            <label>Nova URL de Imagem (opcional)</label>
+            <input type="url" id="patchProdImg" placeholder="https://...">
+          </div>
+          <div class="fg">
+            <label>Ativo? (opcional)</label>
+            <select id="patchProdAtivo">
+              <option value="">— sem alterar —</option>
+              <option value="true">Sim</option>
+              <option value="false">Não</option>
+            </select>
+          </div>
+          <div class="fg full">
+            <label>Nova Descrição (opcional)</label>
+            <textarea id="patchProdDescricao" placeholder="Deixe em branco para não alterar"></textarea>
+          </div>
+          <div class="form-actions full">
+            <button type="submit" class="btn-admin primary">Salvar Parcial (PATCH)</button>
+          </div>
+        </form>
+        <div class="form-msg" id="msgPatchProduto"></div>
+      </div>
+    </section>
+
+    <!-- ────────── PRODUTO: APAGAR ────────── -->
+    <section class="adm-panel" id="panel-prod-apagar">
+      <h2 class="panel-title">🗑️ Apagar / Desativar Produto</h2>
+      <div class="adm-card">
+        <h3>Inativar Produto (DELETE seguro)</h3>
+        <p style="font-size:.88rem; color:var(--taupe); margin-bottom:20px;">O produto não será excluído permanentemente do banco de dados — ele será <strong>desativado</strong> e não aparecerá mais para clientes. Isso protege o histórico de pedidos.</p>
+        <div class="search-bar">
+          <input type="number" id="apagarProdId" placeholder="ID do Produto" min="1">
+          <button class="btn-admin danger" onclick="apagarProduto()">🗑️ Desativar Produto</button>
+        </div>
+        <div class="form-msg" id="msgApagarProduto"></div>
+      </div>
+    </section>
+
+    <!-- ────────── CATEGORIA: CADASTRAR ────────── -->
+    <section class="adm-panel" id="panel-cat-cadastrar">
+      <h2 class="panel-title">🏷️ Cadastrar Categoria</h2>
+      <div class="adm-card">
+        <h3>Nova Categoria</h3>
+        <form id="formCadCategoria" class="form-grid cols-1" novalidate>
+          <div class="fg">
+            <label>Nome da Categoria *</label>
+            <input type="text" id="ccNome" placeholder="Ex: Rosto, Lábios, Olhos..." required>
+          </div>
+          <div class="fg">
+            <label>Descrição</label>
+            <textarea id="ccDescricao" placeholder="Breve descrição da categoria..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-admin primary">+ Cadastrar Categoria</button>
+            <button type="reset" class="btn-admin outline">Limpar</button>
+          </div>
+        </form>
+        <div class="form-msg" id="msgCadCategoria"></div>
+      </div>
+    </section>
+
+    <!-- ────────── CATEGORIA: LISTAR ────────── -->
+    <section class="adm-panel" id="panel-cat-listar">
+      <h2 class="panel-title">🏷️ Listar Categorias</h2>
+      <div class="adm-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="margin-bottom:0; border:none; padding:0;">Todas as Categorias</h3>
+          <button class="btn-admin primary sm" onclick="carregarListaCategorias()">↻ Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="tabelaCategorias">
+            <thead>
+              <tr><th>ID</th><th>Nome</th><th>Descrição</th><th>Ações</th></tr>
+            </thead>
+            <tbody><tr><td colspan="4" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── ESTOQUE: MOVIMENTAR ────────── -->
+    <section class="adm-panel" id="panel-estoque-mov">
+      <h2 class="panel-title">📦 Movimentar Estoque</h2>
+      <div class="adm-card">
+        <h3>Registrar Entrada ou Saída</h3>
+        <form id="formMovEstoque" class="form-grid" novalidate>
+          <div class="fg">
+            <label>Produto *</label>
+            <select id="movEstoqueProd" required>
+              <option value="">Selecione o produto...</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Tipo de Movimentação *</label>
+            <select id="movEstoqueTipo" required>
+              <option value="ENTRADA">📥 Entrada (compra/reposição)</option>
+              <option value="SAIDA">📤 Saída (ajuste manual)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Quantidade *</label>
+            <input type="number" id="movEstoqueQtd" placeholder="Ex: 50" min="1" required>
+          </div>
+          <div class="fg">
+            <label>Quantidade Mínima de Alerta</label>
+            <input type="number" id="movEstoqueMin" placeholder="Ex: 5 (padrão)" min="0">
+          </div>
+          <div class="form-actions full">
+            <button type="submit" class="btn-admin primary">Registrar Movimentação</button>
+          </div>
+        </form>
+        <div class="form-msg" id="msgMovEstoque"></div>
+      </div>
+    </section>
+
+    <!-- ────────── ESTOQUE: LISTAR ────────── -->
+    <section class="adm-panel" id="panel-estoque-listar">
+      <h2 class="panel-title">📦 Consultar Estoque</h2>
+      <div class="adm-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="margin-bottom:0; border:none; padding:0;">Situação do Estoque</h3>
+          <button class="btn-admin primary sm" onclick="carregarEstoque()">↻ Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="tabelaEstoque">
+            <thead>
+              <tr><th>ID Estoque</th><th>Produto</th><th>Qtd. Atual</th><th>Qtd. Mínima</th><th>Status</th></tr>
+            </thead>
+            <tbody><tr><td colspan="5" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── PEDIDOS: LISTAR ────────── -->
+    <section class="adm-panel" id="panel-pedidos-listar">
+      <h2 class="panel-title">🛒 Listar Pedidos</h2>
+      <div class="adm-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="margin-bottom:0; border:none; padding:0;">Todos os Pedidos</h3>
+          <button class="btn-admin primary sm" onclick="carregarPedidos()">↻ Atualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="tabelaPedidos">
+            <thead>
+              <tr><th>ID</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th><th>Alterar Status</th></tr>
+            </thead>
+            <tbody><tr><td colspan="6" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────────── RELATÓRIOS / GRÁFICOS ────────── -->
+    <section class="adm-panel" id="panel-rel-graficos">
+      <h2 class="panel-title">📈 Relatórios Gerenciais</h2>
+      <div class="chart-grid">
+        <div class="adm-card">
+          <h3>Vendas por Categoria</h3>
+          <div class="chart-box"><canvas id="chartCat2"></canvas></div>
+        </div>
+        <div class="adm-card">
+          <h3>Faturamento Mensal</h3>
+          <div class="chart-box"><canvas id="chartFat2"></canvas></div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <h3>Estoque — Visão Completa</h3>
+        <div class="table-wrap">
+          <table class="data-table" id="tabelaEstoqueRel">
+            <thead>
+              <tr><th>ID Estoque</th><th>Produto</th><th>Qtd. Atual</th><th>Qtd. Mínima</th><th>Status</th></tr>
+            </thead>
+            <tbody><tr><td colspan="5" style="text-align:center; color:var(--taupe); padding:20px;">Clique em Relatórios para carregar...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- /.adm-layout -->
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO BASE
+   ============================================================ */
+const API = 'http://localhost:3000/api';
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('usuario') || 'null');
+
+// Proteção de rota
+if (!token || !user || user.tipo_usuario !== 'ADMIN') {
+  alert('Acesso restrito a administradores. Faça login como ADMIN.');
+  window.location.href = 'index.html';
+}
+
+document.getElementById('headerUserName').textContent = user ? user.nome.split(' ')[0] : 'Admin';
+
+document.getElementById('btnLogoutAdm').addEventListener('click', () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('usuario');
+  window.location.href = 'index.html';
+});
+
+/* ============================================================
+   NAVEGAÇÃO POR ABAS
+   ============================================================ */
+const navBtns = document.querySelectorAll('.adm-nav-btn');
+const panels = document.querySelectorAll('.adm-panel');
+
+navBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.getAttribute('data-panel');
+    navBtns.forEach(b => b.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`panel-${target}`).classList.add('active');
+    // Carrega dados ao abrir certos painéis
+    const autoLoad = {
+      'prod-listar': carregarListaProdutos,
+      'cat-listar': carregarListaCategorias,
+      'estoque-listar': carregarEstoque,
+      'pedidos-listar': carregarPedidos,
+      'rel-graficos': carregarRelatorios
+    };
+    if (autoLoad[target]) autoLoad[target]();
+  });
+});
+
+// Verifica hash na URL para navegação direta
+if (window.location.hash) {
+  const hash = window.location.hash.replace('#', '');
+  const btn = document.querySelector(`.adm-nav-btn[data-panel="${hash}"]`);
+  if (btn) btn.click();
+}
+
+/* ============================================================
+   HELPER: REQUISIÇÃO AUTENTICADA
+   ============================================================ */
+async function api(method, path, body) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}${path}`, opts);
+  const data = await res.json();
+  return { ok: res.ok, status: res.status, data };
+}
+
+/* ============================================================
+   HELPER: EXIBIR MENSAGEM DE FORMULÁRIO
+   ============================================================ */
+function showMsg(id, ok, text) {
+  const el = document.getElementById(id);
+  el.className = `form-msg ${ok ? 'ok' : 'err'}`;
+  el.textContent = text;
+  setTimeout(() => el.className = 'form-msg', 4000);
+}
+
+/* ============================================================
+   HELPER: CARREGAR CATEGORIAS EM SELECTS
+   ============================================================ */
+async function carregarCategoriasSelect(selectIds = []) {
+  const { data } = await api('GET', '/categorias');
+  selectIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Selecione...</option>';
+    data.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.codCategoria;
+      opt.textContent = c.nome;
+      sel.appendChild(opt);
+    });
+    if (cur) sel.value = cur;
+  });
+}
+
+/* ============================================================
+   HELPER: CARREGAR PRODUTOS EM SELECTS
+   ============================================================ */
+async function carregarProdutosSelect(selectIds = []) {
+  const { data } = await api('GET', '/produtos');
+  selectIds.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Selecione o produto...</option>';
+    data.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.codProduto;
+      opt.textContent = `[${p.codProduto}] ${p.nome}`;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+/* ============================================================
+   DASHBOARD — CARDS DE STATS + GRÁFICOS
+   ============================================================ */
+let chartCatInst, chartFatInst;
+
+async function carregarDashboard() {
+  try {
+    const [rProd, rPed, rCat, rEst] = await Promise.all([
+      api('GET', '/produtos'),
+      api('GET', '/pedidos'),
+      api('GET', '/categorias'),
+      api('GET', '/relatorios/estoque')
+    ]);
+
+    document.getElementById('statProdutos').textContent = rProd.ok ? rProd.data.length : '—';
+    document.getElementById('statPedidos').textContent = rPed.ok ? rPed.data.length : '—';
+    document.getElementById('statCategorias').textContent = rCat.ok ? rCat.data.length : '—';
+    const alertas = rEst.ok ? rEst.data.filter(e => e.abaixoMinimo).length : 0;
+    document.getElementById('statAlerta').textContent = alertas;
+
+    // Charts
+    const rVendas = await api('GET', '/relatorios/vendas');
+    const rFat = await api('GET', '/relatorios/faturamento');
+
+    if (chartCatInst) chartCatInst.destroy();
+    chartCatInst = new Chart(document.getElementById('chartCategorias'), {
+      type: 'bar',
+      data: {
+        labels: rVendas.data.map(d => d.categoria),
+        datasets: [{ label: 'Total (R$)', data: rVendas.data.map(d => d.totalVendas), backgroundColor: '#d88fa0', borderRadius: 4 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+    });
+
+    if (chartFatInst) chartFatInst.destroy();
+    chartFatInst = new Chart(document.getElementById('chartFaturamento'), {
+      type: 'line',
+      data: {
+        labels: rFat.data.map(d => d.label),
+        datasets: [{ label: 'Faturamento (R$)', data: rFat.data.map(d => d.totalFaturado), borderColor: '#c2185f', backgroundColor: 'rgba(194,24,95,.1)', fill: true, tension: .3, pointBackgroundColor: '#c2185f' }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+    });
+  } catch(err) { console.error('Dashboard error', err); }
+}
+
+/* ============================================================
+   PRODUTOS — LISTAR
+   ============================================================ */
+async function carregarListaProdutos() {
+  const tbody = document.querySelector('#tabelaProdutos tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr>';
+  const { ok, data } = await api('GET', '/produtos');
+  if (!ok || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Nenhum produto cadastrado.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td>${p.codProduto}</td>
+      <td><strong>${p.nome}</strong></td>
+      <td>${p.categoriaProduto ? p.categoriaProduto.nome : '—'}</td>
+      <td>R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}</td>
+      <td>${p.estoqueProduto ? p.estoqueProduto.quantidade_atual : '—'}</td>
+      <td><span class="${p.ativo ? 'badge-ok' : 'badge-alert'}">${p.ativo ? 'ATIVO' : 'INATIVO'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn-admin primary sm" onclick="irParaEditar(${p.codProduto})">✏️ Editar</button>
+        <button class="btn-admin danger sm" onclick="apagarRapido(${p.codProduto})">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function irParaEditar(id) {
+  document.getElementById('putProdId').value = id;
+  document.querySelector('.adm-nav-btn[data-panel="prod-atualizar"]').click();
+}
+
+async function apagarRapido(id) {
+  if (!confirm(`Desativar o produto ID ${id}?`)) return;
+  const { ok, data } = await api('DELETE', `/produtos/${id}`);
+  if (ok) { alert('Produto desativado!'); carregarListaProdutos(); }
+  else alert(data.erro || 'Erro ao desativar.');
+}
+
+/* ============================================================
+   PRODUTOS — CONSULTAR POR CÓD OU NOME
+   ============================================================ */
+async function consultarProduto() {
+  const id = document.getElementById('buscarProdId').value.trim();
+  const nome = document.getElementById('buscarProdNome').value.trim();
+  const div = document.getElementById('resultadoProduto');
+
+  if (!id && !nome) { div.innerHTML = '<p style="color:#991b1b">Informe o ID ou o nome.</p>'; return; }
+
+  div.innerHTML = '<p style="color:var(--taupe)">Buscando...</p>';
+
+  let resultado;
+  if (id) {
+    const { ok, data } = await api('GET', `/produtos/${id}`);
+    resultado = ok ? [data] : [];
+  } else {
+    const { ok, data } = await api('GET', `/produtos/buscar?nome=${encodeURIComponent(nome)}`);
+    resultado = ok ? data : [];
+  }
+
+  if (!resultado.length) { div.innerHTML = '<p style="color:#991b1b">Nenhum produto encontrado.</p>'; return; }
+
+  div.innerHTML = resultado.map(p => `
+    <div class="adm-card" style="margin-top:16px; margin-bottom:0;">
+      <div style="display:flex; gap:24px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <p style="font-size:.75rem; color:var(--taupe); margin-bottom:4px;">ID: ${p.codProduto}</p>
+          <h4 style="font-family:var(--serif); font-size:1.2rem; margin-bottom:8px;">${p.nome}</h4>
+          <p style="font-size:.88rem; color:var(--taupe); margin-bottom:4px;">Categoria: <strong>${p.categoriaProduto ? p.categoriaProduto.nome : '—'}</strong></p>
+          <p style="font-size:.88rem; color:var(--taupe); margin-bottom:4px;">Preço: <strong>R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}</strong></p>
+          <p style="font-size:.88rem; color:var(--taupe); margin-bottom:4px;">Estoque: <strong>${p.estoqueProduto ? p.estoqueProduto.quantidade_atual : '—'}</strong></p>
+          <p style="font-size:.88rem; color:var(--taupe);">${p.descricao || 'Sem descrição.'}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button class="btn-admin primary sm" onclick="irParaEditar(${p.codProduto})">✏️ Editar</button>
+          <button class="btn-admin danger sm" onclick="apagarRapido(${p.codProduto})">🗑️ Desativar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function limparConsultaProd() {
+  document.getElementById('buscarProdId').value = '';
+  document.getElementById('buscarProdNome').value = '';
+  document.getElementById('resultadoProduto').innerHTML = '';
+}
+
+/* ============================================================
+   PRODUTOS — PUT
+   ============================================================ */
+document.getElementById('formPutProduto').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('putProdId').value;
+  if (!id) { showMsg('msgPutProduto', false, 'Informe o ID do produto.'); return; }
+
+  const body = {
+    idCategoria: parseInt(document.getElementById('putProdCat').value),
+    nome: document.getElementById('putProdNome').value,
+    preco: parseFloat(document.getElementById('putProdPreco').value),
+    descricao: document.getElementById('putProdDescricao').value || null,
+    imagem_url: document.getElementById('putProdImg').value || null,
+    ativo: document.getElementById('putProdAtivo').value === 'true'
+  };
+
+  const { ok, data } = await api('PUT', `/produtos/${id}`, body);
+  showMsg('msgPutProduto', ok, ok ? 'Produto atualizado com sucesso! ✓' : (data.erro || 'Erro ao atualizar.'));
+});
+
+/* ============================================================
+   PRODUTOS — PATCH
+   ============================================================ */
+document.getElementById('formPatchProduto').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('patchProdId').value;
+  if (!id) { showMsg('msgPatchProduto', false, 'Informe o ID do produto.'); return; }
+
+  const body = {};
+  const nome = document.getElementById('patchProdNome').value;
+  const preco = document.getElementById('patchProdPreco').value;
+  const img = document.getElementById('patchProdImg').value;
+  const ativo = document.getElementById('patchProdAtivo').value;
+  const descricao = document.getElementById('patchProdDescricao').value;
+
+  if (nome) body.nome = nome;
+  if (preco) body.preco = parseFloat(preco);
+  if (img) body.imagem_url = img;
+  if (ativo !== '') body.ativo = ativo === 'true';
+  if (descricao) body.descricao = descricao;
+
+  if (!Object.keys(body).length) { showMsg('msgPatchProduto', false, 'Preencha ao menos um campo para atualizar.'); return; }
+
+  const { ok, data } = await api('PATCH', `/produtos/${id}`, body);
+  showMsg('msgPatchProduto', ok, ok ? 'Produto atualizado parcialmente! ✓' : (data.erro || 'Erro ao atualizar.'));
+});
+
+/* ============================================================
+   PRODUTOS — DELETE
+   ============================================================ */
+async function apagarProduto() {
+  const id = document.getElementById('apagarProdId').value;
+  if (!id) { showMsg('msgApagarProduto', false, 'Informe o ID do produto.'); return; }
+  if (!confirm(`Deseja desativar o produto ID ${id}? Ele não aparecerá mais para os clientes.`)) return;
+
+  const { ok, data } = await api('DELETE', `/produtos/${id}`);
+  showMsg('msgApagarProduto', ok, ok ? 'Produto desativado com sucesso! ✓' : (data.erro || 'Erro ao desativar.'));
+}
+
+/* ============================================================
+   PRODUTOS — CADASTRAR
+   ============================================================ */
+document.getElementById('formCadProduto').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = {
+    idCategoria: parseInt(document.getElementById('cpCategoria').value),
+    nome: document.getElementById('cpNome').value,
+    preco: parseFloat(document.getElementById('cpPreco').value),
+    descricao: document.getElementById('cpDescricao').value || null,
+    imagem_url: document.getElementById('cpImagem').value || null
+  };
+  const { ok, data } = await api('POST', '/produtos', body);
+  showMsg('msgCadProduto', ok, ok ? `Produto "${data.produto?.nome}" cadastrado! ✓` : (data.erro || 'Erro ao cadastrar.'));
+  if (ok) e.target.reset();
+});
+
+/* ============================================================
+   CATEGORIAS — CADASTRAR
+   ============================================================ */
+document.getElementById('formCadCategoria').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = {
+    nome: document.getElementById('ccNome').value,
+    descricao: document.getElementById('ccDescricao').value || null
+  };
+  const { ok, data } = await api('POST', '/categorias', body);
+  showMsg('msgCadCategoria', ok, ok ? `Categoria "${data.categoria?.nome}" criada! ✓` : (data.erro || 'Erro.'));
+  if (ok) { e.target.reset(); carregarCategoriasSelect(['cpCategoria','putProdCat']); }
+});
+
+/* ============================================================
+   CATEGORIAS — LISTAR
+   ============================================================ */
+async function carregarListaCategorias() {
+  const tbody = document.querySelector('#tabelaCategorias tbody');
+  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr>';
+  const { ok, data } = await api('GET', '/categorias');
+  if (!ok || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Nenhuma categoria.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(c => `
+    <tr>
+      <td>${c.codCategoria}</td>
+      <td>${c.nome}</td>
+      <td>${c.descricao || '—'}</td>
+      <td><button class="btn-admin danger sm" onclick="deletarCategoria(${c.codCategoria}, '${c.nome.replace(/'/g,"\\'")}')">🗑️ Excluir</button></td>
+    </tr>
+  `).join('');
+}
+
+async function deletarCategoria(id, nome) {
+  if (!confirm(`Excluir a categoria "${nome}"? Só é possível se não houver produtos nela.`)) return;
+  const { ok, data } = await api('DELETE', `/categorias/${id}`);
+  if (ok) { alert('Categoria excluída!'); carregarListaCategorias(); }
+  else alert(data.erro || 'Erro ao excluir.');
+}
+
+/* ============================================================
+   ESTOQUE — MOVIMENTAR
+   ============================================================ */
+document.getElementById('formMovEstoque').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const body = {
+    idProduto: parseInt(document.getElementById('movEstoqueProd').value),
+    quantidade: parseInt(document.getElementById('movEstoqueQtd').value),
+    tipo: document.getElementById('movEstoqueTipo').value,
+    quantidade_minima: parseInt(document.getElementById('movEstoqueMin').value) || undefined
+  };
+  const { ok, data } = await api('POST', '/estoque', body);
+  showMsg('msgMovEstoque', ok, ok ? `Estoque atualizado! Atual: ${data.estoque?.quantidade_atual} unidades ✓` : (data.erro || 'Erro.'));
+});
+
+/* ============================================================
+   ESTOQUE — LISTAR
+   ============================================================ */
+async function carregarEstoque() {
+  const tbody = document.querySelector('#tabelaEstoque tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr>';
+  const { ok, data } = await api('GET', '/relatorios/estoque');
+  if (!ok || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Nenhum registro.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(e => `
+    <tr>
+      <td>${e.codEstoque}</td>
+      <td>${e.produto}</td>
+      <td><strong>${e.quantidade_atual}</strong></td>
+      <td>${e.quantidade_minima}</td>
+      <td><span class="${e.abaixoMinimo ? 'badge-alert' : 'badge-ok'}">${e.abaixoMinimo ? 'BAIXO ESTOQUE' : 'REGULAR'}</span></td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   PEDIDOS — LISTAR
+   ============================================================ */
+const statusOptions = ['PENDENTE_PAGAMENTO','PAGO','EM_SEPARACAO','ENVIADO','ENTREGUE','CANCELADO'];
+
+async function carregarPedidos() {
+  const tbody = document.querySelector('#tabelaPedidos tbody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--taupe); padding:20px;">Carregando...</td></tr>';
+  const { ok, data } = await api('GET', '/pedidos');
+  if (!ok || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">Nenhum pedido.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td>#${p.codPedido}</td>
+      <td>${p.usuarioPedido ? p.usuarioPedido.nome : '—'}</td>
+      <td>${new Date(p.dataPedido).toLocaleDateString('pt-BR')}</td>
+      <td>R$ ${parseFloat(p.valorTotal).toFixed(2).replace('.',',')}</td>
+      <td><span class="badge-info">${p.status}</span></td>
+      <td>
+        <select class="status-sel" data-id="${p.codPedido}" style="font-size:.8rem; padding:4px 8px; border:1.5px solid var(--line); border-radius:6px;">
+          ${statusOptions.map(s => `<option value="${s}" ${p.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <button class="btn-admin success sm" style="margin-left:6px;" onclick="atualizarStatusPedido(${p.codPedido}, document.querySelector('.status-sel[data-id=\\'${p.codPedido}\\']').value)">Salvar</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function atualizarStatusPedido(id, status) {
+  const { ok, data } = await api('PATCH', `/pedidos/${id}/status`, { status });
+  if (ok) { alert('Status atualizado!'); carregarPedidos(); }
+  else alert(data.erro || 'Erro ao atualizar status.');
+}
+
+/* ============================================================
+   RELATÓRIOS
+   ============================================================ */
+let chartCat2Inst, chartFat2Inst;
+
+async function carregarRelatorios() {
+  const [rVendas, rFat, rEst] = await Promise.all([
+    api('GET', '/relatorios/vendas'),
+    api('GET', '/relatorios/faturamento'),
+    api('GET', '/relatorios/estoque')
+  ]);
+
+  if (chartCat2Inst) chartCat2Inst.destroy();
+  chartCat2Inst = new Chart(document.getElementById('chartCat2'), {
+    type: 'bar',
+    data: { labels: rVendas.data.map(d=>d.categoria), datasets: [{ label: 'Total (R$)', data: rVendas.data.map(d=>d.totalVendas), backgroundColor: '#d88fa0', borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+  });
+
+  if (chartFat2Inst) chartFat2Inst.destroy();
+  chartFat2Inst = new Chart(document.getElementById('chartFat2'), {
+    type: 'line',
+    data: { labels: rFat.data.map(d=>d.label), datasets: [{ label: 'Faturamento (R$)', data: rFat.data.map(d=>d.totalFaturado), borderColor: '#c2185f', backgroundColor: 'rgba(194,24,95,.1)', fill: true, tension: .3, pointBackgroundColor: '#c2185f' }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+  });
+
+  const tbody = document.querySelector('#tabelaEstoqueRel tbody');
+  tbody.innerHTML = rEst.data.map(e => `
+    <tr>
+      <td>${e.codEstoque}</td><td>${e.produto}</td>
+      <td><strong>${e.quantidade_atual}</strong></td><td>${e.quantidade_minima}</td>
+      <td><span class="${e.abaixoMinimo ? 'badge-alert' : 'badge-ok'}">${e.abaixoMinimo ? 'BAIXO ESTOQUE' : 'REGULAR'}</span></td>
+    </tr>
+  `).join('');
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+Chart.defaults.font.family = "'Jost', Arial, sans-serif";
+Chart.defaults.color = '#6b5c58';
+
+// Carrega categorias e produtos nos selects ao iniciar
+carregarCategoriasSelect(['cpCategoria', 'putProdCat']);
+carregarProdutosSelect(['movEstoqueProd']);
+
+// Carrega dashboard automaticamente
+carregarDashboard();
+
+</script>
+</body>
+</html>
