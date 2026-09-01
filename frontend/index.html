@@ -401,9 +401,12 @@
     <p class="section-lede">Batons, glosses e cuidados labiais em tons que vão do nude ao vermelho intenso.</p>
     <div class="product-grid">
 
-      <article class="card" data-category="Lábios" data-price="69.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="27" y="8" width="10" height="18" rx="3"/><path d="M22 26h20l-3 22a7 7 0 0 1-14 0l-3-22z"/></svg>
+      <article class="card" data-category="Lábios" data-price="69.90"
+        data-modal-images="../img_batom/batom_vermelho.png,../img_batom/batom_rosa.png,../img_batom/batom_nude.png,../img_batom/batom_vinho.png"
+        data-modal-desc="Fórmula velvet de longa duração que proporciona cobertura total e acabamento aveludado. Hidrata e cuida dos lábios com vitamina E. Até 8 horas de durabilidade."
+        data-modal-shades='[{"name":"Vermelho Paixão","color":"#c0455a","img":"../img_batom/batom_vermelho.png"},{"name":"Rosa Romântico","color":"#d98a90","img":"../img_batom/batom_rosa.png"},{"name":"Nude Natural","color":"#a85d3a","img":"../img_batom/batom_nude.png"},{"name":"Vinho Intenso","color":"#8c1f2b","img":"../img_batom/batom_vinho.png"}]'>
+        <div class="card-media card-media--img">
+          <img src="../img_batom/batom_vermelho.png" alt="Batom Velvet Matte" loading="lazy">
         </div>
         <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
         <div class="card-body">
@@ -420,9 +423,12 @@
         </div>
       </article>
 
-      <article class="card" data-category="Lábios" data-price="54.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><path d="M20 20h24v6l-4 4v14l-4 4h-8l-4-4V30l-4-4v-6z"/></svg>
+      <article class="card" data-category="Lábios" data-price="54.90"
+        data-modal-images="../img_batom/gloss_BEYOU.png,../img_batom/gloss_BEYOU2.png,../img_batom/gloss_dourado.png,../img_batom/gloss_dourado2.png"
+        data-modal-desc="Gloss labial com efeito espelhado e ultra brilhante. Fórmula não pegajosa enriquecida com óleos naturais que hidratam e volumizam os lábios. Perfeito para usar sozinho ou sobre batom."
+        data-modal-shades='[{"name":"BE YOU Rosa","color":"#f0c4c9","img":"../img_batom/gloss_BEYOU.png"},{"name":"BE YOU Pink","color":"#e39aa5","img":"../img_batom/gloss_BEYOU2.png"},{"name":"Dourado Luxo","color":"#d4a843","img":"../img_batom/gloss_dourado.png"}]'>
+        <div class="card-media card-media--img">
+          <img src="../img_batom/gloss_BEYOU2.png" alt="Gloss Efeito Vidro" loading="lazy">
         </div>
         <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
         <div class="card-body">
@@ -966,6 +972,83 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sair da conta
     </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL PRODUTO (abre ao clicar no card)          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="product-modal-overlay" id="productModalOverlay"></div>
+<div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <button class="product-modal-close" id="productModalClose" aria-label="Fechar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+
+  <div class="pm-layout">
+    <!-- GALERIA -->
+    <div class="pm-gallery">
+      <div class="pm-main-img-wrap">
+        <img src="" alt="" id="pmMainImg" class="pm-main-img">
+        <button class="pm-gallery-nav pm-prev" id="pmPrev" aria-label="Imagem anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="pm-gallery-nav pm-next" id="pmNext" aria-label="Próxima imagem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <span class="pm-badge-off" id="pmBadge"></span>
+      </div>
+      <div class="pm-thumbs" id="pmThumbs"></div>
+    </div>
+
+    <!-- INFOS -->
+    <div class="pm-info">
+      <div class="pm-breadcrumb" id="pmBreadcrumb"></div>
+      <h2 class="pm-title" id="pmTitle"></h2>
+      <div class="pm-rating">
+        <span class="pm-stars">★★★★★</span>
+        <span class="pm-rating-count">4,9 · <a href="#" class="pm-reviews-link">128 avaliações</a></span>
+      </div>
+
+      <div class="pm-price-block">
+        <span class="pm-price-old" id="pmPriceOld"></span>
+        <span class="pm-price-now" id="pmPriceNow"></span>
+        <span class="pm-installments" id="pmInstallments"></span>
+      </div>
+
+      <div class="pm-shades-block" id="pmShadesBlock">
+        <p class="pm-label">Cor: <strong id="pmSelectedShade"></strong></p>
+        <div class="pm-shade-swatches" id="pmSwatches"></div>
+      </div>
+
+      <div class="pm-qty-block">
+        <p class="pm-label">Quantidade:</p>
+        <div class="pm-qty-ctrl">
+          <button class="pm-qty-btn" id="pmQtyMinus" aria-label="Diminuir">−</button>
+          <span class="pm-qty-val" id="pmQtyVal">1</span>
+          <button class="pm-qty-btn" id="pmQtyPlus" aria-label="Aumentar">+</button>
+        </div>
+      </div>
+
+      <div class="pm-actions">
+        <button class="pm-add-btn" id="pmAddBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          Adicionar à Sacola
+        </button>
+        <button class="pm-wish-btn" id="pmWishBtn" aria-label="Adicionar aos favoritos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg>
+        </button>
+      </div>
+
+      <div class="pm-desc-block">
+        <h4 class="pm-desc-title">Sobre o produto</h4>
+        <p class="pm-desc" id="pmDesc"></p>
+      </div>
+
+      <div class="pm-shipping">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M18 10h2.5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H18"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="14" cy="19" r="1.6"/></svg>
+        <span>Frete grátis acima de <strong>R$ 150</strong> · Entrega em todo o Brasil</span>
+      </div>
+    </div>
   </div>
 </div>
 

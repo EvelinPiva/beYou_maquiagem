@@ -77,6 +77,33 @@
     color: var(--ink);
   }
   
+  /* Payment Options Styles */
+  .payment-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .payment-label {
+    flex: 1 1 45%;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    font-size: .95rem;
+    font-weight: 500;
+    transition: all .2s ease;
+    user-select: none;
+  }
+  .payment-label:has(input:checked) {
+    border-color: var(--magenta);
+    background: var(--blush);
+    color: var(--magenta);
+  }
+  .payment-label input {
+    display: none;
+  }
+
   @media (max-width: 900px) {
     .checkout-container { grid-template-columns: 1fr; }
     .checkout-col:nth-child(2) { order: -1; } /* Show summary first on mobile */
@@ -149,9 +176,51 @@
         </div>
       </div>
 
-      <h3 class="form-section-title">Pagamento (Simulação)</h3>
-      <p style="font-size:.85rem; color:var(--taupe); margin-bottom:16px;">Para esta demonstração, o pagamento será processado via PIX simulado e o pedido entrará como Pendente.</p>
+      <h3 class="form-section-title">Forma de Pagamento (Simulação)</h3>
+      <p style="font-size:.85rem; color:var(--taupe); margin-bottom:16px;">
+        Esta é uma simulação. Nenhum dado real de cartão será salvo.
+      </p>
       
+      <div class="payment-options">
+        <label class="payment-label">
+          <input type="radio" name="payment_method" value="pix" checked>
+          <span>PIX</span>
+        </label>
+        <label class="payment-label">
+          <input type="radio" name="payment_method" value="credito">
+          <span>Cartão de Crédito</span>
+        </label>
+        <label class="payment-label">
+          <input type="radio" name="payment_method" value="debito">
+          <span>Cartão de Débito</span>
+        </label>
+        <label class="payment-label">
+          <input type="radio" name="payment_method" value="boleto">
+          <span>Boleto Bancário</span>
+        </label>
+      </div>
+
+      <!-- Mock Card Details -->
+      <div id="cardDetails" style="display:none; margin-top:20px; background:var(--cream); padding:20px; border-radius:12px; border:1px solid var(--line);">
+        <div class="form-group">
+          <label for="cardNumber">Número do Cartão</label>
+          <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+        </div>
+        <div class="form-group">
+          <label for="cardName">Nome impresso no cartão</label>
+          <input type="text" id="cardName" placeholder="Como está no cartão">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cardExpiry">Validade</label>
+            <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5">
+          </div>
+          <div class="form-group">
+            <label for="cardCvv">CVV</label>
+            <input type="text" id="cardCvv" placeholder="123" maxlength="4">
+          </div>
+        </div>
+      </div>
       <p id="msgCheckout" class="form-erro"></p>
       <button type="submit" class="btn btn-primary" style="margin-top:20px; font-size:1.05rem; padding:16px;">Confirmar Pedido</button>
     </form>
@@ -274,6 +343,35 @@
     document.getElementById('localidade').value = '';
     document.getElementById('uf').value = '';
   }
+
+  // Payment UI Toggle
+  const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+  const cardDetails = document.getElementById('cardDetails');
+  
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      if (e.target.value === 'credito' || e.target.value === 'debito') {
+        cardDetails.style.display = 'block';
+      } else {
+        cardDetails.style.display = 'none';
+      }
+    });
+  });
+
+  // Mock Card Formatting
+  const cardNumberInput = document.getElementById('cardNumber');
+  cardNumberInput.addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '');
+    v = v.replace(/(\d{4})/g, '$1 ').trim();
+    e.target.value = v;
+  });
+
+  const cardExpiryInput = document.getElementById('cardExpiry');
+  cardExpiryInput.addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 2) v = v.replace(/^(\d{2})(\d)/, "$1/$2");
+    e.target.value = v;
+  });
 
   // Submit Order
   document.getElementById('formCheckout').addEventListener('submit', async (e) => {

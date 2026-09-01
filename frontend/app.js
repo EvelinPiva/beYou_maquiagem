@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCart();
   initAuth();
   initProducts();
+  initProductModal();
 });
 
 /* ==========================================
@@ -492,3 +493,279 @@ window.getToken = getToken;
 window.getUser = getUser;
 window.getCart = () => cart;
 window.clearCart = () => { cart = []; saveCart(); updateCartUI(); };
+
+/* ==========================================
+   PRODUCT DETAIL MODAL
+   ========================================== */
+function initProductModal() {
+  const overlay   = document.getElementById('productModalOverlay');
+  const modal     = document.getElementById('productModal');
+  const closeBtn  = document.getElementById('productModalClose');
+
+  if (!modal || !overlay) return;
+
+  // State
+  let currentImages  = [];
+  let currentImgIdx  = 0;
+  let currentQty     = 1;
+  let currentProduct = null;
+
+  /* ---- Open / Close ---- */
+  function openProductModal(card) {
+    // Gather data from card attributes
+    const name      = card.querySelector('.card-name')?.textContent  || '';
+    const cat       = card.querySelector('.card-cat')?.textContent   || '';
+    const priceNow  = card.querySelector('.price-now')?.textContent  || '';
+    const priceOld  = card.querySelector('.price-old')?.textContent  || '';
+    const badgeEl   = card.querySelector('.badge-off');
+    const badge     = badgeEl ? badgeEl.textContent : '';
+    const desc      = card.dataset.modalDesc || 'Produto BE YOU de alta qualidade, formulado para realçar sua beleza natural com muito pigmento e durabilidade.';
+    const imagesRaw = card.dataset.modalImages || '';
+    const shadesRaw = card.dataset.modalShades || '[]';
+
+    // Images list — use card's own image or fallback to SVG placeholder
+    currentImages = imagesRaw
+      ? imagesRaw.split(',').map(s => s.trim()).filter(Boolean)
+      : [];
+
+    // If the card has a real <img>, add it first if not already in the list
+    const cardImg = card.querySelector('.card-media img');
+    if (cardImg && currentImages.length === 0) {
+      currentImages.push(cardImg.src);
+    }
+
+    // Price string → numeric
+    const numericPrice = parseFloat(
+      priceNow.replace('R$','').trim().replace(',','.')
+    ) || 0;
+
+    currentProduct = {
+      codProduto: card.dataset.prodId || Math.floor(Math.random() * 90000 + 10000),
+      nome: name,
+      preco: numericPrice,
+      categoria: cat,
+      imagem_url: currentImages[0] || '',
+      estoqueProduto: { quantidade_atual: 10 }
+    };
+
+    // --- Populate UI ---
+    document.getElementById('pmBreadcrumb').textContent = `BE YOU · ${cat}`;
+    document.getElementById('pmTitle').textContent       = name;
+
+    // Prices
+    const priceNowEl = document.getElementById('pmPriceNow');
+    const priceOldEl = document.getElementById('pmPriceOld');
+    const installEl  = document.getElementById('pmInstallments');
+    priceNowEl.textContent = priceNow;
+    if (priceOld) {
+      priceOldEl.textContent = priceOld;
+      priceOldEl.style.display = 'inline';
+    } else {
+      priceOldEl.textContent = '';
+      priceOldEl.style.display = 'none';
+    }
+    // Installments (3x sem juros)
+    if (numericPrice > 0) {
+      const installVal = (numericPrice / 3).toFixed(2).replace('.', ',');
+      installEl.textContent = `ou 3× de R$ ${installVal} sem juros`;
+    }
+
+    // Badge
+    const pmBadge = document.getElementById('pmBadge');
+    if (badge) {
+      pmBadge.textContent = badge;
+      pmBadge.classList.add('visible');
+    } else {
+      pmBadge.textContent = '';
+      pmBadge.classList.remove('visible');
+    }
+
+    // Description
+    document.getElementById('pmDesc').textContent = desc;
+
+    // Gallery
+    currentImgIdx = 0;
+    renderGallery();
+
+    // Shades
+    let shades = [];
+    try { shades = JSON.parse(shadesRaw); } catch(e) {}
+    renderSwatches(shades);
+
+    // Qty reset
+    currentQty = 1;
+    document.getElementById('pmQtyVal').textContent = '1';
+
+    // Wishlist state
+    const pmWish = document.getElementById('pmWishBtn');
+    const cardWish = card.querySelector('[data-wish]');
+    pmWish.classList.toggle('active', cardWish && cardWish.classList.contains('active'));
+
+    // Show
+    document.body.style.overflow = 'hidden';
+    overlay.classList.add('open');
+    modal.classList.add('open');
+  }
+
+  function closeProductModal() {
+    overlay.classList.remove('open');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  /* ---- Gallery ---- */
+  function renderGallery() {
+    const mainImg = document.getElementById('pmMainImg');
+    const thumbsEl = document.getElementById('pmThumbs');
+
+    if (currentImages.length === 0) {
+      mainImg.src = '';
+      mainImg.alt = '';
+      thumbsEl.innerHTML = '';
+      document.getElementById('pmPrev').style.display = 'none';
+      document.getElementById('pmNext').style.display = 'none';
+      return;
+    }
+
+    mainImg.style.opacity = '0';
+    mainImg.src = currentImages[currentImgIdx];
+    mainImg.onload = () => { mainImg.style.opacity = '1'; };
+    mainImg.onerror = () => { mainImg.style.opacity = '1'; };
+
+    // Show/hide nav
+    const showNav = currentImages.length > 1;
+    document.getElementById('pmPrev').style.display = showNav ? 'flex' : 'none';
+    document.getElementById('pmNext').style.display = showNav ? 'flex' : 'none';
+
+    // Thumbnails
+    thumbsEl.innerHTML = currentImages.map((src, i) => `
+      <button class="pm-thumb ${i === currentImgIdx ? 'active' : ''}" data-idx="${i}" aria-label="Ver imagem ${i+1}">
+        <img src="${src}" alt="Imagem ${i+1}" loading="lazy">
+      </button>
+    `).join('');
+
+    thumbsEl.querySelectorAll('.pm-thumb').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentImgIdx = parseInt(btn.dataset.idx);
+        renderGallery();
+      });
+    });
+  }
+
+  function goImg(delta) {
+    if (currentImages.length === 0) return;
+    currentImgIdx = (currentImgIdx + delta + currentImages.length) % currentImages.length;
+    renderGallery();
+  }
+
+  document.getElementById('pmPrev').addEventListener('click', () => goImg(-1));
+  document.getElementById('pmNext').addEventListener('click', () => goImg(+1));
+
+  /* ---- Swatches ---- */
+  function renderSwatches(shades) {
+    const block = document.getElementById('pmShadesBlock');
+    const swatchesEl = document.getElementById('pmSwatches');
+    const selectedEl = document.getElementById('pmSelectedShade');
+
+    if (!shades || shades.length === 0) {
+      block.style.display = 'none';
+      return;
+    }
+    block.style.display = 'flex';
+
+    let activeIdx = 0;
+    selectedEl.textContent = shades[0].name;
+
+    swatchesEl.innerHTML = shades.map((s, i) => `
+      <button
+        class="pm-swatch ${i === 0 ? 'active' : ''}"
+        style="background:${s.color}"
+        data-idx="${i}"
+        data-name="${s.name}"
+        data-img="${s.img || ''}"
+        title="${s.name}"
+        aria-label="${s.name}"
+      ></button>
+    `).join('');
+
+    swatchesEl.querySelectorAll('.pm-swatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        swatchesEl.querySelectorAll('.pm-swatch').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeIdx = parseInt(btn.dataset.idx);
+        selectedEl.textContent = btn.dataset.name;
+
+        // If this shade has its own image, update main image
+        if (btn.dataset.img) {
+          const imgIdx = currentImages.indexOf(btn.dataset.img);
+          if (imgIdx >= 0) {
+            currentImgIdx = imgIdx;
+          } else {
+            // Insert at front temporarily
+            currentImages.unshift(btn.dataset.img);
+            currentImgIdx = 0;
+          }
+          renderGallery();
+        }
+      });
+    });
+  }
+
+  /* ---- Qty ---- */
+  document.getElementById('pmQtyPlus').addEventListener('click', () => {
+    currentQty = Math.min(currentQty + 1, 10);
+    document.getElementById('pmQtyVal').textContent = currentQty;
+  });
+  document.getElementById('pmQtyMinus').addEventListener('click', () => {
+    currentQty = Math.max(currentQty - 1, 1);
+    document.getElementById('pmQtyVal').textContent = currentQty;
+  });
+
+  /* ---- Add to cart from modal ---- */
+  document.getElementById('pmAddBtn').addEventListener('click', () => {
+    if (!currentProduct) return;
+    let added = false;
+    for (let i = 0; i < currentQty; i++) {
+      added = addToCart({ ...currentProduct });
+      if (!added) break;
+    }
+    if (added) {
+      const btn = document.getElementById('pmAddBtn');
+      btn.textContent = 'Adicionado ✓';
+      btn.classList.add('added');
+      showToast(`${currentProduct.nome} adicionado à sacola`);
+      setTimeout(() => {
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Adicionar à Sacola`;
+        btn.classList.remove('added');
+      }, 1600);
+    }
+  });
+
+  /* ---- Wishlist from modal ---- */
+  document.getElementById('pmWishBtn').addEventListener('click', () => {
+    const btn = document.getElementById('pmWishBtn');
+    btn.classList.toggle('active');
+  });
+
+  /* ---- Click on card to open ---- */
+  document.querySelectorAll('.card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      // Don't open if clicking wishlist, add btn, or shade dots
+      if (
+        e.target.closest('[data-wish]') ||
+        e.target.closest('[data-add]') ||
+        e.target.closest('.shade-dot')
+      ) return;
+      openProductModal(card);
+    });
+  });
+
+  /* ---- Close triggers ---- */
+  closeBtn.addEventListener('click', closeProductModal);
+  overlay.addEventListener('click', closeProductModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeProductModal();
+  });
+}
+
