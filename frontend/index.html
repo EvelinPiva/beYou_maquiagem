@@ -222,18 +222,44 @@
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-      <svg class="hero-eyebrow-mark" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
-        <path d="M14 16c0 14 6 24 16 24s16-10 16-24" stroke="#d88fa0"/>
-        <line x1="42" y1="14" x2="50" y2="6" stroke="#fbf5f2"/>
-        <line x1="50" y1="6" x2="46" y2="16" stroke="#fbf5f2"/>
-      </svg>
-      <h1>Maquiagem que veste <em>a sua</em> versão favorita</h1>
-      <p>Do rosto aos olhos, tudo o que você precisa para montar seu look — selecionado a dedo, com tonalidades para todo tipo de pele.</p>
-      <div class="hero-ctas">
-        <a href="#paletas" class="btn btn-primary">Descobrir maquiagens</a>
-        <a href="#lancamentos-strip" class="btn btn-ghost">Ver lançamentos</a>
+      
+      <!-- LADO ESQUERDO: Texto, Título e Chamadas -->
+      <div class="hero-content">
+        <svg class="hero-eyebrow-mark" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <path d="M14 16c0 14 6 24 16 24s16-10 16-24" stroke="#d88fa0"/>
+          <line x1="42" y1="14" x2="50" y2="6" stroke="#fbf5f2"/>
+          <line x1="50" y1="6" x2="46" y2="16" stroke="#fbf5f2"/>
+        </svg>
+        <h1>Maquiagem que veste <em>a sua</em> versão favorita</h1>
+        <p>Do rosto aos olhos, tudo o que você precisa para montar seu look — selecionado a dedo, com tonalidades para todo tipo de pele.</p>
+        <div class="hero-ctas">
+          <a href="#paletas" class="btn btn-primary">Descobrir maquiagens</a>
+          <a href="#lancamentos-strip" class="btn btn-ghost">Ver lançamentos</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOTO DA MODELO (ao lado do título, passa sozinha quando houver mais de uma) -->
+    <div class="hero-showcase" id="heroCarouselCard" aria-label="Fotos da modelo Evelin">
+      <div class="hero-carousel-track" id="heroCarouselTrack">
+
+        <div class="hero-slide">
+          <img src="../img/EVELIN.png" alt="Evelin Piva segurando batom vermelho BE YOU" class="hero-slide-img">
+        </div>
+
+        <!--
+          💡 PARA ADICIONAR MAIS FOTOS:
+          1. Salve a imagem na pasta img/ (ex: EVELIN_2.png)
+          2. Copie o bloco <div class="hero-slide"> acima e cole logo abaixo dele,
+             trocando o src e o alt.
+          Com 2 ou mais fotos elas passam sozinhas para o lado a cada 5 segundos.
+        -->
+
       </div>
     </div>
+
+    <!-- Swirl de Fundo -->
     <svg class="hero-swirl" viewBox="0 0 200 240" fill="none" stroke="#fbf5f2" stroke-width="2">
       <ellipse cx="100" cy="60" rx="34" ry="46" stroke-opacity=".55"/>
       <rect x="86" y="96" width="28" height="80" rx="6" stroke-opacity=".55"/>

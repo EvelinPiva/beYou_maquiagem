@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuth();
   initProducts();
   initProductModal();
+  initHeroCarousel();
 });
 
 /* ==========================================
@@ -769,3 +770,26 @@ function initProductModal() {
   });
 }
 
+/* ==========================================
+   HERO: fotos da modelo passando sozinhas
+   (sem setas/bolinhas; com 1 foto fica parada)
+   ========================================== */
+function initHeroCarousel() {
+  const track = document.getElementById('heroCarouselTrack');
+  if (!track) return;
+  const slides = track.querySelectorAll('.hero-slide');
+  if (slides.length <= 1) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let current = 0;
+  let timer = null;
+  const go = () => {
+    current = (current + 1) % slides.length;
+    track.style.transform = 'translateX(' + (-current * 100) + '%)';
+  };
+  const start = () => { stop(); timer = setInterval(go, 5000); };
+  const stop  = () => { clearInterval(timer); timer = null; };
+
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+  start();
+}
