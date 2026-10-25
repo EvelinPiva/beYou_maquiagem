@@ -2,6 +2,7 @@ const API_BASE = 'http://localhost:3000/api';
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileMenu();
+  initCatalogLinks();
   initModals();
   initCart();
   initAuth();
@@ -144,7 +145,8 @@ function addToCart(produto) {
     return false;
   }
 
-  const existing = cart.find(item => item.codProduto === produto.codProduto);
+  produto.cartKey = `${produto.codProduto}:${produto.tom || ''}`;
+  const existing = cart.find(item => (item.cartKey || `${item.codProduto}:`) === produto.cartKey);
   if (existing) {
     if (produto.estoqueProduto && existing.quantidade >= produto.estoqueProduto.quantidade_atual) {
        showToast('Estoque máximo atingido.');
@@ -161,13 +163,13 @@ function addToCart(produto) {
 }
 
 function removeFromCart(id) {
-  cart = cart.filter(item => item.codProduto !== id);
+  cart = cart.filter(item => (item.cartKey || String(item.codProduto)) !== String(id));
   saveCart();
   updateCartUI();
 }
 
 function changeQty(id, delta) {
-  const item = cart.find(i => i.codProduto === id);
+  const item = cart.find(i => (i.cartKey || String(i.codProduto)) === String(id));
   if (item) {
     const newQty = item.quantidade + delta;
     if (newQty <= 0) {
@@ -213,10 +215,10 @@ function updateCartUI() {
             <h4 class="cart-item-name">${item.nome}</h4>
             <div class="cart-item-price">R$ ${preco.toFixed(2).replace('.',',')}</div>
             <div class="cart-item-controls">
-              <button class="qty-btn" onclick="changeQty(${item.codProduto}, -1)">-</button>
+              <button class="qty-btn" onclick="changeQty('${item.cartKey || item.codProduto}', -1)">-</button>
               <span class="cart-qty">${item.quantidade}</span>
-              <button class="qty-btn" onclick="changeQty(${item.codProduto}, 1)">+</button>
-              <button class="cart-item-remove" onclick="removeFromCart(${item.codProduto})">Remover</button>
+              <button class="qty-btn" onclick="changeQty('${item.cartKey || item.codProduto}', 1)">+</button>
+              <button class="cart-item-remove" onclick="removeFromCart('${item.cartKey || item.codProduto}')">Remover</button>
             </div>
           </div>
         </li>
@@ -451,9 +453,35 @@ async function initProducts() {
   // Para manter a UI inicial sem backend rodando, vamos apenas anexar os eventos aos botões existentes.
   
   // Attach events to existing hardcoded cards for demo purposes
-  document.querySelectorAll('.card').forEach(card => {
+  document.querySelectorAll('.card').forEach((card, index) => {
+    card.dataset.prodId ||= String(index + 1);
     const btn = card.querySelector('[data-add]');
     const wish = card.querySelector('[data-wish]');
+    const shades = JSON.parse(card.dataset.modalShades || '[]');
+    const shadeList = card.querySelector('.card-shades');
+    if (shades.length && shadeList) {
+      shadeList.innerHTML = '';
+      shades.forEach((shade, shadeIndex) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'shade-dot';
+        dot.style.background = shade.color;
+        dot.title = shade.name;
+        dot.setAttribute('aria-label', shade.name);
+        dot.setAttribute('aria-pressed', 'false');
+        dot.addEventListener('click', () => {
+          card.dataset.selectedShade = String(shadeIndex);
+          shadeList.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed', String(button === dot)));
+          const image = card.querySelector('.card-media img');
+          if (image && shade.img) {
+            image.src = shade.img;
+            image.alt = card.querySelector('.card-name').textContent + ' - ' + shade.name;
+          }
+        });
+        shadeList.appendChild(dot);
+      });
+    }
+
     
     if(wish) {
       wish.addEventListener('click', () => wish.classList.toggle('active'));
@@ -461,16 +489,20 @@ async function initProducts() {
 
     if(btn) {
       btn.addEventListener('click', () => {
+        if (JSON.parse(card.dataset.modalShades || '[]').length) {
+          window.openProductModal(card);
+          return;
+        }
         const nome = card.querySelector('.card-name').textContent;
         const precoStr = card.querySelector('.price-now').textContent.replace('R$','').trim().replace(',','.');
         const cat = card.querySelector('.card-cat').textContent;
         
         // Mock a product object for the cart
         const prod = {
-          codProduto: Math.floor(Math.random() * 1000), // fake id for static HTML
+          codProduto: card.dataset.prodId,
           nome: nome,
           preco: precoStr,
-          imagem_url: '', // would use real URL if from API
+          imagem_url: card.querySelector('.card-media img')?.getAttribute('src') || '',
           estoqueProduto: { quantidade_atual: 10 } // assume in stock
         };
 
@@ -591,7 +623,7 @@ function initProductModal() {
     // Shades
     let shades = [];
     try { shades = JSON.parse(shadesRaw); } catch(e) {}
-    renderSwatches(shades);
+    renderSwatches(shades, Number(card.dataset.selectedShade || 0));
 
     // Qty reset
     currentQty = 1;
@@ -628,10 +660,18 @@ function initProductModal() {
       return;
     }
 
+    mainImg.alt = currentProduct.nome;
     mainImg.style.opacity = '0';
-    mainImg.src = currentImages[currentImgIdx];
-    mainImg.onload = () => { mainImg.style.opacity = '1'; };
+    const fitImage = () => {
+      if (mainImg.naturalWidth && mainImg.naturalHeight) {
+        mainImg.parentElement.style.aspectRatio = mainImg.naturalWidth + ' / ' + mainImg.naturalHeight;
+      }
+      mainImg.style.opacity = '1';
+    };
+    mainImg.onload = fitImage;
     mainImg.onerror = () => { mainImg.style.opacity = '1'; };
+    mainImg.src = currentImages[currentImgIdx];
+    if (mainImg.complete) fitImage();
 
     // Show/hide nav
     const showNav = currentImages.length > 1;
@@ -663,7 +703,7 @@ function initProductModal() {
   document.getElementById('pmNext').addEventListener('click', () => goImg(+1));
 
   /* ---- Swatches ---- */
-  function renderSwatches(shades) {
+  function renderSwatches(shades, selectedIndex = 0) {
     const block = document.getElementById('pmShadesBlock');
     const swatchesEl = document.getElementById('pmSwatches');
     const selectedEl = document.getElementById('pmSelectedShade');
@@ -674,26 +714,38 @@ function initProductModal() {
     }
     block.style.display = 'flex';
 
-    let activeIdx = 0;
-    selectedEl.textContent = shades[0].name;
+    const baseName = currentProduct.nome;
+    function selectShade(shade) {
+      currentProduct.tom = shade.name;
+      currentProduct.nome = `${baseName} — ${shade.name}`;
+      currentProduct.imagem_url = shade.img || currentImages[0] || '';
+      selectedEl.textContent = shade.name;
+      const imageIndex = currentImages.indexOf(shade.img);
+      if (imageIndex >= 0) currentImgIdx = imageIndex;
+      renderGallery();
+    }
+    selectedIndex = shades[selectedIndex] ? selectedIndex : 0;
+    selectShade(shades[selectedIndex]);
 
     swatchesEl.innerHTML = shades.map((s, i) => `
       <button
-        class="pm-swatch ${i === 0 ? 'active' : ''}"
+        class="pm-swatch ${i === selectedIndex ? 'active' : ''}"
         style="background:${s.color}"
         data-idx="${i}"
         data-name="${s.name}"
         data-img="${s.img || ''}"
         title="${s.name}"
         aria-label="${s.name}"
+        aria-pressed="${i === selectedIndex}"
       ></button>
     `).join('');
 
     swatchesEl.querySelectorAll('.pm-swatch').forEach(btn => {
       btn.addEventListener('click', () => {
-        swatchesEl.querySelectorAll('.pm-swatch').forEach(b => b.classList.remove('active'));
+        swatchesEl.querySelectorAll('.pm-swatch').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
-        activeIdx = parseInt(btn.dataset.idx);
+        btn.setAttribute('aria-pressed', 'true');
+        selectShade(shades[Number(btn.dataset.idx)]);
         selectedEl.textContent = btn.dataset.name;
 
         // If this shade has its own image, update main image
@@ -762,6 +814,8 @@ function initProductModal() {
     });
   });
 
+  window.openProductModal = openProductModal;
+
   /* ---- Close triggers ---- */
   closeBtn.addEventListener('click', closeProductModal);
   overlay.addEventListener('click', closeProductModal);
@@ -792,4 +846,37 @@ function initHeroCarousel() {
 
   document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
   start();
+}
+/* Direciona os submenus ao produto correspondente no catálogo. */
+function initCatalogLinks() {
+  const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+  document.querySelectorAll('.mega-col a').forEach(link => {
+    const section = document.querySelector(link.getAttribute('href'));
+    if (!section) return;
+    const label = normalize(link.textContent);
+    const card = Array.from(section.querySelectorAll('.card')).find(product => {
+      const category = normalize(product.querySelector('.card-cat')?.textContent || '');
+      const name = normalize(product.querySelector('.card-name')?.textContent || '');
+      return label === 'batom liquido' ? name.includes(label) : category === label;
+    });
+    if (card) {
+      if (!card.id) {
+        card.id = 'produto-' + section.id + '-' + label.replace(/[^a-z0-9]+/g, '-');
+      }
+      link.setAttribute('href', '#' + card.id);
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+        const top = card.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+        window.scrollTo({ top: Math.max(0, top), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+        card.setAttribute('tabindex', '-1');
+        card.focus({ preventScroll: true });
+      });
+    } else {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        showToast(link.textContent.trim() + ': em breve no catálogo.');
+      });
+    }
+  });
 }
