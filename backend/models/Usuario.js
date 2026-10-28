@@ -33,6 +33,13 @@ const Usuario = db.define('usuario', {
         type: DataTypes.STRING(20),
         allowNull: true
     },
+    cep: { type: DataTypes.STRING(9), allowNull: true },
+    logradouro: { type: DataTypes.STRING(70), allowNull: true },
+    numero: { type: DataTypes.STRING(12), allowNull: true },
+    complemento: { type: DataTypes.STRING(100), allowNull: true },
+    bairro: { type: DataTypes.STRING(70), allowNull: true },
+    localidade: { type: DataTypes.STRING(70), allowNull: true },
+    uf: { type: DataTypes.STRING(2), allowNull: true },
     tipo_usuario: {
         type: DataTypes.ENUM('CLIENTE', 'ADMIN'),
         allowNull: false,

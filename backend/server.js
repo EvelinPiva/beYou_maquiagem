@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: require('path').join(__dirname, '.env') })
 const express = require('express')
 const cors = require('cors')
 
@@ -8,11 +8,11 @@ require('./models/rel')
 const routes = require('./routes/index')
 
 const app = express()
-const PORT = process.env.PORT || 3000
+
 
 // ─── Middlewares globais ───────────────────────────────────
 app.use(cors({
-    origin: '*', // Em produção: substituir pelo domínio do Vercel
+    origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(s => s.trim()) : '*', // Em produção: substituir pelo domínio do Vercel
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // ─── Rota de saúde ────────────────────────────────────────
-app.get('/', (req, res) => {
+app.get('/api/saude', (req, res) => {
     res.json({
         mensagem: '🌸 BE YOU Maquiagem — API REST',
         versao: '1.0.0',
@@ -32,22 +32,31 @@ app.get('/', (req, res) => {
 // ─── Rotas da API ─────────────────────────────────────────
 app.use('/api', routes)
 
+// Página de acesso administrativo e seus arquivos estáticos.
+const path = require('path')
+app.get('/', (req, res) => res.redirect('/frontend/index.html'))
+app.get('/admin', (req, res) => {
+    res.redirect('/frontend/admin/index.html')
+})
+app.use('/frontend', express.static(path.join(__dirname, '../frontend')))
+app.use('/img', express.static(path.join(__dirname, '../img')))
+app.use('/img_batom', express.static(path.join(__dirname, '../img_batom')))
+// Recursos da loja e imagens enviadas pelo painel.
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    index: false,
+    dotfiles: 'deny',
+    setHeaders: res => res.setHeader('X-Content-Type-Options', 'nosniff')
+}))
+for (const pasta of require('fs').readdirSync(path.join(__dirname, '..'), { withFileTypes: true })) {
+    if (pasta.isDirectory() && pasta.name.startsWith('img_')) {
+        app.use('/' + pasta.name, express.static(path.join(__dirname, '..', pasta.name)))
+    }
+}
+app.get('/1.mp4', (req, res) => res.sendFile(path.join(__dirname, '../1.mp4')))
+app.get('/admin/', (req, res) => res.redirect('/frontend/admin/index.html'))
 // ─── Rota 404 ─────────────────────────────────────────────
 app.use((req, res) => {
     res.status(404).json({ erro: 'Rota não encontrada.' })
-})
-
-// ─── Inicialização e Sincronização com o Banco ──────────────
-const db = require('./db/conn')
-
-db.sync({ alter: true }).then(() => {
-    console.log('📦 Tabelas do banco de dados sincronizadas com sucesso!')
-    app.listen(PORT, () => {
-        console.log(`\n🌸 BE YOU — Backend rodando em http://localhost:${PORT}`)
-        console.log(`📋 Endpoints disponíveis em http://localhost:${PORT}/api\n`)
-    })
-}).catch(err => {
-    console.error('❌ Erro ao sincronizar o banco de dados:', err)
 })
 
 module.exports = app

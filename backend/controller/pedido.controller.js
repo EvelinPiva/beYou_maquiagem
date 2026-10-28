@@ -1,3 +1,4 @@
+const { validarEndereco, inteiro } = require('../validacoes')
 const db = require('../db/conn')
 const { Pedido, ItemPedido, Entrega, Produto, Estoque, Usuario } = require('../models/rel')
 
@@ -6,9 +7,11 @@ const { Pedido, ItemPedido, Entrega, Produto, Estoque, Usuario } = require('../m
 // Fluxo: valida estoque → cria pedido → cria itens → cria entrega → deduz estoque
 // ──────────────────────────────────────────────────────────
 async function criarPedido(req, res) {
-    const transaction = await db.transaction()
+    let transaction
     try {
-        const { itens, endereco } = req.body
+        let { itens, endereco } = req.body
+        try { endereco = validarEndereco(endereco) } catch (e) { return res.status(400).json({ erro: e.message }) }
+        transaction = await db.transaction()
         const idUsuario = req.usuario.codUsuario
 
         // Validações básicas
@@ -21,14 +24,27 @@ async function criarPedido(req, res) {
             return res.status(400).json({ erro: 'Endereço de entrega incompleto.' })
         }
 
-        // Valida estoque de todos os itens antes de prosseguir
+        // Quantidade precisa ser inteira e positiva; soma por produto porque
+        // o mesmo produto pode vir em mais de uma linha (um tom por linha)
+        const totalPorProduto = Object.create(null)
         for (const item of itens) {
-            const estoque = await Estoque.findOne({ where: { idProduto: item.idProduto }, transaction })
-            if (!estoque || estoque.quantidade_atual < item.quantidade) {
+            const quantidade = Number(item.quantidade)
+            if (!inteiro(item.idProduto, 1) || !inteiro(item.quantidade, 1)) {
                 await transaction.rollback()
-                const produto = await Produto.findByPk(item.idProduto)
+                return res.status(400).json({ erro: 'Cada item precisa de idProduto e quantidade inteira maior que zero.' })
+            }
+            item.quantidade = quantidade
+            totalPorProduto[item.idProduto] = (totalPorProduto[item.idProduto] || 0) + quantidade
+        }
+
+        // Valida estoque de todos os produtos antes de prosseguir
+        for (const [idProduto, quantidade] of Object.entries(totalPorProduto).sort((a, b) => Number(a[0]) - Number(b[0]))) {
+            const estoque = await Estoque.findOne({ where: { idProduto }, transaction, lock: transaction.LOCK.UPDATE })
+            if (!estoque || estoque.quantidade_atual < quantidade) {
+                await transaction.rollback()
+                const produto = await Produto.findByPk(idProduto)
                 return res.status(400).json({
-                    erro: `Estoque insuficiente para o produto "${produto?.nome || item.idProduto}". Disponível: ${estoque?.quantidade_atual || 0}.`
+                    erro: `Estoque insuficiente para o produto "${produto?.nome || idProduto}". Disponível: ${estoque?.quantidade_atual || 0}.`
                 })
             }
         }
@@ -43,15 +59,15 @@ async function criarPedido(req, res) {
                 await transaction.rollback()
                 return res.status(404).json({ erro: `Produto ID ${item.idProduto} não encontrado ou inativo.` })
             }
-            const precoUnitario = parseFloat(produto.preco)
+            const precoUnitario = Math.round(Number(produto.preco) * 100) / 100
             const valorTotalItem = precoUnitario * item.quantidade
-            valorSubtotal += valorTotalItem
+            valorSubtotal = Math.round((valorSubtotal + valorTotalItem) * 100) / 100
             itensPedido.push({ idProduto: item.idProduto, quantidade: item.quantidade, precoUnitario, valorTotalItem })
         }
 
         // Frete grátis acima de R$ 150,00
         const valorFrete = valorSubtotal >= 150 ? 0 : 15.90
-        const valorTotal = valorSubtotal + valorFrete
+        const valorTotal = Math.round((valorSubtotal + valorFrete) * 100) / 100
 
         // Cria o pedido
         const pedido = await Pedido.create({
@@ -81,11 +97,11 @@ async function criarPedido(req, res) {
             statusEntrega: 'EM_TRANSITO'
         }, { transaction })
 
-        // Deduz estoque de todos os itens
-        for (const item of itens) {
-            const estoque = await Estoque.findOne({ where: { idProduto: item.idProduto }, transaction })
+        // Deduz estoque de todos os produtos
+        for (const [idProduto, quantidade] of Object.entries(totalPorProduto)) {
+            const estoque = await Estoque.findOne({ where: { idProduto }, transaction, lock: transaction.LOCK.UPDATE })
             await estoque.update(
-                { quantidade_atual: estoque.quantidade_atual - item.quantidade },
+                { quantidade_atual: estoque.quantidade_atual - quantidade },
                 { transaction }
             )
         }
@@ -103,7 +119,7 @@ async function criarPedido(req, res) {
         })
 
     } catch (err) {
-        await transaction.rollback()
+        if (transaction && !transaction.finished) await transaction.rollback()
         console.error('Erro ao criar pedido:', err)
         return res.status(500).json({ erro: 'Erro interno no servidor.' })
     }
@@ -161,6 +177,9 @@ async function atualizarStatus(req, res) {
     try {
         const { id } = req.params
         const { status } = req.body
+        if (!Pedido.rawAttributes.status.values.includes(status)) {
+            return res.status(400).json({ erro: `Status inválido. Use: ${Pedido.rawAttributes.status.values.join(', ')}.` })
+        }
         const pedido = await Pedido.findByPk(id)
         if (!pedido) return res.status(404).json({ erro: 'Pedido não encontrado.' })
 

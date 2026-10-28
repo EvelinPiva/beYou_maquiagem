@@ -6,6 +6,25 @@
 @token = COLE_SEU_TOKEN_JWT_AQUI
 
 # ──────────────────────────────────────────────────────────
+# 1. CADASTRO INICIAL DO ADMINISTRADOR
+# Execute antes do login. Permitido somente se ainda não existir ADMIN.
+# Se o administrador já estiver cadastrado, siga diretamente para o login.
+# ──────────────────────────────────────────────────────────
+
+### Cadastrar primeiro administrador
+POST {{base}}/usuarios
+Content-Type: application/json
+
+{
+    "nome": "Admin BE YOU",
+    "email": "admin@beyou.com",
+    "senha": "Admin123",
+    "telefone": "(48) 99999-0000",
+    "cpf": "11144477735",
+    "tipo_usuario": "ADMIN"
+}
+
+# ──────────────────────────────────────────────────────────
 # 🏥 SAÚDE DA API
 # ──────────────────────────────────────────────────────────
 
@@ -16,13 +35,13 @@ GET http://localhost:3000
 # 🔐 AUTENTICAÇÃO
 # ──────────────────────────────────────────────────────────
 
-### Login de usuário
+### Login do administrador — copie o token da resposta para @token
 POST {{base}}/login
 Content-Type: application/json
 
 {
     "email": "admin@beyou.com",
-    "senha": "Admin@123"
+    "senha": "Admin123"
 }
 
 ###
@@ -33,21 +52,21 @@ Content-Type: application/json
 
 {
     "email": "cliente@teste.com",
-    "senha": "Teste@123"
+    "senha": "Teste123"
 }
 
 # ──────────────────────────────────────────────────────────
 # 👤 USUÁRIOS
 # ──────────────────────────────────────────────────────────
 
-### Cadastrar novo usuário (PÚBLICO)
+### Cadastrar cliente (PÚBLICO, após o administrador)
 POST {{base}}/usuarios
 Content-Type: application/json
 
 {
     "nome": "Maria Silva",
     "email": "maria@teste.com",
-    "senha": "Senha@123",
+    "senha": "Senha123",
     "telefone": "(48) 99999-1234",
     "cpf": "529.982.247-25",
     "identidade": "1234567"

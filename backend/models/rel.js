@@ -5,6 +5,8 @@ const ItemPedido = require('./ItemPedido')
 const Entrega = require('./Entrega')
 const Estoque = require('./Estoque')
 const Categoria = require('./Categoria')
+// Tabela independente (sem relacionamentos): conteúdo editável do site
+const Conteudo = require('./Conteudo')
 
 
 // 1. RELACIONAMENTOS CATEGORIA & PRODUTO
@@ -94,5 +96,6 @@ module.exports = {
     ItemPedido, 
     Entrega, 
     Estoque,
-    Categoria
+    Categoria,
+    Conteudo
 }

@@ -52,7 +52,10 @@ async function atualizarParcial(req, res) {
         const entrega = await Entrega.findByPk(id)
         if (!entrega) return res.status(404).json({ erro: 'Entrega não encontrada.' })
 
-        await entrega.update(req.body)
+        const campos = {};
+        for (const c of ['codigoRastreio', 'statusEntrega', 'dataEstimada']) if (req.body[c] !== undefined) campos[c] = req.body[c];
+        if (campos.statusEntrega && !Entrega.rawAttributes.statusEntrega.values.includes(campos.statusEntrega)) return res.status(400).json({ erro: 'Status de entrega inv?lido.' });
+        await entrega.update(campos)
         return res.status(200).json({ mensagem: 'Entrega atualizada parcialmente!' })
     } catch (err) {
         console.error('Erro ao atualizar entrega parcialmente:', err)

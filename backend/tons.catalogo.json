@@ -1,0 +1,114 @@
+[
+  {
+    "id": 13,
+    "index": 0,
+    "nome": "Ouro",
+    "imagem": "../img_olhos/trio-ouro.png",
+    "produto": "Trio de Sombras Cintilantes",
+    "cor": "#d4a86a"
+  },
+  {
+    "id": 13,
+    "index": 1,
+    "nome": "Bronze",
+    "imagem": "../img_olhos/trio-bronze.png",
+    "produto": "Trio de Sombras Cintilantes",
+    "cor": "#8c6a4e"
+  },
+  {
+    "id": 13,
+    "index": 2,
+    "nome": "Cobre",
+    "imagem": "../img_olhos/trio-cobre.png",
+    "produto": "Trio de Sombras Cintilantes",
+    "cor": "#c98f5f"
+  },
+  {
+    "id": 15,
+    "index": 0,
+    "nome": "Preto",
+    "imagem": "../img_olhos/lapis-preto.png",
+    "produto": "Lápis Retrátil À Prova d'Água",
+    "cor": "#1c1614"
+  },
+  {
+    "id": 15,
+    "index": 1,
+    "nome": "Marrom",
+    "imagem": "../img_olhos/lapis-marrom.png",
+    "produto": "Lápis Retrátil À Prova d'Água",
+    "cor": "#3a2a20"
+  },
+  {
+    "id": 17,
+    "index": 0,
+    "nome": "Castanho",
+    "imagem": "../img_sobrancelhas/lapis-castanho.png",
+    "produto": "Lápis Efeito Fio a Fio",
+    "cor": "#4a3226"
+  },
+  {
+    "id": 17,
+    "index": 1,
+    "nome": "Castanho Escuro",
+    "imagem": "../img_sobrancelhas/lapis-castanho-escuro.png",
+    "produto": "Lápis Efeito Fio a Fio",
+    "cor": "#2c1e17"
+  },
+  {
+    "id": 19,
+    "index": 0,
+    "nome": "Castanho Médio",
+    "imagem": "../img_sobrancelhas/duo-castanho.png",
+    "produto": "Duo de Pó para Sobrancelha",
+    "cor": "#6b4a34"
+  },
+  {
+    "id": 19,
+    "index": 1,
+    "nome": "Castanho Escuro",
+    "imagem": "../img_sobrancelhas/duo-castanho-escuro.png",
+    "produto": "Duo de Pó para Sobrancelha",
+    "cor": "#3a281d"
+  },
+  {
+    "id": 22,
+    "index": 0,
+    "nome": "Nude Claro",
+    "imagem": "../img_paletas/nude-claro-tom.png",
+    "produto": "Paleta Nude Editorial · 12 tons",
+    "cor": "#e7c9a5"
+  },
+  {
+    "id": 22,
+    "index": 1,
+    "nome": "Nude Dourado",
+    "imagem": "../img_paletas/nude-dourado.png",
+    "produto": "Paleta Nude Editorial · 12 tons",
+    "cor": "#c9986a"
+  },
+  {
+    "id": 22,
+    "index": 2,
+    "nome": "Nude Terroso",
+    "imagem": "../img_paletas/nude-terroso.png",
+    "produto": "Paleta Nude Editorial · 12 tons",
+    "cor": "#8c6a4e"
+  },
+  {
+    "id": 26,
+    "index": 0,
+    "nome": "Sunset Laranja",
+    "imagem": "../img_paletas/sunset-laranja.png",
+    "produto": "Paleta Dupla Sunset",
+    "cor": "#e08a5c"
+  },
+  {
+    "id": 26,
+    "index": 1,
+    "nome": "Sunset Rosé",
+    "imagem": "../img_paletas/sunset-rose.png",
+    "produto": "Paleta Dupla Sunset",
+    "cor": "#c2185f"
+  }
+]

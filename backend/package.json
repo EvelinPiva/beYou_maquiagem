@@ -2,11 +2,16 @@
   "name": "beyou-ecommerce-backend",
   "version": "1.0.0",
   "description": "Backend do e-commerce BE YOU Maquiagem",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "sync": "node sync.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "sync": "node sync.js",
+    "conn": "node conn.js",
+    "setup": "node setup.js",
+    "seed": "node seed.js",
+    "admin": "node criar-admin.js",
+    "test": "node tests/integracao.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

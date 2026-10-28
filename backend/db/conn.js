@@ -1,7 +1,8 @@
-require('dotenv').config()
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') })
 const { Sequelize } = require('sequelize')
 
-const db = new Sequelize(
+const options = { host: process.env.DB_HOST || 'localhost', dialect: 'mysql', port: Number(process.env.DB_PORT) || 3306, logging: false }
+const db = process.env.MYSQL_URL ? new Sequelize(process.env.MYSQL_URL, options) : new Sequelize(
     process.env.DB_NAME || 'db_ecommerce',
     process.env.DB_USER || 'root',
     process.env.DB_PASS || 'senai',
@@ -12,13 +13,5 @@ const db = new Sequelize(
         logging: false
     }
 )
-
-db.authenticate()
-    .then(() => {
-        console.log('✅ Conexão com o banco de dados realizada com sucesso!')
-    })
-    .catch((err) => {
-        console.error('❌ Erro ao conectar com banco de dados!', err)
-    })
 
 module.exports = db

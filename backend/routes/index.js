@@ -14,13 +14,24 @@ const estoqueCtrl = require('../controller/estoque.controller')
 const pedidoCtrl = require('../controller/pedido.controller')
 const entregaCtrl = require('../controller/entrega.controller')
 const relatorioCtrl = require('../controller/relatorio.controller')
+const conteudoCtrl = require('../controller/conteudo.controller')
+const imagemCtrl = require('../controller/imagem.controller')
+
+// Upload binário: autenticar antes de receber até 5 MB por imagem.
+router.post('/admin/imagens', auth, isAdmin, (req, res, next) => {
+    express.raw({ type: 'application/octet-stream', limit: '5mb' })(req, res, err => {
+        if (err) return res.status(err.type === 'entity.too.large' ? 413 : 400).json({ erro: 'A imagem deve ter no máximo 5 MB.' })
+        next()
+    })
+}, imagemCtrl.enviar)
 
 // ══════════════════════════════════════════════════
 // ROTAS PÚBLICAS (sem autenticação)
 // ══════════════════════════════════════════════════
 
-// Autenticação
-router.post('/login', authCtrl.login)
+// Autenticação — a loja e o painel têm logins separados
+router.post('/login', authCtrl.login)              // só CLIENTE
+router.post('/admin/login', authCtrl.loginAdmin)   // só ADMIN
 
 // Usuários — apenas cadastro é público
 router.post('/usuarios', usuarioCtrl.cadastrar)
@@ -33,7 +44,12 @@ router.get('/categorias/:id', categoriaCtrl.buscarPorId)
 // Produtos — leitura pública
 router.get('/produtos', produtoCtrl.listar)
 router.get('/produtos/buscar', produtoCtrl.buscar)
+// Rota literal de admin declarada antes de /produtos/:id para não ser capturada por ela
+router.get('/produtos/todos', auth, isAdmin, produtoCtrl.listarTodos)
 router.get('/produtos/:id', produtoCtrl.buscarPorId)
+
+// Conteúdo do site (textos e imagens da página inicial) — leitura pública
+router.get('/conteudos', conteudoCtrl.listar)
 
 // ══════════════════════════════════════════════════
 // ROTAS PRIVADAS — usuário autenticado
@@ -52,8 +68,10 @@ router.get('/pedidos/meus-pedidos', auth, pedidoCtrl.meusPedidos)
 // ROTAS PRIVADAS — apenas ADMIN
 // ══════════════════════════════════════════════════
 
-// Usuários (admin)
+// Usuários (admin) — administradores só são cadastrados por outro administrador
+router.post('/admin/usuarios', auth, isAdmin, usuarioCtrl.cadastrarAdmin)
 router.get('/usuarios', auth, isAdmin, usuarioCtrl.listar)
+router.get('/usuarios/buscar', auth, isAdmin, usuarioCtrl.listar)
 router.get('/usuarios/:id', auth, isAdmin, usuarioCtrl.buscarPorId)
 router.delete('/usuarios/:id', auth, isAdmin, usuarioCtrl.deletar)
 
@@ -63,7 +81,7 @@ router.put('/categorias/:id', auth, isAdmin, categoriaCtrl.atualizar)
 router.patch('/categorias/:id', auth, isAdmin, categoriaCtrl.atualizarParcial)
 router.delete('/categorias/:id', auth, isAdmin, categoriaCtrl.deletar)
 
-// Produtos (admin)
+// Produtos (admin) — GET /produtos/todos fica junto das rotas públicas, antes de /produtos/:id
 router.post('/produtos', auth, isAdmin, produtoCtrl.criar)
 router.put('/produtos/:id', auth, isAdmin, produtoCtrl.atualizar)
 router.patch('/produtos/:id', auth, isAdmin, produtoCtrl.atualizarParcial)
@@ -90,5 +108,8 @@ router.patch('/entregas/:id', auth, isAdmin, entregaCtrl.atualizarParcial)
 router.get('/relatorios/vendas', auth, isAdmin, relatorioCtrl.vendasPorCategoria)
 router.get('/relatorios/faturamento', auth, isAdmin, relatorioCtrl.faturamentoMensal)
 router.get('/relatorios/estoque', auth, isAdmin, relatorioCtrl.resumoEstoque)
+
+// Conteúdo do site (admin)
+router.put('/conteudos', auth, isAdmin, conteudoCtrl.atualizar)
 
 module.exports = router
