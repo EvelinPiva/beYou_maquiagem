@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<link rel="icon" type="image/png" href="/img/emblema.png?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestão — BE YOU</title>
+<meta name="description" content="Painel administrativo BE YOU Maquiagem">
+<link rel="stylesheet" href="../styles.css?v=9">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  /* ════════════════════════════════════════════════════════
+     TOKENS DO PAINEL (somam aos do styles.css da loja)
+     ════════════════════════════════════════════════════════ */
+  :root {
+    --lateral: 264px;
+    --fundo: #f6f0ed;
+    --sombra: 0 1px 2px rgba(28,22,20,.04), 0 12px 32px -20px rgba(28,22,20,.22);
+    --ok: #2f855a;  --ok-bg: #e3f4ea;
+    --aviso: #b7791f; --aviso-bg: #fdf1dc;
+    --info: #2b6cb0; --info-bg: #e3eefb;
+    --roxo: #6b46c1; --roxo-bg: #eee8fb;
+    --erro: #c53030; --erro-bg: #fde6e6;
+  }
+  body { background: var(--fundo); min-height: 100vh; }
+  button { font-family: inherit; }
+
+  /* ════════════════════════════════════════════════════════
+     LOGIN (tela dividida com o vídeo)
+     ════════════════════════════════════════════════════════ */
+  .adm-login { display: none; min-height: 100vh; background: var(--cream); }
+  body.sem-sessao .adm-login { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  body.sem-sessao .app { display: none; }
+
+  .login-video { position: relative; overflow: hidden; background: var(--ink); color: var(--cream); isolation: isolate; }
+  .login-video video {
+    position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover;
+    transform: translate3d(var(--px, 0), var(--py, 0), 0);
+    transition: transform .6s cubic-bezier(.2,.7,.2,1), filter .4s; z-index: -2;
+  }
+  .login-video.pausado video { filter: saturate(.75) brightness(.85); }
+  .login-video::after {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(28,22,20,.55) 0%, rgba(28,22,20,0) 28%, rgba(28,22,20,0) 48%, rgba(28,22,20,.88) 100%),
+      linear-gradient(120deg, rgba(194,24,95,.18), rgba(194,24,95,0) 55%);
+  }
+  .login-video-topo { position: absolute; top: 32px; left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; }
+  .logo-texto { font-family: var(--serif); font-size: 1.7rem; line-height: 1; letter-spacing: .01em; }
+  .logo-texto span { color: var(--rose); }
+  .logo-texto small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .32em; margin-top: 4px; opacity: .75; }
+  .login-ctrl { display: flex; gap: 8px; }
+  .login-ctrl button {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(251,245,242,.14); border: 1px solid rgba(251,245,242,.28);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center; color: var(--cream);
+    transition: background .2s, transform .2s;
+  }
+  .login-ctrl button:hover { background: rgba(251,245,242,.28); transform: scale(1.06); }
+  .login-ctrl svg { width: 16px; height: 16px; }
+  .login-video-legenda { position: absolute; left: 40px; right: 40px; bottom: 40px; max-width: 560px; }
+  .login-eyebrow { font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--rose); font-weight: 600; }
+  .login-etapa-titulo { font-family: var(--serif); font-weight: 500; font-size: clamp(1.8rem, 3.2vw, 2.8rem); line-height: 1.08; margin: 12px 0 10px; min-height: 2.2em; transition: opacity .35s, transform .35s; }
+  .login-etapa-titulo em { color: var(--rose); }
+  .login-etapa-texto { font-size: .95rem; line-height: 1.6; color: rgba(251,245,242,.82); max-width: 46ch; min-height: 3.2em; transition: opacity .35s .05s, transform .35s .05s; }
+  .trocando .login-etapa-titulo, .trocando .login-etapa-texto { opacity: 0; transform: translateY(8px); }
+  .login-etapas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 26px; }
+  .login-etapa { text-align: left; color: rgba(251,245,242,.6); font-size: .74rem; letter-spacing: .04em; padding-top: 12px; position: relative; transition: color .2s; }
+  .login-etapa::before, .login-etapa .barra { content: ''; position: absolute; top: 0; left: 0; height: 3px; border-radius: 3px; }
+  .login-etapa::before { right: 0; background: rgba(251,245,242,.25); }
+  .login-etapa .barra { width: var(--progresso, 0%); background: var(--rose); }
+  .login-etapa.ativa, .login-etapa:hover { color: var(--cream); }
+  .login-tons { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: .74rem; color: rgba(251,245,242,.7); }
+  .login-tom { width: 22px; height: 22px; border-radius: 50%; background: var(--tom); border: 2px solid rgba(251,245,242,.5); transition: transform .2s, border-color .2s; }
+  .login-tom:hover { transform: scale(1.15); }
+  .login-tom[aria-pressed="true"] { border-color: var(--cream); box-shadow: 0 0 0 2px var(--tom); }
+
+  .login-painel { display: flex; align-items: center; justify-content: center; padding: 48px 40px; position: relative; overflow: hidden; }
+  .login-painel::before { content: ''; position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, var(--tom-ativo, #c2185f) 0%, transparent 70%); opacity: .1; top: 8%; right: -80px; pointer-events: none; }
+  .login-card { width: 100%; max-width: 380px; position: relative; }
+  .login-gota { width: 46px; height: 46px; margin-bottom: 22px; color: var(--tom-ativo, var(--magenta)); transition: color .5s; }
+  .login-card h1 { font-family: var(--serif); font-weight: 500; font-size: 2rem; line-height: 1.1; }
+  .login-card h1 em { color: var(--tom-ativo, var(--magenta)); transition: color .5s; }
+  .login-card > p { color: var(--taupe); font-size: .92rem; margin: 10px 0 30px; line-height: 1.55; }
+  .login-campo { margin-bottom: 18px; }
+  .login-campo label { display: block; font-size: .78rem; font-weight: 600; letter-spacing: .04em; color: var(--ink-soft); margin-bottom: 8px; }
+  .login-input { position: relative; }
+  .login-input > svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--taupe-light); pointer-events: none; }
+  .login-input input { width: 100%; padding: 14px 48px 14px 46px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--white); font-family: var(--sans); font-size: .95rem; color: var(--ink); transition: border-color .2s, box-shadow .2s; }
+  .login-input input:focus { outline: none; border-color: var(--tom-ativo, var(--magenta)); box-shadow: 0 0 0 4px rgba(194,24,95,.1); }
+  .login-olho { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--taupe); }
+  .login-olho:hover { background: var(--cream-2); }
+  .login-olho svg { width: 18px; height: 18px; }
+  .login-entrar { width: 100%; margin-top: 8px; padding: 15px 20px; border-radius: 999px; background: var(--tom-ativo, var(--magenta)); color: var(--white); font-size: .95rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 14px 30px -14px var(--tom-ativo, var(--magenta)); transition: transform .2s, background .5s, filter .2s; }
+  .login-entrar:hover { transform: translateY(-2px); filter: brightness(1.08); }
+  .login-entrar:disabled { opacity: .7; cursor: wait; transform: none; }
+  .login-entrar svg { width: 18px; height: 18px; }
+  .login-erro { display: none; margin-top: 16px; padding: 11px 14px; border-radius: 12px; background: var(--erro-bg); color: var(--erro); font-size: .85rem; }
+  .login-erro.visivel { display: block; }
+  .login-rodape { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); font-size: .8rem; color: var(--taupe); }
+  .login-rodape a { color: var(--taupe); text-decoration: underline; }
+
+  /* ════════════════════════════════════════════════════════
+     ESTRUTURA DO PAINEL
+     ════════════════════════════════════════════════════════ */
+  .app { display: grid; grid-template-columns: var(--lateral) minmax(0, 1fr); min-height: 100vh; }
+
+  /* Barra lateral */
+  .lateral {
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column;
+    background: var(--ink); color: rgba(251,245,242,.72);
+    padding: 26px 16px 18px; overflow-y: auto; z-index: 40;
+  }
+  .lateral::before { content: ''; position: absolute; width: 300px; height: 300px; left: -140px; top: -120px; border-radius: 50%; background: radial-gradient(circle, rgba(194,24,95,.28), transparent 70%); pointer-events: none; }
+  .lateral-marca { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 10px 26px; color: var(--cream); }
+  .lateral-marca .selo { font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; background: rgba(216,143,160,.16); color: var(--rose); }
+  .menu-grupo { margin-bottom: 18px; position: relative; }
+  .menu-grupo h3 { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(251,245,242,.38); padding: 0 12px; margin-bottom: 6px; font-weight: 600; }
+  .menu-item {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 12px;
+    font-size: .88rem; color: rgba(251,245,242,.72); text-align: left;
+    transition: background .2s, color .2s;
+  }
+  .menu-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .8; }
+  .menu-item:hover { background: rgba(251,245,242,.06); color: var(--cream); }
+  .menu-item.ativo { background: linear-gradient(90deg, rgba(194,24,95,.95), rgba(194,24,95,.75)); color: var(--white); box-shadow: 0 10px 24px -12px rgba(194,24,95,.9); }
+  .menu-item.ativo svg { opacity: 1; }
+  .menu-item .contador { margin-left: auto; min-width: 22px; padding: 2px 7px; border-radius: 999px; font-size: .68rem; font-weight: 600; text-align: center; background: rgba(251,245,242,.12); color: var(--cream); }
+  .menu-item .contador.alerta { background: var(--rose); color: var(--ink); }
+  .menu-item .contador:empty { display: none; }
+  .lateral-usuario { margin-top: auto; position: relative; display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 16px; background: rgba(251,245,242,.06); }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: .85rem; color: var(--white); background: linear-gradient(135deg, var(--magenta), var(--rose)); }
+  .lateral-usuario .dados { min-width: 0; line-height: 1.25; }
+  .lateral-usuario strong { display: block; color: var(--cream); font-size: .86rem; font-weight: 500; }
+  .lateral-usuario span { display: block; font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: rgba(251,245,242,.5); }
+  .lateral-usuario button { margin-left: auto; width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: rgba(251,245,242,.7); transition: background .2s, color .2s; }
+  .lateral-usuario button:hover { background: rgba(251,245,242,.1); color: var(--rose); }
+  .lateral-usuario button svg { width: 17px; height: 17px; }
+
+  /* Área principal */
+  .principal { min-width: 0; display: flex; flex-direction: column; }
+  .topo {
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 36px;
+    background: rgba(246,240,237,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(231,217,212,.7);
+  }
+  .topo-menu { display: none; width: 40px; height: 40px; border-radius: 12px; background: var(--white); align-items: center; justify-content: center; box-shadow: var(--sombra); }
+  .topo-menu svg { width: 20px; height: 20px; }
+  .topo-titulo h1 { font-family: var(--serif); font-weight: 500; font-size: 1.55rem; line-height: 1.1; color: var(--ink); }
+  .topo-titulo p { font-size: .82rem; color: var(--taupe); margin-top: 3px; }
+  .topo-acoes { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .conteudo { padding: 28px 36px 56px; }
+  .painel { display: none; animation: surgir .3s ease-out; }
+  .painel.ativo { display: block; }
+  @keyframes surgir { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ════════════════════════════════════════════════════════
+     COMPONENTES
+     ════════════════════════════════════════════════════════ */
+  .botao {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px; border-radius: 999px;
+    font-size: .84rem; font-weight: 600; white-space: nowrap;
+    transition: background .2s, color .2s, border-color .2s, transform .2s, box-shadow .2s;
+  }
+  .botao svg { width: 16px; height: 16px; }
+  .botao:disabled { opacity: .6; cursor: not-allowed; }
+  .botao-primario { background: var(--magenta); color: var(--white); box-shadow: 0 10px 22px -12px rgba(194,24,95,.9); }
+  .botao-primario:hover:not(:disabled) { background: var(--magenta-2); transform: translateY(-1px); }
+  .botao-escuro { background: var(--ink); color: var(--cream); }
+  .botao-escuro:hover { background: var(--ink-soft); }
+  .botao-claro { background: var(--white); color: var(--ink); border: 1px solid var(--line); }
+  .botao-claro:hover { border-color: var(--rose); color: var(--magenta-2); }
+  .botao-perigo { background: var(--erro-bg); color: var(--erro); }
+  .botao-perigo:hover { background: #fbd0d0; }
+  .botao-pequeno { padding: 7px 13px; font-size: .78rem; }
+  .botao-icone { width: 34px; height: 34px; padding: 0; border-radius: 10px; background: transparent; color: var(--taupe); }
+  .botao-icone:hover { background: var(--cream-2); color: var(--magenta); }
+  .botao-icone.perigo:hover { background: var(--erro-bg); color: var(--erro); }
+
+  .cartao { background: var(--white); border-radius: 20px; padding: 24px; box-shadow: var(--sombra); }
+  .painel > .cartao + .cartao, #gruposConteudo > .cartao + .cartao { margin-top: 20px; }
+  .cartao-topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  .cartao-topo h2 { font-family: var(--serif); font-weight: 500; font-size: 1.15rem; color: var(--ink); }
+  .cartao-topo p { font-size: .8rem; color: var(--taupe); margin-top: 2px; }
+  .grade-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .grade-3-1 { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; }
+  .espaco { height: 20px; }
+
+  /* Indicadores (dashboard) */
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin-bottom: 20px; }
+  .kpi { position: relative; overflow: hidden; background: var(--white); border-radius: 20px; padding: 20px 22px; box-shadow: var(--sombra); transition: transform .2s; }
+  .kpi:hover { transform: translateY(-2px); }
+  .kpi-icone { width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .kpi-icone svg { width: 20px; height: 20px; }
+  .kpi span { display: block; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--taupe); }
+  .kpi strong { display: block; font-family: var(--serif); font-weight: 500; font-size: 1.9rem; color: var(--ink); margin-top: 4px; line-height: 1.1; }
+  .kpi small { display: block; font-size: .76rem; color: var(--taupe); margin-top: 6px; }
+  .kpi.rosa .kpi-icone { background: var(--blush); color: var(--magenta); }
+  .kpi.azul .kpi-icone { background: var(--info-bg); color: var(--info); }
+  .kpi.verde .kpi-icone { background: var(--ok-bg); color: var(--ok); }
+  .kpi.ambar .kpi-icone { background: var(--aviso-bg); color: var(--aviso); }
+
+  .boas-vindas { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 26px 28px; margin-bottom: 20px; border-radius: 24px; color: var(--cream); background: radial-gradient(circle at 90% 0%, rgba(216,143,160,.45), transparent 50%), linear-gradient(120deg, var(--ink) 0%, #3a2430 100%); box-shadow: var(--sombra); }
+  .boas-vindas h2 { font-family: var(--serif); font-weight: 500; font-size: 1.6rem; }
+  .boas-vindas h2 em { color: var(--rose); }
+  .boas-vindas p { font-size: .88rem; color: rgba(251,245,242,.7); margin-top: 4px; }
+  .atalhos { display: flex; gap: 10px; flex-wrap: wrap; }
+  .atalhos .botao-claro { background: rgba(251,245,242,.08); color: var(--cream); border-color: rgba(251,245,242,.2); }
+  .atalhos .botao-claro:hover { background: rgba(251,245,242,.16); color: var(--white); }
+
+  .grafico { position: relative; height: 280px; }
+  .grafico.sem-dados canvas { display: none; }
+  .grafico.sem-dados::after {
+    content: 'Ainda não há vendas para mostrar. Os gráficos aparecem assim que entrar o primeiro pedido.';
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 24px; border-radius: 16px; background: repeating-linear-gradient(135deg, var(--cream) 0 12px, #fbf3f0 12px 24px);
+    font-size: .86rem; color: var(--taupe); line-height: 1.55;
+  }
+
+  /* Listas compactas */
+  .lista-mini li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .lista-mini li:last-child { border-bottom: none; }
+  .lista-mini .texto { min-width: 0; flex: 1; }
+  .lista-mini strong { display: block; font-size: .88rem; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lista-mini small { font-size: .76rem; color: var(--taupe); }
+  .vazio { padding: 36px 16px; text-align: center; color: var(--taupe); font-size: .88rem; }
+  .vazio svg { width: 40px; height: 40px; color: var(--rose); margin-bottom: 10px; }
+
+  /* Etiquetas de status */
+  .etiqueta { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: .72rem; font-weight: 600; white-space: nowrap; }
+  .etiqueta::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .e-ok { background: var(--ok-bg); color: var(--ok); }
+  .e-aviso { background: var(--aviso-bg); color: var(--aviso); }
+  .e-info { background: var(--info-bg); color: var(--info); }
+  .e-roxo { background: var(--roxo-bg); color: var(--roxo); }
+  .e-erro { background: var(--erro-bg); color: var(--erro); }
+  .e-neutro { background: var(--cream-2); color: var(--taupe); }
+
+  /* Barra de ferramentas (busca + filtros) */
+  .ferramentas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .busca { position: relative; flex: 1; min-width: 220px; }
+  .busca svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--taupe-light); }
+  .busca input { width: 100%; padding: 11px 14px 11px 40px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); font-size: .88rem; }
+  .busca input:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px rgba(194,24,95,.08); }
+  .seletor { padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--white); font-size: .84rem; color: var(--ink); }
+  .abas { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--white); border: 1px solid var(--line); flex-wrap: wrap; }
+  .abas button { padding: 7px 14px; border-radius: 999px; font-size: .8rem; color: var(--taupe); transition: background .2s, color .2s; }
+  .abas button:hover { color: var(--ink); }
+  .abas button[aria-pressed="true"] { background: var(--ink); color: var(--cream); }
+  .abas button .n { margin-left: 4px; font-size: .7rem; opacity: .7; }
+
+  /* Tabelas */
+  .tabela-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+  .tabela { width: 100%; border-collapse: collapse; font-size: .86rem; }
+  .tabela th { text-align: left; padding: 10px 12px; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--taupe-light); font-weight: 600; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .tabela td { padding: 12px; border-bottom: 1px solid var(--line); color: var(--ink-soft); vertical-align: middle; }
+  .tabela tbody tr { transition: background .15s; }
+  .tabela tbody tr:hover { background: #fcf8f6; }
+  .tabela tbody tr:last-child td { border-bottom: none; }
+  .tabela .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tabela .acoes { text-align: right; white-space: nowrap; }
+  .produto-celula { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+  .miniatura { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; background: var(--blush); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .miniatura svg { width: 24px; height: 24px; }
+  .produto-celula strong { display: block; font-weight: 500; color: var(--ink); }
+  .produto-celula small { display: block; font-size: .74rem; color: var(--taupe); }
+  .linha-inativa td { opacity: .55; }
+  .linha-inativa td:last-child, .linha-inativa td:nth-last-child(2) { opacity: 1; }
+
+  /* Interruptor */
+  .interruptor { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+  .interruptor input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+  .interruptor span { position: absolute; inset: 0; border-radius: 999px; background: var(--line); transition: background .2s; }
+  .interruptor span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--white); box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+  .interruptor input:checked + span { background: var(--ok); }
+  .interruptor input:checked + span::after { transform: translateX(18px); }
+  .interruptor input:focus-visible + span { outline: 2px solid var(--magenta); outline-offset: 2px; }
+
+  /* Barra de estoque */
+  .estoque-barra { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+  .estoque-barra .trilho { flex: 1; height: 8px; border-radius: 999px; background: var(--cream-2); overflow: hidden; }
+  .estoque-barra .nivel { height: 100%; border-radius: 999px; background: var(--ok); transition: width .4s; }
+  .estoque-barra.baixo .nivel { background: var(--aviso); }
+  .estoque-barra.zerado .nivel { background: var(--erro); }
+  .estoque-barra strong { min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+  /* Formulários */
+  .campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .campo { display: flex; flex-direction: column; gap: 6px; }
+  .campo.inteiro { grid-column: 1 / -1; }
+  .campo label { font-size: .76rem; font-weight: 600; color: var(--ink-soft); letter-spacing: .02em; }
+  .campo input, .campo select, .campo textarea {
+    width: 100%; padding: 11px 14px; border-radius: 12px;
+    border: 1px solid var(--line); background: var(--white);
+    font-family: var(--sans); font-size: .9rem; color: var(--ink);
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .campo textarea { resize: vertical; min-height: 92px; line-height: 1.55; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--rose); box-shadow: 0 0 0 4px rgba(194,24,95,.08); }
+  .campo .ajuda { font-size: .74rem; color: var(--taupe); line-height: 1.5; }
+  .campo .ajuda code, .ajuda-bloco code { background: var(--cream-2); border-radius: 5px; padding: 1px 5px; font-size: .74rem; }
+  .campo-prefixo { position: relative; }
+  .campo-prefixo span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: .86rem; color: var(--taupe); }
+  .campo-prefixo input { padding-left: 40px; }
+  .ajuda-bloco { font-size: .82rem; color: var(--taupe); line-height: 1.6; padding: 12px 16px; border-radius: 14px; background: var(--cream); border: 1px dashed var(--line); margin-bottom: 18px; }
+  .acoes-form { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
+  .miniaturas-previa { display: flex; gap: 8px; flex-wrap: wrap; }
+  .miniaturas-previa img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; background: var(--cream-2); border: 1px solid var(--line); }
+  .tons-previa { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tons-previa span { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border-radius: 999px; background: var(--cream); font-size: .74rem; color: var(--ink-soft); }
+  .tons-previa i { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  details.avancado summary { cursor: pointer; font-size: .8rem; font-weight: 600; color: var(--taupe); padding: 6px 0; }
+
+  /* Gaveta lateral (formulário de produto) */
+  .gaveta { position: fixed; inset: 0; z-index: 90; display: flex; justify-content: flex-end; visibility: hidden; }
+  .gaveta.aberta { visibility: visible; }
+  .gaveta-fundo { position: absolute; inset: 0; background: rgba(28,22,20,.45); backdrop-filter: blur(3px); opacity: 0; transition: opacity .25s; }
+  .gaveta.aberta .gaveta-fundo { opacity: 1; }
+  .gaveta-painel { position: relative; width: min(760px, 100%); height: 100%; background: var(--fundo); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .3s cubic-bezier(.2,.7,.2,1); box-shadow: -30px 0 60px -30px rgba(28,22,20,.5); }
+  .gaveta.aberta .gaveta-painel { transform: none; }
+  .gaveta-topo { display: flex; align-items: center; gap: 12px; padding: 20px 28px; background: var(--white); border-bottom: 1px solid var(--line); }
+  .gaveta-topo h2 { font-family: var(--serif); font-weight: 500; font-size: 1.35rem; }
+  .gaveta-topo .botao-icone { margin-left: auto; }
+  .gaveta-corpo { flex: 1; overflow-y: auto; padding: 24px 28px; }
+  .gaveta-rodape { display: flex; gap: 10px; justify-content: flex-end; padding: 16px 28px; background: var(--white); border-top: 1px solid var(--line); }
+
+  /* Prévia do card da loja */
+  .previa { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px; margin-bottom: 20px; border-radius: 20px; background: var(--white); box-shadow: var(--sombra); }
+  .previa-foto { width: 150px; height: 150px; border-radius: 16px; overflow: hidden; background: var(--blush); display: flex; align-items: center; justify-content: center; position: relative; }
+  .previa-foto img { width: 100%; height: 100%; object-fit: cover; }
+  .previa-foto svg { width: 56px; height: 56px; }
+  .previa-foto .badge-desc { position: absolute; top: 8px; left: 8px; padding: 3px 8px; border-radius: 999px; background: var(--magenta); color: var(--white); font-size: .68rem; font-weight: 600; }
+  .previa-info small { font-size: .72rem; letter-spacing: .06em; color: var(--taupe); text-transform: uppercase; }
+  .previa-info h3 { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; margin: 4px 0 8px; color: var(--ink); }
+  .previa-preco strong { font-size: 1.05rem; color: var(--ink); }
+  .previa-preco s { margin-left: 8px; font-size: .84rem; color: var(--taupe-light); }
+  .previa-tons { display: flex; gap: 5px; margin-top: 10px; }
+  .previa-tons i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
+  .previa-legenda { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--magenta); font-weight: 600; margin-bottom: 8px; }
+
+  /* Modais */
+  .modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; visibility: hidden; }
+  .modal.aberto { visibility: visible; }
+  .modal-fundo { position: absolute; inset: 0; background: rgba(28,22,20,.45); backdrop-filter: blur(3px); opacity: 0; transition: opacity .2s; }
+  .modal.aberto .modal-fundo { opacity: 1; }
+  .modal-caixa { position: relative; width: min(460px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; background: var(--white); border-radius: 24px; padding: 26px; box-shadow: 0 40px 80px -30px rgba(28,22,20,.6); transform: scale(.96) translateY(8px); opacity: 0; transition: transform .2s, opacity .2s; }
+  .modal.aberto .modal-caixa { transform: none; opacity: 1; }
+  .modal-caixa h2 { font-family: var(--serif); font-weight: 500; font-size: 1.3rem; margin-bottom: 6px; }
+  .modal-caixa > p { font-size: .88rem; color: var(--taupe); line-height: 1.55; margin-bottom: 18px; }
+  .modal-icone { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; background: var(--blush); color: var(--magenta); }
+  .modal-icone.perigo { background: var(--erro-bg); color: var(--erro); }
+  .modal-icone svg { width: 22px; height: 22px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .chips button { padding: 6px 12px; border-radius: 999px; font-size: .78rem; background: var(--cream); color: var(--ink-soft); border: 1px solid var(--line); }
+  .chips button:hover { border-color: var(--rose); color: var(--magenta); }
+  .segmento { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 14px; background: var(--cream-2); margin-bottom: 16px; }
+  .segmento button { padding: 10px; border-radius: 10px; font-size: .84rem; font-weight: 600; color: var(--taupe); }
+  .segmento button[aria-pressed="true"] { background: var(--white); color: var(--ink); box-shadow: 0 2px 6px rgba(28,22,20,.08); }
+  .segmento button[data-tipo="ENTRADA"][aria-pressed="true"] { color: var(--ok); }
+  .segmento button[data-tipo="SAIDA"][aria-pressed="true"] { color: var(--erro); }
+
+  /* Avisos (toasts) */
+  .avisos { position: fixed; right: 24px; bottom: 24px; z-index: 200; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+  .aviso { pointer-events: auto; display: flex; align-items: center; gap: 12px; min-width: 280px; max-width: 420px; padding: 14px 16px; border-radius: 16px; background: var(--ink); color: var(--cream); font-size: .86rem; box-shadow: 0 20px 40px -18px rgba(0,0,0,.6); animation: avisoEntra .3s ease-out; }
+  .aviso.saindo { animation: avisoSai .25s ease-in forwards; }
+  .aviso i { width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-style: normal; font-size: .8rem; font-weight: 700; }
+  .aviso.ok i { background: var(--ok); }
+  .aviso.erro i { background: var(--erro); }
+  .aviso button { margin-left: auto; padding: 6px 12px; border-radius: 999px; background: var(--magenta); color: var(--white); font-size: .76rem; font-weight: 600; }
+  @keyframes avisoEntra { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes avisoSai { to { opacity: 0; transform: translateX(20px); } }
+
+  /* Categorias em cartões */
+  .grade-categorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+  .cat-cartao { position: relative; display: flex; flex-direction: column; background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: var(--sombra); transition: transform .2s; }
+  .cat-cartao:hover { transform: translateY(-3px); }
+  .cat-fotos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; height: 110px; background: var(--blush); }
+  .cat-fotos img { width: 100%; height: 100%; object-fit: cover; }
+  .cat-fotos .sem-foto { display: flex; align-items: center; justify-content: center; grid-column: 1 / -1; color: var(--rose); }
+  .cat-corpo { padding: 16px 18px 18px; flex: 1; display: flex; flex-direction: column; }
+  .cat-corpo h3 { font-family: var(--serif); font-weight: 500; font-size: 1.15rem; color: var(--ink); }
+  .cat-corpo p { font-size: .8rem; color: var(--taupe); line-height: 1.5; margin: 6px 0 14px; flex: 1; }
+  .cat-rodape { display: flex; align-items: center; justify-content: space-between; }
+  .cat-nova { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 240px; border-radius: 20px; border: 2px dashed var(--line); color: var(--taupe); font-size: .9rem; font-weight: 500; transition: border-color .2s, color .2s, background .2s; }
+  .cat-nova:hover { border-color: var(--magenta); color: var(--magenta); background: var(--white); }
+  .cat-nova svg { width: 30px; height: 30px; }
+
+  /* Pedidos: detalhes expansíveis */
+  .detalhe-pedido td { background: #fcf8f6; padding: 0 12px 16px; }
+  .detalhe-grade { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 18px; padding-top: 4px; }
+  .detalhe-grade h4 { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--taupe-light); margin-bottom: 8px; }
+  .detalhe-grade li { font-size: .84rem; padding: 4px 0; color: var(--ink-soft); display: flex; justify-content: space-between; gap: 10px; }
+  .detalhe-grade p { font-size: .84rem; line-height: 1.55; color: var(--ink-soft); }
+  .status-select { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: .78rem; font-weight: 600; background: var(--white); cursor: pointer; }
+  .seta-detalhe { transition: transform .2s; }
+  .aberto .seta-detalhe { transform: rotate(180deg); }
+
+  /* Equipe e clientes */
+  .grade-equipe { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+  .membro { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .membro:last-child { border-bottom: none; }
+  .membro .dados { flex: 1; min-width: 0; }
+  .membro strong { display: block; font-weight: 500; color: var(--ink); }
+  .membro small { display: block; font-size: .78rem; color: var(--taupe); overflow: hidden; text-overflow: ellipsis; }
+
+  /* Conteúdo do site e páginas */
+  .grupo-conteudo summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .grupo-conteudo summary::-webkit-details-marker { display: none; }
+  .grupo-conteudo summary h2 { font-family: var(--serif); font-weight: 500; font-size: 1.1rem; }
+  .grupo-conteudo summary small { font-size: .78rem; color: var(--taupe); }
+  .grupo-conteudo summary .seta { margin-left: auto; transition: transform .2s; width: 18px; height: 18px; color: var(--taupe); }
+  .grupo-conteudo[open] summary .seta { transform: rotate(180deg); }
+  .grupo-conteudo[open] summary { margin-bottom: 18px; }
+  .imagem-previa { margin-top: 6px; max-height: 140px; max-width: 240px; border-radius: 12px; object-fit: cover; background: var(--cream-2); }
+  .editor-paginas { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; align-items: start; }
+  .lista-paginas { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 100px; }
+  .lista-paginas button { text-align: left; padding: 11px 14px; border-radius: 12px; font-size: .86rem; color: var(--taupe); transition: background .2s, color .2s; }
+  .lista-paginas button:hover { background: var(--white); color: var(--ink); }
+  .lista-paginas button[aria-pressed="true"] { background: var(--white); color: var(--magenta-2); font-weight: 600; box-shadow: var(--sombra); }
+  .editor-duplo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+  .editor-duplo textarea { min-height: 520px; font-size: .86rem; }
+  .previa-pagina { min-height: 520px; max-height: 620px; overflow-y: auto; padding: 22px 24px; border-radius: 14px; border: 1px solid var(--line); background: var(--cream); }
+  .previa-pagina h3 { font-family: var(--serif); font-weight: 500; font-size: 1.05rem; color: var(--ink); margin: 18px 0 8px; }
+  .previa-pagina p, .previa-pagina li { font-size: .84rem; line-height: 1.7; color: var(--taupe); }
+  .previa-pagina p { margin-bottom: 10px; }
+  .previa-pagina ul { list-style: disc; padding-left: 20px; margin-bottom: 10px; }
+  .previa-pagina em { color: var(--magenta); }
+  .rotulo-previa { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--taupe-light); font-weight: 600; margin-bottom: 6px; }
+
+  /* Fundo do menu no celular */
+  .lateral-fundo { display: none; }
+
+  /* ════════════════════════════════════════════════════════
+     RESPONSIVO
+     ════════════════════════════════════════════════════════ */
+  @media (max-width: 1180px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .detalhe-grade { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 1000px) {
+    .app { grid-template-columns: 1fr; }
+    .lateral { position: fixed; left: 0; top: 0; bottom: 0; width: var(--lateral); transform: translateX(-100%); transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+    body.menu-aberto .lateral { transform: none; box-shadow: 30px 0 60px -20px rgba(0,0,0,.5); }
+    .lateral-fundo { display: block; position: fixed; inset: 0; z-index: 35; background: rgba(28,22,20,.45); opacity: 0; visibility: hidden; transition: opacity .25s; }
+    body.menu-aberto .lateral-fundo { opacity: 1; visibility: visible; }
+    .topo-menu { display: flex; }
+    .grade-2, .grade-3-1, .grade-equipe, .editor-paginas, .editor-duplo { grid-template-columns: 1fr; }
+    .lista-paginas { position: static; flex-direction: row; flex-wrap: wrap; }
+    .editor-duplo textarea, .previa-pagina { min-height: 320px; }
+  }
+  @media (max-width: 900px) {
+    body.sem-sessao .adm-login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .login-video { min-height: 52vh; }
+    .login-video-topo { top: 18px; left: 20px; right: 20px; }
+    .login-video-legenda { left: 20px; right: 20px; bottom: 22px; }
+    .login-etapa-titulo { font-size: 1.6rem; min-height: 0; }
+    .login-etapa-texto { display: none; }
+    .login-painel { padding: 32px 20px 40px; }
+  }
+  @media (max-width: 640px) {
+    .topo { padding: 14px 16px; }
+    .topo-titulo h1 { font-size: 1.2rem; }
+    .topo-titulo p { display: none; }
+    .topo-acoes .texto-opcional { display: none; }
+    .conteudo { padding: 18px 16px 40px; }
+    .kpis { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kpi { padding: 16px; }
+    .kpi strong { font-size: 1.4rem; }
+    .campos, .detalhe-grade { grid-template-columns: 1fr; }
+    .cartao { padding: 18px; border-radius: 18px; }
+    .tabela-wrap { margin: 0 -18px; padding: 0 18px; }
+    .previa { grid-template-columns: 96px minmax(0, 1fr); }
+    .previa-foto { width: 96px; height: 96px; }
+    .gaveta-corpo, .gaveta-topo, .gaveta-rodape { padding-left: 18px; padding-right: 18px; }
+    .avisos { left: 16px; right: 16px; bottom: 16px; }
+    .aviso { min-width: 0; max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body class="sem-sessao">
+
+<!-- ═══════════════════════════════════════════════════════════
+     LOGIN DO PAINEL — separado do login da loja
+     ═══════════════════════════════════════════════════════════ -->
+<section class="adm-login" aria-labelledby="loginTitulo">
+  <div class="login-video" id="loginVideo">
+    <video id="loginVideoEl" src="../../img/gloss_aplicacao.mp4" muted loop playsinline preload="none" aria-label="Aplicação do Gloss Efeito Vidro BE YOU"></video>
+    <div class="login-video-topo">
+      <div class="logo-texto">BE <span>YOU</span><small>MAQUIAGEM</small></div>
+      <div class="login-ctrl">
+        <button type="button" id="videoPlay" aria-label="Pausar vídeo"></button>
+        <button type="button" id="videoSom" aria-label="Ativar som"></button>
+      </div>
+    </div>
+    <div class="login-video-legenda" id="videoLegenda" aria-live="polite">
+      <span class="login-eyebrow">Bastidores · Gloss Efeito Vidro</span>
+      <h2 class="login-etapa-titulo" id="etapaTitulo">Aplique do <em>centro</em> para as bordas</h2>
+      <p class="login-etapa-texto" id="etapaTexto">O aplicador em gota deposita a cor exatamente onde o lábio pede mais volume.</p>
+      <div class="login-etapas" role="group" aria-label="Etapas do vídeo">
+        <button type="button" class="login-etapa ativa" data-inicio="0" data-fim="4"><span class="barra"></span>01 · Aplicar</button>
+        <button type="button" class="login-etapa" data-inicio="4" data-fim="7.5"><span class="barra"></span>02 · Espalhar</button>
+        <button type="button" class="login-etapa" data-inicio="7.5" data-fim="10"><span class="barra"></span>03 · Brilho</button>
+      </div>
+      <div class="login-tons" role="group" aria-label="Tons da linha">
+        <span>Tons da linha</span>
+        <button type="button" class="login-tom" style="--tom:#c2185f" data-tom="#c2185f" aria-pressed="true" title="Magenta BE YOU" aria-label="Magenta BE YOU"></button>
+        <button type="button" class="login-tom" style="--tom:#b5655c" data-tom="#b5655c" aria-pressed="false" title="BE YOU Rosa" aria-label="BE YOU Rosa"></button>
+        <button type="button" class="login-tom" style="--tom:#d4a843" data-tom="#b8892a" aria-pressed="false" title="Dourado Luxo" aria-label="Dourado Luxo"></button>
+        <button type="button" class="login-tom" style="--tom:#8c1f2b" data-tom="#8c1f2b" aria-pressed="false" title="Vinho Intenso" aria-label="Vinho Intenso"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-painel">
+    <form class="login-card" id="formLogin" novalidate>
+      <svg class="login-gota" viewBox="0 0 48 48" fill="currentColor" aria-hidden="true"><path d="M24 4C24 4 10 20 10 30a14 14 0 0 0 28 0C38 20 24 4 24 4z"/><ellipse cx="19" cy="29" rx="3" ry="5" fill="#fff" opacity=".45"/></svg>
+      <h1 id="loginTitulo">Área de <em>gestão</em></h1>
+      <p>Acesso exclusivo da equipe BE YOU. A conta de cliente da loja não entra aqui.</p>
+      <div class="login-campo">
+        <label for="loginEmail">E-mail</label>
+        <div class="login-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+          <input type="email" id="loginEmail" required autocomplete="username" placeholder="seu@email.com">
+        </div>
+      </div>
+      <div class="login-campo">
+        <label for="loginSenha">Senha</label>
+        <div class="login-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <input type="password" id="loginSenha" required autocomplete="current-password" placeholder="••••••••">
+          <button type="button" class="login-olho" id="mostrarSenha" aria-label="Mostrar senha" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="login-entrar" id="btnEntrar">
+        <span>Entrar no painel</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <div class="login-erro" id="loginErro" role="alert"></div>
+      <div class="login-rodape">
+        <a href="../index.html">← Voltar à loja</a>
+        <span>Acesso restrito</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAINEL
+     ═══════════════════════════════════════════════════════════ -->
+<div class="app">
+  <aside class="lateral" id="lateral" aria-label="Menu do painel">
+    <div class="lateral-marca">
+      <div class="logo-texto">BE <span>YOU</span><small>MAQUIAGEM</small></div>
+      <span class="selo">Gestão</span>
+    </div>
+
+    <nav id="menu">
+      <div class="menu-grupo">
+        <h3>Visão geral</h3>
+        <button class="menu-item" data-painel="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>
+          Painel
+        </button>
+      </div>
+      <div class="menu-grupo">
+        <h3>Catálogo</h3>
+        <button class="menu-item" data-painel="produtos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="5" rx="1"/><path d="M8 7h8v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z"/></svg>
+          Produtos <span class="contador" id="contProdutos"></span>
+        </button>
+        <button class="menu-item" data-painel="categorias">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+          Categorias
+        </button>
+        <button class="menu-item" data-painel="estoque">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+          Estoque <span class="contador alerta" id="contEstoque"></span>
+        </button>
+      </div>
+      <div class="menu-grupo">
+        <h3>Vendas</h3>
+        <button class="menu-item" data-painel="pedidos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+          Pedidos <span class="contador alerta" id="contPedidos"></span>
+        </button>
+        <button class="menu-item" data-painel="clientes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+          Clientes
+        </button>
+        <button class="menu-item" data-painel="relatorios">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+          Relatórios
+        </button>
+      </div>
+      <div class="menu-grupo">
+        <h3>Site</h3>
+        <button class="menu-item" data-painel="conteudo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>
+          Página inicial
+        </button>
+        <button class="menu-item" data-painel="paginas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+          Páginas do rodapé
+        </button>
+      </div>
+      <div class="menu-grupo">
+        <h3>Equipe</h3>
+        <button class="menu-item" data-painel="equipe">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          Administradores
+        </button>
+      </div>
+    </nav>
+
+    <div class="lateral-usuario">
+      <div class="avatar" id="usuarioAvatar">A</div>
+      <div class="dados">
+        <strong id="usuarioNome">Administrador</strong>
+        <span id="usuarioEmail"></span>
+      </div>
+      <button type="button" id="btnSair" aria-label="Sair do painel" title="Sair">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
+    </div>
+  </aside>
+  <div class="lateral-fundo" id="lateralFundo"></div>
+
+  <div class="principal">
+    <header class="topo">
+      <button type="button" class="topo-menu" id="abrirMenu" aria-label="Abrir menu" aria-controls="lateral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <div class="topo-titulo">
+        <h1 id="tituloPainel">Painel</h1>
+        <p id="subtituloPainel"></p>
+      </div>
+      <div class="topo-acoes">
+        <a class="botao botao-claro" href="../index.html" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+          <span class="texto-opcional">Ver loja</span>
+        </a>
+        <button type="button" class="botao botao-primario" data-acao="novo-produto">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+          <span class="texto-opcional">Novo produto</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="conteudo">
+
+      <!-- ─────────── PAINEL (DASHBOARD) ─────────── -->
+      <section class="painel" id="painel-dashboard">
+        <div class="boas-vindas">
+          <div>
+            <h2 id="saudacao">Olá!</h2>
+            <p id="dataHoje"></p>
+          </div>
+          <div class="atalhos">
+            <button type="button" class="botao botao-claro" data-acao="novo-produto">+ Produto</button>
+            <button type="button" class="botao botao-claro" data-ir="estoque">Repor estoque</button>
+            <button type="button" class="botao botao-claro" data-ir="conteudo">Editar página inicial</button>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi rosa">
+            <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <span>Faturamento</span>
+            <strong id="kpiFaturamento">—</strong>
+            <small>Pedidos não cancelados</small>
+          </div>
+          <div class="kpi azul">
+            <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg></div>
+            <span>Pedidos</span>
+            <strong id="kpiPedidos">—</strong>
+            <small id="kpiPedidosInfo">&nbsp;</small>
+          </div>
+          <div class="kpi verde">
+            <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="5" rx="1"/><path d="M8 7h8v13a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z"/></svg></div>
+            <span>Produtos ativos</span>
+            <strong id="kpiProdutos">—</strong>
+            <small id="kpiProdutosInfo">&nbsp;</small>
+          </div>
+          <div class="kpi ambar">
+            <div class="kpi-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></div>
+            <span>Estoque baixo</span>
+            <strong id="kpiEstoque">—</strong>
+            <small>Itens no mínimo ou abaixo</small>
+          </div>
+        </div>
+
+        <div class="grade-3-1">
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Faturamento mensal</h2><p>Soma dos pedidos por mês, sem cancelados</p></div></div>
+            <div class="grafico"><canvas id="graficoFaturamento"></canvas></div>
+          </div>
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Vendas por categoria</h2><p>Valor vendido em cada categoria</p></div></div>
+            <div class="grafico"><canvas id="graficoCategorias"></canvas></div>
+          </div>
+        </div>
+        <div class="espaco"></div>
+        <div class="grade-2">
+          <div class="cartao">
+            <div class="cartao-topo"><h2>Pedidos recentes</h2><button type="button" class="botao botao-claro botao-pequeno" data-ir="pedidos">Ver todos</button></div>
+            <ul class="lista-mini" id="pedidosRecentes"></ul>
+          </div>
+          <div class="cartao">
+            <div class="cartao-topo"><h2>Precisa de reposição</h2><button type="button" class="botao botao-claro botao-pequeno" data-ir="estoque">Ver estoque</button></div>
+            <ul class="lista-mini" id="estoqueCritico"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── PRODUTOS ─────────── -->
+      <section class="painel" id="painel-produtos">
+        <div class="cartao">
+          <div class="ferramentas">
+            <label class="busca">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="search" id="buscaProdutos" placeholder="Buscar por nome ou código..." aria-label="Buscar produtos">
+            </label>
+            <select class="seletor" id="filtroCategoria" aria-label="Filtrar por categoria"><option value="">Todas as categorias</option></select>
+            <div class="abas" id="filtroStatus" role="group" aria-label="Filtrar por situação">
+              <button type="button" data-status="" aria-pressed="true">Todos</button>
+              <button type="button" data-status="ativos" aria-pressed="false">Ativos</button>
+              <button type="button" data-status="inativos" aria-pressed="false">Inativos</button>
+            </div>
+          </div>
+          <div class="tabela-wrap">
+            <table class="tabela">
+              <thead><tr><th>Produto</th><th>Categoria</th><th class="num">Preço</th><th>Estoque</th><th>Na loja</th><th class="acoes">Ações</th></tr></thead>
+              <tbody id="tabelaProdutos"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── CATEGORIAS ─────────── -->
+      <section class="painel" id="painel-categorias">
+        <div class="grade-categorias" id="gradeCategorias"></div>
+      </section>
+
+      <!-- ─────────── ESTOQUE ─────────── -->
+      <section class="painel" id="painel-estoque">
+        <div class="kpis" id="resumoEstoque"></div>
+        <div class="cartao">
+          <div class="ferramentas">
+            <label class="busca">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="search" id="buscaEstoque" placeholder="Buscar produto..." aria-label="Buscar no estoque">
+            </label>
+            <div class="abas" id="filtroEstoque" role="group" aria-label="Filtrar estoque">
+              <button type="button" data-filtro="" aria-pressed="true">Todos</button>
+              <button type="button" data-filtro="baixo" aria-pressed="false">Estoque baixo</button>
+              <button type="button" data-filtro="zerado" aria-pressed="false">Esgotados</button>
+            </div>
+          </div>
+          <div class="tabela-wrap">
+            <table class="tabela">
+              <thead><tr><th>Produto</th><th>Quantidade</th><th class="num">Mínimo</th><th>Situação</th><th class="acoes">Movimentar</th></tr></thead>
+              <tbody id="tabelaEstoque"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── PEDIDOS ─────────── -->
+      <section class="painel" id="painel-pedidos">
+        <div class="cartao">
+          <div class="ferramentas">
+            <label class="busca">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="search" id="buscaPedidos" placeholder="Buscar por nº do pedido ou cliente..." aria-label="Buscar pedidos">
+            </label>
+            <div class="abas" id="filtroPedidos" role="group" aria-label="Filtrar por status"></div>
+          </div>
+          <div class="tabela-wrap">
+            <table class="tabela">
+              <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th class="num">Total</th><th>Status</th><th class="acoes"></th></tr></thead>
+              <tbody id="tabelaPedidos"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── CLIENTES ─────────── -->
+      <section class="painel" id="painel-clientes">
+        <div class="cartao">
+          <div class="ferramentas">
+            <label class="busca">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="search" id="buscaClientes" placeholder="Buscar por nome, e-mail ou CPF..." aria-label="Buscar clientes">
+            </label>
+          </div>
+          <div class="tabela-wrap">
+            <table class="tabela">
+              <thead><tr><th>Cliente</th><th>Telefone</th><th>CPF</th><th class="num">Pedidos</th><th class="num">Total gasto</th><th class="acoes"></th></tr></thead>
+              <tbody id="tabelaClientes"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── RELATÓRIOS ─────────── -->
+      <section class="painel" id="painel-relatorios">
+        <div class="grade-2">
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Vendas por categoria</h2><p>Inclui todos os pedidos registrados</p></div></div>
+            <div class="grafico"><canvas id="relVendas"></canvas></div>
+          </div>
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Faturamento mensal</h2><p>Sem pedidos cancelados</p></div></div>
+            <div class="grafico"><canvas id="relFaturamento"></canvas></div>
+          </div>
+        </div>
+        <div class="espaco"></div>
+        <div class="grade-3-1">
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Estoque — visão completa</h2><p>Ordenado da menor para a maior quantidade</p></div><button type="button" class="botao botao-claro botao-pequeno" onclick="window.print()">Imprimir</button></div>
+            <div class="tabela-wrap">
+              <table class="tabela">
+                <thead><tr><th>Produto</th><th class="num">Atual</th><th class="num">Mínimo</th><th>Situação</th></tr></thead>
+                <tbody id="relEstoque"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Saúde do estoque</h2><p>Itens regulares x no mínimo</p></div></div>
+            <div class="grafico"><canvas id="relSaude"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─────────── CONTEÚDO DA PÁGINA INICIAL ─────────── -->
+      <section class="painel" id="painel-conteudo">
+        <p class="ajuda-bloco">Os textos e imagens abaixo aparecem na página inicial da loja. Escreva uma palavra entre <code>*asteriscos*</code> para destacá-la em itálico rosa. Para trocar uma imagem, escolha um arquivo do computador e depois salve o bloco.</p>
+        <div id="gruposConteudo"></div>
+      </section>
+
+      <!-- ─────────── PÁGINAS DO RODAPÉ ─────────── -->
+      <section class="painel" id="painel-paginas">
+        <div class="editor-paginas">
+          <div class="lista-paginas" id="listaPaginas" role="group" aria-label="Páginas"></div>
+          <form class="cartao" id="formPagina" novalidate>
+            <div class="cartao-topo">
+              <div><h2 id="paginaNome">Página</h2><p>Escreva à esquerda e confira o resultado à direita</p></div>
+              <a class="botao botao-claro botao-pequeno" id="paginaVer" href="../pagina.html?p=sobre" target="_blank" rel="noopener">Abrir na loja ↗</a>
+            </div>
+            <p class="ajuda-bloco">Linha começando com <code>## </code> vira subtítulo, com <code>- </code> vira item de lista. Deixe uma linha em branco entre parágrafos.</p>
+            <div class="editor-duplo">
+              <div class="campo">
+                <label for="paginaTexto">Texto</label>
+                <textarea id="paginaTexto"></textarea>
+              </div>
+              <div>
+                <p class="rotulo-previa">Pré-visualização</p>
+                <div class="previa-pagina" id="paginaPrevia"></div>
+              </div>
+            </div>
+            <div class="acoes-form">
+              <button type="submit" class="botao botao-primario">Salvar página</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ─────────── ADMINISTRADORES ─────────── -->
+      <section class="painel" id="painel-equipe">
+        <div class="grade-equipe">
+          <div class="cartao">
+            <div class="cartao-topo"><div><h2>Equipe com acesso ao painel</h2><p>Só administradores entram em /admin</p></div></div>
+            <div id="listaAdmins"></div>
+          </div>
+          <form class="cartao" id="formAdmin" novalidate>
+            <div class="cartao-topo"><div><h2>Cadastrar administrador</h2><p>O novo acesso já pode entrar no painel</p></div></div>
+            <div class="campos">
+              <div class="campo inteiro"><label for="admNome">Nome completo *</label><input id="admNome" required maxlength="80"></div>
+              <div class="campo inteiro"><label for="admEmail">E-mail *</label><input type="email" id="admEmail" required maxlength="100"></div>
+              <div class="campo"><label for="admTelefone">Telefone *</label><input id="admTelefone" required placeholder="(48) 99999-0000" maxlength="20"></div>
+              <div class="campo"><label for="admCpf">CPF *</label><input id="admCpf" required placeholder="000.000.000-00" maxlength="14"><span class="ajuda" id="admCpfAjuda">&nbsp;</span></div>
+              <div class="campo"><label for="admSenha">Senha *</label><input type="password" id="admSenha" required minlength="6" autocomplete="new-password"></div>
+              <div class="campo"><label for="admSenha2">Confirmar senha *</label><input type="password" id="admSenha2" required autocomplete="new-password"></div>
+            </div>
+            <div class="acoes-form"><button type="submit" class="botao botao-primario">Cadastrar administrador</button></div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════ GAVETA: CADASTRAR / EDITAR PRODUTO ═══════════ -->
+<div class="gaveta" id="gavetaProduto" aria-hidden="true">
+  <div class="gaveta-fundo" data-fechar></div>
+  <form class="gaveta-painel" id="formProduto" role="dialog" aria-modal="true" aria-labelledby="gavetaTitulo" novalidate>
+    <div class="gaveta-topo">
+      <h2 id="gavetaTitulo">Novo produto</h2>
+      <button type="button" class="botao-icone" data-fechar aria-label="Fechar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="gaveta-corpo">
+      <p class="previa-legenda">Como vai aparecer na loja</p>
+      <div class="previa">
+        <div class="previa-foto" id="pvFoto"></div>
+        <div class="previa-info">
+          <small id="pvCategoria">Categoria</small>
+          <h3 id="pvNome">Nome do produto</h3>
+          <div class="previa-preco"><strong id="pvPreco">R$ 0,00</strong><s id="pvPrecoAntigo"></s></div>
+          <div class="previa-tons" id="pvTons"></div>
+        </div>
+      </div>
+
+      <input type="hidden" id="fpId">
+      <div class="campos">
+        <div class="campo inteiro"><label for="fpNome">Nome *</label><input id="fpNome" required maxlength="100" placeholder="Ex: Batom Velvet Matte"></div>
+        <div class="campo"><label for="fpCategoria">Categoria *</label><select id="fpCategoria" required></select></div>
+        <div class="campo"><label for="fpRotulo">Rótulo do card</label><input id="fpRotulo" maxlength="60" placeholder="Ex: BATOM"></div>
+        <div class="campo"><label for="fpPreco">Preço *</label><div class="campo-prefixo"><span>R$</span><input type="number" id="fpPreco" step="0.01" min="0" required placeholder="0,00"></div></div>
+        <div class="campo"><label for="fpPrecoAntigo">Preço "de" (riscado)</label><div class="campo-prefixo"><span>R$</span><input type="number" id="fpPrecoAntigo" step="0.01" min="0" placeholder="opcional"></div></div>
+        <div class="campo inteiro">
+          <label for="fpFotosArquivo">Fotos do produto</label>
+          <input type="file" id="fpFotosArquivo" accept="image/png,image/jpeg,image/webp" multiple>
+          <span class="ajuda">Escolha imagens do computador (até 5 MB cada). A primeira foto é a principal.</span>
+          <textarea id="fpImagens" hidden></textarea>
+          <div class="miniaturas-previa" id="fpImagensPrevia"></div>
+        </div>
+        <div class="campo inteiro">
+          <label>Tons e suas fotos</label>
+          <textarea id="fpTons" hidden></textarea>
+          <div id="fpEditorTons"></div>
+          <button type="button" class="botao botao-claro" id="fpAdicionarTom">Adicionar tom</button>
+          <span class="ajuda">Informe o nome e a cor de cada tom. Para associar uma foto, escolha um arquivo do computador.</span>
+          <div class="tons-previa" id="fpTonsPrevia"></div>
+        </div>
+        <div class="campo inteiro"><label for="fpDescricao">Descrição</label><textarea id="fpDescricao" rows="3"></textarea></div>
+        <div class="campo inteiro"><label for="fpHistoria">História do produto</label><textarea id="fpHistoria" rows="5" placeholder="Como o produto nasceu, para quem foi pensado... Linha em branco separa parágrafos."></textarea></div>
+        <div class="campo inteiro">
+          <label class="interruptor-rotulo" style="display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:500;">
+            <span class="interruptor"><input type="checkbox" id="fpAtivo" checked><span></span></span>
+            Visível na loja
+          </label>
+        </div>
+        <details class="avancado campo inteiro">
+          <summary>Avançado: ícone SVG (usado quando não há foto)</summary>
+          <textarea id="fpIcone" rows="3" placeholder="<svg viewBox=&quot;0 0 64 64&quot;>...</svg>"></textarea>
+        </details>
+      </div>
+    </div>
+    <div class="gaveta-rodape">
+      <button type="button" class="botao botao-claro" data-fechar>Cancelar</button>
+      <button type="submit" class="botao botao-primario" id="btnSalvarProduto">Salvar produto</button>
+    </div>
+  </form>
+</div>
+
+<!-- ═══════════ MODAL: MOVIMENTAR ESTOQUE ═══════════ -->
+<div class="modal" id="modalEstoque" aria-hidden="true">
+  <div class="modal-fundo" data-fechar></div>
+  <form class="modal-caixa" id="formEstoque" role="dialog" aria-modal="true" aria-labelledby="meTitulo" novalidate>
+    <div class="modal-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/></svg></div>
+    <h2 id="meTitulo">Movimentar estoque</h2>
+    <p id="meProduto"></p>
+    <input type="hidden" id="meIdProduto"><input type="hidden" id="meCodEstoque">
+    <div class="segmento" role="group" aria-label="Tipo de movimentação">
+      <button type="button" data-tipo="ENTRADA" aria-pressed="true">+ Entrada</button>
+      <button type="button" data-tipo="SAIDA" aria-pressed="false">− Saída</button>
+    </div>
+    <div class="campos">
+      <div class="campo inteiro">
+        <label for="meQtd">Quantidade</label>
+        <input type="number" id="meQtd" min="1" step="1" placeholder="Ex: 10">
+        <div class="chips" id="meChips"><button type="button" data-q="5">+5</button><button type="button" data-q="10">+10</button><button type="button" data-q="30">+30</button><button type="button" data-q="50">+50</button></div>
+      </div>
+      <div class="campo inteiro">
+        <label for="meMinimo">Avisar quando chegar a</label>
+        <input type="number" id="meMinimo" min="0" step="1">
+        <span class="ajuda" id="mePrevisao">&nbsp;</span>
+      </div>
+    </div>
+    <div class="acoes-form">
+      <button type="button" class="botao botao-claro" data-fechar>Cancelar</button>
+      <button type="submit" class="botao botao-primario">Confirmar</button>
+    </div>
+  </form>
+</div>
+
+<!-- ═══════════ MODAL: CATEGORIA ═══════════ -->
+<div class="modal" id="modalCategoria" aria-hidden="true">
+  <div class="modal-fundo" data-fechar></div>
+  <form class="modal-caixa" id="formCategoria" role="dialog" aria-modal="true" aria-labelledby="mcTitulo" novalidate>
+    <div class="modal-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div>
+    <h2 id="mcTitulo">Nova categoria</h2>
+    <p>O nome aparece no filtro e nos carrosséis da página inicial.</p>
+    <input type="hidden" id="mcId">
+    <div class="campos">
+      <div class="campo inteiro"><label for="mcNome">Nome *</label><input id="mcNome" required maxlength="50"></div>
+      <div class="campo inteiro"><label for="mcDescricao">Descrição</label><textarea id="mcDescricao" rows="3"></textarea></div>
+    </div>
+    <div class="acoes-form">
+      <button type="button" class="botao botao-claro" data-fechar>Cancelar</button>
+      <button type="submit" class="botao botao-primario">Salvar</button>
+    </div>
+  </form>
+</div>
+
+<!-- ═══════════ MODAL: ENTREGA ═══════════ -->
+<div class="modal" id="modalEntrega" aria-hidden="true">
+  <div class="modal-fundo" data-fechar></div>
+  <form class="modal-caixa" id="formEntrega" role="dialog" aria-modal="true" aria-labelledby="mtTitulo" novalidate>
+    <div class="modal-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+    <h2 id="mtTitulo">Entrega do pedido</h2>
+    <p id="mtPedido"></p>
+    <input type="hidden" id="mtId">
+    <div class="campos">
+      <div class="campo inteiro"><label for="mtStatus">Situação da entrega</label><select id="mtStatus"></select></div>
+      <div class="campo"><label for="mtRastreio">Código de rastreio</label><input id="mtRastreio" maxlength="40" placeholder="Ex: BR123456789BR"></div>
+      <div class="campo"><label for="mtData">Previsão de entrega</label><input type="date" id="mtData"></div>
+    </div>
+    <div class="acoes-form">
+      <button type="button" class="botao botao-claro" data-fechar>Cancelar</button>
+      <button type="submit" class="botao botao-primario">Salvar entrega</button>
+    </div>
+  </form>
+</div>
+
+<!-- ═══════════ MODAL: CONFIRMAÇÃO ═══════════ -->
+<div class="modal" id="modalConfirmar" aria-hidden="true">
+  <div class="modal-fundo" data-fechar></div>
+  <div class="modal-caixa" role="alertdialog" aria-modal="true" aria-labelledby="mxTitulo">
+    <div class="modal-icone perigo" id="mxIcone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></div>
+    <h2 id="mxTitulo">Tem certeza?</h2>
+    <p id="mxTexto"></p>
+    <div class="acoes-form">
+      <button type="button" class="botao botao-claro" id="mxCancelar">Cancelar</button>
+      <button type="button" class="botao botao-perigo" id="mxConfirmar">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="avisos" id="avisos" aria-live="polite"></div>
+
+<link rel="stylesheet" href="imagens.css?v=1">
+<script src="imagens.js?v=1"></script>
+<script>
+/* ============================================================
+   CONFIGURAÇÃO E SESSÃO DO PAINEL
+   O painel tem sessão própria (adminToken/adminUsuario), separada
+   da sessão de cliente da loja (token/usuario).
+   ============================================================ */
+const API = 'http://localhost:3000/api';
+const CHAVE_TOKEN = 'adminToken';
+const CHAVE_USUARIO = 'adminUsuario';
+
+const sessao = { token: null, usuario: null };
+try {
+  sessao.token = localStorage.getItem(CHAVE_TOKEN);
+  sessao.usuario = JSON.parse(localStorage.getItem(CHAVE_USUARIO) || 'null');
+} catch (e) { sessao.token = null; sessao.usuario = null; }
+
+// Lê o "exp" do JWT para não abrir o painel com sessão vencida
+function tokenValido(token) {
+  if (!token) return false;
+  try {
+    const dados = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return !dados.exp || dados.exp * 1000 > Date.now();
+  } catch (e) { return false; }
+}
+
+function sessaoAtiva() {
+  return Boolean(sessao.usuario && sessao.usuario.tipo_usuario === 'ADMIN' && tokenValido(sessao.token));
+}
+
+function encerrarSessao(mensagem) {
+  localStorage.removeItem(CHAVE_TOKEN);
+  localStorage.removeItem(CHAVE_USUARIO);
+  sessao.token = null;
+  sessao.usuario = null;
+  document.body.classList.add('sem-sessao');
+  initVideoLogin();
+  if (mensagem) mostrarErroLogin(mensagem);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(valor) {
+  return String(valor ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+const moeda = (v) => 'R$ ' + parseFloat(v || 0).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const dataBR = (d) => d ? new Date(d).toLocaleDateString('pt-BR') : '—';
+const normalizar = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+const iniciais = (nome) => String(nome || '?').trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
+
+// Caminhos das fotos são relativos a frontend/; o painel fica um nível abaixo (frontend/admin/)
+function caminhoImg(src) {
+  if (!src) return '';
+  return src.startsWith('../') ? '../' + src : src;
+}
+
+function iconeSvg(produto) {
+  const svg = String(produto.icone_svg || '').trim();
+  if (/^<svg[\s>]/i.test(svg)) return svg;
+  return '<svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="20" y="14" width="24" height="36" rx="4"/></svg>';
+}
+
+function miniatura(produto) {
+  return produto.imagem_url
+    ? `<img class="miniatura" src="${esc(caminhoImg(produto.imagem_url))}" alt="" loading="lazy">`
+    : `<span class="miniatura">${iconeSvg(produto)}</span>`;
+}
+
+function linhasParaLista(texto) {
+  return texto.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+}
+
+function textoParaTons(texto) {
+  return linhasParaLista(texto).map(linha => {
+    const [nome = '', cor = '', imagem = ''] = linha.split('|').map(p => p.trim());
+    return { nome, cor, imagem: imagem || null };
+  });
+}
+
+function tonsParaTexto(tons) {
+  return (tons || []).map(t => [t.nome || '', t.cor, t.imagem || ''].join(' | ').replace(/ \| $/, '')).join('\n');
+}
+
+// Mesmo algoritmo de validarCPF (backend) e validaCpfClient (app.js)
+function validaCpf(cpf) {
+  cpf = String(cpf).replace(/\D/g, '');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  let soma = 0;
+  for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+  let resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpf[9])) return false;
+  soma = 0;
+  for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  return resto === parseInt(cpf[10]);
+}
+
+function mascaraCpf(valor) {
+  let v = String(valor).replace(/\D/g, '').slice(0, 11);
+  if (v.length > 9) return v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+  if (v.length > 6) return v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  if (v.length > 3) return v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+  return v;
+}
+
+// Mesmo formato simples das páginas institucionais (## subtítulo, - item, *destaque*)
+function renderizarTexto(alvo, texto) {
+  alvo.textContent = '';
+  const comDestaque = (el, linha) => {
+    String(linha).split(/(\*[^*]+\*)/).forEach(parte => {
+      if (!parte) return;
+      if (/^\*[^*]+\*$/.test(parte)) {
+        const em = document.createElement('em');
+        em.textContent = parte.slice(1, -1);
+        el.appendChild(em);
+      } else el.appendChild(document.createTextNode(parte));
+    });
+  };
+  String(texto || '').split(/\n\s*\n/).forEach(bloco => {
+    const linhas = bloco.split('\n').map(l => l.trimEnd()).filter(l => l.trim());
+    if (!linhas.length) return;
+    let lista = null;
+    let paragrafo = null;
+    linhas.forEach(linha => {
+      if (linha.startsWith('## ')) {
+        lista = null; paragrafo = null;
+        const h = document.createElement('h3');
+        comDestaque(h, linha.slice(3));
+        alvo.appendChild(h);
+      } else if (linha.startsWith('- ')) {
+        paragrafo = null;
+        if (!lista) { lista = document.createElement('ul'); alvo.appendChild(lista); }
+        const li = document.createElement('li');
+        comDestaque(li, linha.slice(2));
+        lista.appendChild(li);
+      } else {
+        lista = null;
+        if (!paragrafo) { paragrafo = document.createElement('p'); alvo.appendChild(paragrafo); }
+        else paragrafo.appendChild(document.createElement('br'));
+        comDestaque(paragrafo, linha);
+      }
+    });
+  });
+}
+
+/* ============================================================
+   REQUISIÇÕES À API (sempre com o token do painel)
+   ============================================================ */
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${sessao.token}` } };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  let res;
+  try {
+    res = await fetch(`${API}${path}`, opts);
+  } catch (err) {
+    return { ok: false, status: 0, data: { erro: 'Sem conexão com a API. Verifique se o backend está rodando.' } };
+  }
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401 || res.status === 403) {
+    encerrarSessao('Sua sessão expirou ou não tem permissão. Entre novamente.');
+  }
+  return { ok: res.ok, status: res.status, data };
+}
+
+/* ============================================================
+   AVISOS (toasts) E CONFIRMAÇÃO
+   ============================================================ */
+function avisar(texto, tipo = 'ok', acao) {
+  const caixa = document.createElement('div');
+  caixa.className = `aviso ${tipo}`;
+  caixa.innerHTML = `<i>${tipo === 'ok' ? '✓' : '!'}</i><span></span>`;
+  caixa.querySelector('span').textContent = texto;
+  if (acao) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = acao.rotulo;
+    btn.addEventListener('click', () => { acao.fn(); fechar(); });
+    caixa.appendChild(btn);
+  }
+  document.getElementById('avisos').appendChild(caixa);
+  function fechar() {
+    caixa.classList.add('saindo');
+    setTimeout(() => caixa.remove(), 260);
+  }
+  setTimeout(fechar, acao ? 7000 : 4000);
+}
+
+function avisarResposta(resp, textoOk) {
+  if (resp.ok) avisar(textoOk, 'ok');
+  else if (resp.status !== 401 && resp.status !== 403) avisar(resp.data.erro || 'Não foi possível concluir.', 'erro');
+}
+
+function confirmar({ titulo, texto, botao = 'Confirmar', perigo = true }) {
+  return new Promise(resolve => {
+    const modal = document.getElementById('modalConfirmar');
+    document.getElementById('mxTitulo').textContent = titulo;
+    document.getElementById('mxTexto').textContent = texto;
+    const ok = document.getElementById('mxConfirmar');
+    ok.textContent = botao;
+    ok.className = `botao ${perigo ? 'botao-perigo' : 'botao-primario'}`;
+    document.getElementById('mxIcone').className = `modal-icone ${perigo ? 'perigo' : ''}`;
+    // Tira os ouvintes antes de fechar: fecharModal dispara "fechado", que contaria como "não"
+    const fim = (valor) => {
+      ok.removeEventListener('click', sim);
+      document.getElementById('mxCancelar').removeEventListener('click', nao);
+      modal.removeEventListener('fechado', nao);
+      fecharModal(modal);
+      resolve(valor);
+    };
+    const sim = () => fim(true);
+    const nao = () => fim(false);
+    ok.addEventListener('click', sim);
+    document.getElementById('mxCancelar').addEventListener('click', nao);
+    modal.addEventListener('fechado', nao);
+    abrirModal(modal);
+    ok.focus();
+  });
+}
+
+/* ============================================================
+   MODAIS E GAVETA
+   ============================================================ */
+function abrirModal(el) {
+  el.classList.add(el.classList.contains('gaveta') ? 'aberta' : 'aberto');
+  el.setAttribute('aria-hidden', 'false');
+}
+function fecharModal(el) {
+  if (!el.classList.contains('aberto') && !el.classList.contains('aberta')) return;
+  el.classList.remove('aberto', 'aberta');
+  el.setAttribute('aria-hidden', 'true');
+  el.dispatchEvent(new Event('fechado'));
+}
+document.querySelectorAll('.modal, .gaveta').forEach(el => {
+  el.addEventListener('click', (e) => { if (e.target.closest('[data-fechar]')) fecharModal(el); });
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.modal.aberto, .gaveta.aberta').forEach(fecharModal);
+  document.body.classList.remove('menu-aberto');
+});
+
+/* ============================================================
+   LOGIN DO PAINEL (POST /admin/login)
+   ============================================================ */
+function mostrarErroLogin(texto) {
+  const el = document.getElementById('loginErro');
+  el.textContent = texto;
+  el.classList.toggle('visivel', Boolean(texto));
+}
+
+document.getElementById('formLogin').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  if (!email || !senha) { mostrarErroLogin('Informe e-mail e senha.'); return; }
+
+  const btn = document.getElementById('btnEntrar');
+  const rotulo = btn.querySelector('span');
+  btn.disabled = true;
+  rotulo.textContent = 'Entrando...';
+  mostrarErroLogin('');
+  try {
+    const res = await fetch(`${API}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem(CHAVE_TOKEN, data.token);
+      localStorage.setItem(CHAVE_USUARIO, JSON.stringify(data.usuario));
+      sessao.token = data.token;
+      sessao.usuario = data.usuario;
+      iniciarPainel();
+    } else {
+      mostrarErroLogin(data.erro || 'Não foi possível entrar.');
+    }
+  } catch (err) {
+    mostrarErroLogin('Não foi possível conectar à API. Verifique se o backend está rodando (npm run dev).');
+  }
+  btn.disabled = false;
+  rotulo.textContent = 'Entrar no painel';
+});
+
+document.getElementById('mostrarSenha').addEventListener('click', (e) => {
+  const campo = document.getElementById('loginSenha');
+  const mostrar = campo.type === 'password';
+  campo.type = mostrar ? 'text' : 'password';
+  e.currentTarget.setAttribute('aria-pressed', String(mostrar));
+  e.currentTarget.setAttribute('aria-label', mostrar ? 'Esconder senha' : 'Mostrar senha');
+});
+
+document.getElementById('btnSair').addEventListener('click', () => {
+  encerrarSessao('');
+  document.getElementById('loginSenha').value = '';
+});
+
+/* ============================================================
+   VÍDEO DA TELA DE LOGIN
+   ============================================================ */
+let videoIniciado = false;
+function initVideoLogin() {
+  if (videoIniciado) return;
+  videoIniciado = true;
+  const painel = document.getElementById('loginVideo');
+  const video = document.getElementById('loginVideoEl');
+  const legenda = document.getElementById('videoLegenda');
+  const btnPlay = document.getElementById('videoPlay');
+  const btnSom = document.getElementById('videoSom');
+  const etapas = [...document.querySelectorAll('.login-etapa')];
+  const textos = [
+    { titulo: 'Aplique do <em>centro</em> para as bordas', texto: 'O aplicador em gota deposita a cor exatamente onde o lábio pede mais volume.' },
+    { titulo: 'Espalhe e <em>construa</em> o brilho', texto: 'Uma segunda camada intensifica a cor sem pesar nem deixar a boca pegajosa.' },
+    { titulo: 'Acabamento <em>espelhado</em>', texto: 'Óleos naturais hidratam e deixam o efeito vidro que dura horas.' }
+  ];
+  const icones = {
+    pausar: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
+    tocar: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5l12 7-12 7z"/></svg>',
+    mudo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
+    som: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>'
+  };
+  const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let etapaAtual = 0;
+
+  function atualizarBotaoPlay() {
+    const tocando = !video.paused;
+    btnPlay.innerHTML = tocando ? icones.pausar : icones.tocar;
+    btnPlay.setAttribute('aria-label', tocando ? 'Pausar vídeo' : 'Reproduzir vídeo');
+    painel.classList.toggle('pausado', !tocando);
+  }
+  function mostrarEtapa(indice) {
+    if (indice === etapaAtual) return;
+    etapaAtual = indice;
+    etapas.forEach((el, i) => el.classList.toggle('ativa', i === indice));
+    legenda.classList.add('trocando');
+    setTimeout(() => {
+      document.getElementById('etapaTitulo').innerHTML = textos[indice].titulo;
+      document.getElementById('etapaTexto').textContent = textos[indice].texto;
+      legenda.classList.remove('trocando');
+    }, 300);
+  }
+
+  video.addEventListener('timeupdate', () => {
+    const t = video.currentTime;
+    etapas.forEach((el, i) => {
+      const inicio = Number(el.dataset.inicio);
+      const fim = Number(el.dataset.fim);
+      el.style.setProperty('--progresso', `${Math.min(Math.max((t - inicio) / (fim - inicio), 0), 1) * 100}%`);
+      if (t >= inicio && t < fim) mostrarEtapa(i);
+    });
+  });
+  etapas.forEach(el => el.addEventListener('click', () => { video.currentTime = Number(el.dataset.inicio); video.play(); }));
+  btnPlay.addEventListener('click', () => { video.paused ? video.play() : video.pause(); });
+  video.addEventListener('play', atualizarBotaoPlay);
+  video.addEventListener('pause', atualizarBotaoPlay);
+  btnSom.innerHTML = icones.mudo;
+  btnSom.addEventListener('click', () => {
+    video.muted = !video.muted;
+    btnSom.innerHTML = video.muted ? icones.mudo : icones.som;
+    btnSom.setAttribute('aria-label', video.muted ? 'Ativar som' : 'Desativar som');
+  });
+  if (!reduzirMovimento) {
+    painel.addEventListener('mousemove', (e) => {
+      const r = painel.getBoundingClientRect();
+      video.style.setProperty('--px', `${(-((e.clientX - r.left) / r.width - 0.5) * 2.5).toFixed(2)}%`);
+      video.style.setProperty('--py', `${(-((e.clientY - r.top) / r.height - 0.5) * 2.5).toFixed(2)}%`);
+    });
+    painel.addEventListener('mouseleave', () => { video.style.setProperty('--px', '0'); video.style.setProperty('--py', '0'); });
+  }
+  document.querySelectorAll('.login-tom').forEach(tom => tom.addEventListener('click', () => {
+    document.querySelectorAll('.login-tom').forEach(t => t.setAttribute('aria-pressed', String(t === tom)));
+    document.querySelector('.adm-login').style.setProperty('--tom-ativo', tom.dataset.tom);
+  }));
+  if (!reduzirMovimento) video.play().catch(() => {});
+  atualizarBotaoPlay();
+}
+
+/* ============================================================
+   NAVEGAÇÃO ENTRE PAINÉIS (#hash)
+   ============================================================ */
+const PAINEIS = {
+  dashboard:  { titulo: 'Painel', sub: 'Resumo da loja', carregar: carregarDashboard },
+  produtos:   { titulo: 'Produtos', sub: 'Cadastre, edite e controle o que aparece na vitrine', carregar: carregarProdutos },
+  categorias: { titulo: 'Categorias', sub: 'Organize os carrosséis da página inicial', carregar: carregarCategorias },
+  estoque:    { titulo: 'Estoque', sub: 'Entradas, saídas e alertas de reposição', carregar: carregarEstoque },
+  pedidos:    { titulo: 'Pedidos', sub: 'Acompanhe e atualize o status das vendas', carregar: carregarPedidos },
+  clientes:   { titulo: 'Clientes', sub: 'Contas criadas na loja', carregar: carregarClientes },
+  relatorios: { titulo: 'Relatórios', sub: 'Vendas, faturamento e estoque', carregar: carregarRelatorios },
+  conteudo:   { titulo: 'Página inicial', sub: 'Textos e imagens da vitrine', carregar: carregarConteudo },
+  paginas:    { titulo: 'Páginas do rodapé', sub: 'Sobre, trocas, entrega, pagamento e mais', carregar: carregarPaginas },
+  equipe:     { titulo: 'Administradores', sub: 'Quem tem acesso ao painel', carregar: carregarEquipe }
+};
+let painelAtual = null;
+
+function irPara(nome) {
+  if (!PAINEIS[nome]) nome = 'dashboard';
+  const info = PAINEIS[nome];
+  painelAtual = nome;
+  document.querySelectorAll('.painel').forEach(p => p.classList.toggle('ativo', p.id === `painel-${nome}`));
+  document.querySelectorAll('.menu-item').forEach(b => {
+    const ativo = b.dataset.painel === nome;
+    b.classList.toggle('ativo', ativo);
+    if (ativo) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
+  document.getElementById('tituloPainel').textContent = info.titulo;
+  document.getElementById('subtituloPainel').textContent = info.sub;
+  document.title = `${info.titulo} · Gestão BE YOU`;
+  if (location.hash !== `#${nome}`) history.replaceState(null, '', `#${nome}`);
+  document.body.classList.remove('menu-aberto');
+  window.scrollTo({ top: 0 });
+  info.carregar();
+}
+
+document.getElementById('menu').addEventListener('click', (e) => {
+  const item = e.target.closest('.menu-item');
+  if (item) irPara(item.dataset.painel);
+});
+document.addEventListener('click', (e) => {
+  const ir = e.target.closest('[data-ir]');
+  if (ir) irPara(ir.dataset.ir);
+  if (e.target.closest('[data-acao="novo-produto"]')) abrirProduto();
+});
+window.addEventListener('hashchange', () => {
+  const nome = location.hash.slice(1);
+  if (sessaoAtiva() && nome !== painelAtual) irPara(nome);
+});
+document.getElementById('abrirMenu').addEventListener('click', () => document.body.classList.add('menu-aberto'));
+document.getElementById('lateralFundo').addEventListener('click', () => document.body.classList.remove('menu-aberto'));
+
+/* ============================================================
+   DADOS COMPARTILHADOS
+   ============================================================ */
+const dados = { produtos: [], categorias: [], estoques: [], pedidos: [], usuarios: [] };
+
+async function buscarProdutos() {
+  const r = await api('GET', '/produtos/todos');
+  if (r.ok) dados.produtos = r.data;
+  return r;
+}
+async function buscarCategorias() {
+  const r = await api('GET', '/categorias');
+  if (r.ok) dados.categorias = r.data;
+  return r;
+}
+async function buscarEstoques() {
+  const r = await api('GET', '/estoque');
+  if (r.ok) dados.estoques = r.data;
+  return r;
+}
+async function buscarPedidos() {
+  const r = await api('GET', '/pedidos');
+  if (r.ok) dados.pedidos = r.data;
+  return r;
+}
+
+function atualizarContadores() {
+  const baixos = dados.estoques.filter(e => e.quantidade_atual <= e.quantidade_minima).length;
+  const pendentes = dados.pedidos.filter(p => p.status === 'PENDENTE_PAGAMENTO' || p.status === 'PAGO').length;
+  document.getElementById('contEstoque').textContent = baixos || '';
+  document.getElementById('contPedidos').textContent = pendentes || '';
+  document.getElementById('contProdutos').textContent = dados.produtos.length || '';
+}
+
+/* ============================================================
+   STATUS (mesmos valores dos ENUMs em models/Pedido.js e Entrega.js)
+   ============================================================ */
+const STATUS_PEDIDO = {
+  PENDENTE_PAGAMENTO: { rotulo: 'Pendente', classe: 'e-aviso' },
+  PAGO:               { rotulo: 'Pago', classe: 'e-info' },
+  ENVIADO:            { rotulo: 'Enviado', classe: 'e-roxo' },
+  ENTREGUE:           { rotulo: 'Entregue', classe: 'e-ok' },
+  CANCELADO:          { rotulo: 'Cancelado', classe: 'e-erro' }
+};
+const STATUS_ENTREGA = {
+  EM_TRANSITO:       { rotulo: 'Em trânsito', classe: 'e-info' },
+  SAIU_PARA_ENTREGA: { rotulo: 'Saiu para entrega', classe: 'e-roxo' },
+  ENTREGUE:          { rotulo: 'Entregue', classe: 'e-ok' },
+  EXTRAVIADO:        { rotulo: 'Extraviado', classe: 'e-erro' }
+};
+const etiquetaPedido = (s) => `<span class="etiqueta ${(STATUS_PEDIDO[s] || {}).classe || 'e-neutro'}">${esc((STATUS_PEDIDO[s] || {}).rotulo || s)}</span>`;
+
+function situacaoEstoque(qtd, minimo) {
+  if (qtd <= 0) return { rotulo: 'Esgotado', classe: 'e-erro', barra: 'zerado' };
+  if (qtd <= minimo) return { rotulo: 'Repor', classe: 'e-aviso', barra: 'baixo' };
+  return { rotulo: 'Regular', classe: 'e-ok', barra: '' };
+}
+
+/* ============================================================
+   GRÁFICOS (Chart.js)
+   ============================================================ */
+const graficos = {};
+const PALETA = ['#c2185f', '#d88fa0', '#b96a80', '#8c1f2b', '#e6b8c4', '#6b5c58'];
+
+function desenharGrafico(id, config) {
+  if (!window.Chart) return; // CDN fora do ar: o painel segue funcionando sem os gráficos
+  if (graficos[id]) graficos[id].destroy();
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  // Sem nenhum valor acima de zero, mostra um aviso no lugar do gráfico vazio
+  const valores = config.data.datasets[0].data.map(Number);
+  const vazio = !valores.some(v => v > 0);
+  canvas.parentElement.classList.toggle('sem-dados', vazio);
+  if (vazio) return;
+  graficos[id] = new Chart(canvas, config);
+}
+
+function graficoFaturamento(id, linhas) {
+  if (!window.Chart) return;
+  const ctx = document.getElementById(id).getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 280);
+  grad.addColorStop(0, 'rgba(194,24,95,.28)');
+  grad.addColorStop(1, 'rgba(194,24,95,0)');
+  desenharGrafico(id, {
+    type: 'line',
+    data: { labels: linhas.map(d => d.label), datasets: [{ label: 'Faturamento', data: linhas.map(d => d.totalFaturado), borderColor: '#c2185f', backgroundColor: grad, fill: true, tension: .35, borderWidth: 2.5, pointBackgroundColor: '#fff', pointBorderColor: '#c2185f', pointBorderWidth: 2, pointRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => moeda(c.parsed.y) } } }, scales: { y: { beginAtZero: true, grid: { color: '#f0e6e2' }, ticks: { callback: v => moeda(v) } }, x: { grid: { display: false } } } }
+  });
+}
+
+function graficoCategorias(id, linhas, tipo = 'doughnut') {
+  const rosca = tipo === 'doughnut';
+  desenharGrafico(id, {
+    type: tipo,
+    data: { labels: linhas.map(d => d.categoria), datasets: [{ label: 'Vendas', data: linhas.map(d => d.totalVendas), backgroundColor: PALETA, borderRadius: rosca ? 0 : 8, borderWidth: rosca ? 3 : 0, borderColor: '#fff' }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: rosca ? '64%' : undefined, plugins: { legend: { display: rosca, position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 14 } }, tooltip: { callbacks: { label: c => `${c.label}: ${moeda(c.parsed.y ?? c.parsed)}` } } }, scales: rosca ? {} : { y: { beginAtZero: true, grid: { color: '#f0e6e2' }, ticks: { callback: v => moeda(v) } }, x: { grid: { display: false } } } }
+  });
+}
+
+/* ============================================================
+   PAINEL (DASHBOARD)
+   ============================================================ */
+async function carregarDashboard() {
+  const agora = new Date();
+  const hora = agora.getHours();
+  const primeiroNome = (sessao.usuario.nome || '').split(' ')[0];
+  document.getElementById('saudacao').innerHTML = `${hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite'}, <em>${esc(primeiroNome)}</em>`;
+  document.getElementById('dataHoje').textContent = agora.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  const [, , , rFat, rVendas] = await Promise.all([
+    buscarProdutos(), buscarPedidos(), buscarEstoques(),
+    api('GET', '/relatorios/faturamento'), api('GET', '/relatorios/vendas')
+  ]);
+  atualizarContadores();
+
+  const faturamento = rFat.ok ? rFat.data.reduce((s, d) => s + Number(d.totalFaturado || 0), 0) : 0;
+  const ativos = dados.produtos.filter(p => p.ativo).length;
+  const baixos = dados.estoques.filter(e => e.quantidade_atual <= e.quantidade_minima);
+  const pendentes = dados.pedidos.filter(p => p.status === 'PENDENTE_PAGAMENTO').length;
+
+  document.getElementById('kpiFaturamento').textContent = moeda(faturamento);
+  document.getElementById('kpiPedidos').textContent = dados.pedidos.length;
+  document.getElementById('kpiPedidosInfo').textContent = pendentes ? `${pendentes} aguardando pagamento` : 'Nenhum pendente';
+  document.getElementById('kpiProdutos').textContent = ativos;
+  document.getElementById('kpiProdutosInfo').textContent = `${dados.produtos.length - ativos} inativos`;
+  document.getElementById('kpiEstoque').textContent = baixos.length;
+
+  if (rFat.ok) graficoFaturamento('graficoFaturamento', rFat.data);
+  if (rVendas.ok) graficoCategorias('graficoCategorias', rVendas.data);
+
+  const recentes = dados.pedidos.slice(0, 5);
+  document.getElementById('pedidosRecentes').innerHTML = recentes.length ? recentes.map(p => `
+    <li>
+      <div class="avatar">${esc(iniciais(p.usuarioPedido ? p.usuarioPedido.nome : '?'))}</div>
+      <div class="texto"><strong>#${p.codPedido} · ${esc(p.usuarioPedido ? p.usuarioPedido.nome : 'Cliente removido')}</strong><small>${dataBR(p.dataPedido)} · ${moeda(p.valorTotal)}</small></div>
+      ${etiquetaPedido(p.status)}
+    </li>`).join('') : '<li class="vazio">Nenhum pedido ainda. Assim que um cliente comprar, ele aparece aqui.</li>';
+
+  const criticos = [...baixos].sort((a, b) => a.quantidade_atual - b.quantidade_atual).slice(0, 5);
+  const estoqueCritico = document.getElementById('estoqueCritico');
+  estoqueCritico.innerHTML = criticos.length ? criticos.map(e => {
+    const produto = dados.produtos.find(p => p.codProduto === e.idProduto) || e.produtoEstoque || {};
+    const s = situacaoEstoque(e.quantidade_atual, e.quantidade_minima);
+    return `
+    <li>
+      ${miniatura(produto)}
+      <div class="texto"><strong>${esc(produto.nome || 'Produto')}</strong><small>${e.quantidade_atual} un. · mínimo ${e.quantidade_minima}</small></div>
+      <span class="etiqueta ${s.classe}">${s.rotulo}</span>
+      <button type="button" class="botao botao-claro botao-pequeno" data-repor="${e.idProduto}">Repor</button>
+    </li>`;
+  }).join('') : '<li class="vazio">Tudo em ordem: nenhum produto abaixo do mínimo.</li>';
+}
+
+document.getElementById('estoqueCritico').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-repor]');
+  if (btn) abrirMovimento(Number(btn.dataset.repor), 'ENTRADA');
+});
+
+/* ============================================================
+   PRODUTOS
+   ============================================================ */
+const filtrosProduto = { texto: '', categoria: '', status: '' };
+
+async function carregarProdutos() {
+  document.getElementById('tabelaProdutos').innerHTML = '<tr><td colspan="6" class="vazio">Carregando produtos...</td></tr>';
+  await Promise.all([buscarProdutos(), buscarCategorias()]);
+  atualizarContadores();
+  const sel = document.getElementById('filtroCategoria');
+  const atual = sel.value;
+  sel.innerHTML = '<option value="">Todas as categorias</option>' + dados.categorias.map(c => `<option value="${c.codCategoria}">${esc(c.nome)}</option>`).join('');
+  sel.value = atual;
+  desenharProdutos();
+}
+
+function desenharProdutos() {
+  const termo = normalizar(filtrosProduto.texto);
+  const lista = dados.produtos.filter(p => {
+    if (filtrosProduto.categoria && String(p.idCategoria) !== filtrosProduto.categoria) return false;
+    if (filtrosProduto.status === 'ativos' && !p.ativo) return false;
+    if (filtrosProduto.status === 'inativos' && p.ativo) return false;
+    if (!termo) return true;
+    return String(p.codProduto) === termo || normalizar(p.nome).includes(termo) || normalizar(p.rotulo).includes(termo);
+  });
+  const corpo = document.getElementById('tabelaProdutos');
+  if (!lista.length) {
+    corpo.innerHTML = `<tr><td colspan="6"><div class="vazio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><p>Nenhum produto encontrado com esses filtros.</p></div></td></tr>`;
+    return;
+  }
+  corpo.innerHTML = lista.map(p => {
+    const qtd = p.estoqueProduto ? p.estoqueProduto.quantidade_atual : 0;
+    const minimo = p.estoqueProduto ? p.estoqueProduto.quantidade_minima : 5;
+    const s = situacaoEstoque(qtd, minimo);
+    return `
+    <tr class="${p.ativo ? '' : 'linha-inativa'}">
+      <td><div class="produto-celula">${miniatura(p)}<div><strong>${esc(p.nome)}</strong><small>Cód. ${p.codProduto}${p.rotulo ? ' · ' + esc(p.rotulo) : ''}</small></div></div></td>
+      <td>${p.categoriaProduto ? esc(p.categoriaProduto.nome) : '—'}</td>
+      <td class="num">${moeda(p.preco)}${p.preco_antigo ? `<br><s style="font-size:.74rem;color:var(--taupe-light)">${moeda(p.preco_antigo)}</s>` : ''}</td>
+      <td><span class="etiqueta ${s.classe}">${qtd} un.</span></td>
+      <td><span class="interruptor" title="${p.ativo ? 'Visível na loja' : 'Oculto da loja'}"><input type="checkbox" data-ativo="${p.codProduto}" ${p.ativo ? 'checked' : ''} aria-label="Mostrar ${esc(p.nome)} na loja"><span></span></span></td>
+      <td class="acoes">
+        <button type="button" class="botao-icone" data-editar="${p.codProduto}" title="Editar" aria-label="Editar ${esc(p.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+        <button type="button" class="botao-icone" data-repor="${p.codProduto}" title="Movimentar estoque" aria-label="Movimentar estoque de ${esc(p.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z"/></svg></button>
+        <a class="botao-icone botao" href="../produto.html?id=${p.codProduto}" target="_blank" rel="noopener" title="Ver na loja" aria-label="Ver ${esc(p.nome)} na loja"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+document.getElementById('buscaProdutos').addEventListener('input', (e) => { filtrosProduto.texto = e.target.value; desenharProdutos(); });
+document.getElementById('filtroCategoria').addEventListener('change', (e) => { filtrosProduto.categoria = e.target.value; desenharProdutos(); });
+document.getElementById('filtroStatus').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  filtrosProduto.status = btn.dataset.status;
+  e.currentTarget.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  desenharProdutos();
+});
+
+document.getElementById('tabelaProdutos').addEventListener('click', (e) => {
+  const editar = e.target.closest('[data-editar]');
+  if (editar) abrirProduto(Number(editar.dataset.editar));
+  const repor = e.target.closest('[data-repor]');
+  if (repor) abrirMovimento(Number(repor.dataset.repor), 'ENTRADA');
+});
+
+// Interruptor "Na loja": desligar = DELETE (desativação segura), ligar = PATCH { ativo: true }
+document.getElementById('tabelaProdutos').addEventListener('change', async (e) => {
+  const chave = e.target.closest('[data-ativo]');
+  if (!chave) return;
+  const id = Number(chave.dataset.ativo);
+  const produto = dados.produtos.find(p => p.codProduto === id);
+  if (!chave.checked) {
+    const ok = await confirmar({ titulo: 'Ocultar da loja?', texto: `"${produto.nome}" deixa de aparecer para os clientes. O histórico de pedidos é mantido e você pode reativar quando quiser.`, botao: 'Ocultar produto' });
+    if (!ok) { chave.checked = true; return; }
+    const r = await api('DELETE', `/produtos/${id}`);
+    avisarResposta(r, `"${produto.nome}" foi ocultado da loja.`);
+    if (r.ok) produto.ativo = false; else chave.checked = true;
+  } else {
+    const r = await api('PATCH', `/produtos/${id}`, { ativo: true });
+    avisarResposta(r, `"${produto.nome}" voltou para a loja.`);
+    if (r.ok) produto.ativo = true; else chave.checked = false;
+  }
+  desenharProdutos();
+});
+
+/* ── Gaveta de cadastro/edição ── */
+const gaveta = document.getElementById('gavetaProduto');
+const campoProduto = (id) => document.getElementById(id);
+
+async function abrirProduto(id) {
+  if (Number(document.getElementById('formProduto').dataset.uploads || 0)) { avisar('Aguarde o envio das imagens.', 'erro'); return; }
+  if (!dados.categorias.length) await buscarCategorias();
+  const form = document.getElementById('formProduto');
+  form.reset();
+  campoProduto('fpCategoria').innerHTML = '<option value="">Selecione...</option>' + dados.categorias.map(c => `<option value="${c.codCategoria}">${esc(c.nome)}</option>`).join('');
+  campoProduto('fpId').value = '';
+  campoProduto('fpAtivo').checked = true;
+  document.getElementById('gavetaTitulo').textContent = 'Novo produto';
+
+  if (id) {
+    const r = await api('GET', `/produtos/${id}`);
+    if (!r.ok) { avisarResposta(r); return; }
+    const p = r.data;
+    document.getElementById('gavetaTitulo').textContent = 'Editar produto';
+    campoProduto('fpId').value = p.codProduto;
+    campoProduto('fpNome').value = p.nome;
+    campoProduto('fpCategoria').value = p.idCategoria;
+    campoProduto('fpRotulo').value = p.rotulo || '';
+    campoProduto('fpPreco').value = p.preco;
+    campoProduto('fpPrecoAntigo').value = p.preco_antigo || '';
+    campoProduto('fpImagens').value = (p.imagens || []).join('\n') || (p.imagem_url || '');
+    campoProduto('fpTons').value = tonsParaTexto(p.tons);
+    campoProduto('fpDescricao').value = p.descricao || '';
+    campoProduto('fpHistoria').value = p.historia || '';
+    campoProduto('fpIcone').value = p.icone_svg || '';
+    campoProduto('fpAtivo').checked = Boolean(p.ativo);
+  }
+  desenharEditorTons(textoParaTons(campoProduto('fpTons').value));
+  atualizarPrevia();
+  abrirModal(gaveta);
+  setTimeout(() => campoProduto('fpNome').focus(), 300);
+}
+
+function atualizarPrevia() {
+  const imagens = linhasParaLista(campoProduto('fpImagens').value);
+  const tons = textoParaTons(campoProduto('fpTons').value).filter(t => t.cor);
+  const preco = parseFloat(campoProduto('fpPreco').value) || 0;
+  const antigo = parseFloat(campoProduto('fpPrecoAntigo').value) || 0;
+  const categoria = dados.categorias.find(c => String(c.codCategoria) === campoProduto('fpCategoria').value);
+  const rotulo = campoProduto('fpRotulo').value.trim();
+  const desconto = antigo > preco && preco > 0 ? Math.round((1 - preco / antigo) * 100) : 0;
+
+  document.getElementById('pvFoto').innerHTML = (imagens[0]
+    ? `<img src="${esc(caminhoImg(imagens[0]))}" alt="">`
+    : iconeSvg({ icone_svg: campoProduto('fpIcone').value })) + (desconto ? `<span class="badge-desc">-${desconto}%</span>` : '');
+  document.getElementById('pvCategoria').textContent = [categoria ? categoria.nome : 'Categoria', rotulo].filter(Boolean).join(' · ');
+  document.getElementById('pvNome').textContent = campoProduto('fpNome').value.trim() || 'Nome do produto';
+  document.getElementById('pvPreco').textContent = moeda(preco);
+  document.getElementById('pvPrecoAntigo').textContent = desconto ? moeda(antigo) : '';
+  document.getElementById('pvTons').innerHTML = tons.map(t => `<i style="background:${esc(t.cor)}" title="${esc(t.nome || 'Cor ilustrativa')}"></i>`).join('');
+  document.getElementById('fpImagensPrevia').innerHTML = imagens.map((src,i) => `<figure class="upload-foto"><img src="${esc(caminhoImg(src))}" alt="Foto ${i+1}"><figcaption>${i === 0 ? '<span>Foto principal</span>' : `<button type="button" data-principal="${i}">Usar como principal</button>`}<button type="button" data-remover-foto="${i}" aria-label="Remover foto ${i+1}">Remover</button></figcaption></figure>`).join('');
+  document.getElementById('fpTonsPrevia').innerHTML = tons.map(t => `<span><i style="background:${esc(t.cor)}"></i>${esc(t.nome || 'ilustrativa')}</span>`).join('');
+}
+document.getElementById('formProduto').addEventListener('input', atualizarPrevia);
+
+document.getElementById('formProduto').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (Number(e.currentTarget.dataset.uploads || 0)) { avisar('Aguarde o envio das imagens antes de salvar.', 'erro'); return; }
+  const id = campoProduto('fpId').value;
+  const nome = campoProduto('fpNome').value.trim();
+  const idCategoria = parseInt(campoProduto('fpCategoria').value);
+  const preco = parseFloat(campoProduto('fpPreco').value);
+  if (!nome || !idCategoria || !(preco >= 0)) { avisar('Preencha nome, categoria e preço.', 'erro'); return; }
+
+  const imagens = linhasParaLista(campoProduto('fpImagens').value);
+  const corpo = {
+    idCategoria, nome, preco,
+    preco_antigo: parseFloat(campoProduto('fpPrecoAntigo').value) || null,
+    rotulo: campoProduto('fpRotulo').value.trim() || null,
+    descricao: campoProduto('fpDescricao').value.trim() || null,
+    historia: campoProduto('fpHistoria').value.trim() || null,
+    imagens,
+    imagem_url: imagens[0] || null,
+    tons: textoParaTons(campoProduto('fpTons').value),
+    icone_svg: campoProduto('fpIcone').value.trim() || null,
+    ativo: campoProduto('fpAtivo').checked
+  };
+
+  const btn = document.getElementById('btnSalvarProduto');
+  btn.disabled = true;
+  // Edição usa PUT (substitui o produto inteiro); novo produto usa POST
+  const r = id ? await api('PUT', `/produtos/${id}`, corpo) : await api('POST', '/produtos', corpo);
+  btn.disabled = false;
+  if (!r.ok) { avisarResposta(r); return; }
+
+  fecharModal(gaveta);
+  if (id) {
+    avisar(`"${nome}" foi atualizado.`);
+  } else {
+    const novoId = r.data.produto && r.data.produto.codProduto;
+    avisar(`"${nome}" cadastrado. O estoque começa em 0.`, 'ok', novoId ? { rotulo: 'Dar entrada', fn: () => abrirMovimento(novoId, 'ENTRADA') } : null);
+  }
+  if (painelAtual === 'produtos') carregarProdutos();
+  else if (painelAtual === 'dashboard') carregarDashboard();
+  else buscarProdutos().then(atualizarContadores);
+});
+
+/* ============================================================
+   CATEGORIAS
+   ============================================================ */
+async function carregarCategorias() {
+  const grade = document.getElementById('gradeCategorias');
+  grade.innerHTML = '<p class="vazio">Carregando categorias...</p>';
+  await Promise.all([buscarCategorias(), buscarProdutos()]);
+  grade.innerHTML = dados.categorias.map(c => {
+    const produtos = dados.produtos.filter(p => p.idCategoria === c.codCategoria);
+    const fotos = produtos.filter(p => p.imagem_url).slice(0, 3);
+    return `
+    <article class="cat-cartao">
+      <div class="cat-fotos">${fotos.length
+        ? fotos.map(p => `<img src="${esc(caminhoImg(p.imagem_url))}" alt="" loading="lazy">`).join('')
+        : '<span class="sem-foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="34" height="34"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span>'}</div>
+      <div class="cat-corpo">
+        <h3>${esc(c.nome)}</h3>
+        <p>${esc(c.descricao || 'Sem descrição.')}</p>
+        <div class="cat-rodape">
+          <span class="etiqueta e-neutro">${produtos.length} ${produtos.length === 1 ? 'produto' : 'produtos'}</span>
+          <span>
+            <button type="button" class="botao-icone" data-editar-cat="${c.codCategoria}" title="Editar" aria-label="Editar ${esc(c.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+            <button type="button" class="botao-icone perigo" data-excluir-cat="${c.codCategoria}" title="Excluir" aria-label="Excluir ${esc(c.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
+          </span>
+        </div>
+      </div>
+    </article>`;
+  }).join('') + `
+    <button type="button" class="cat-nova" data-nova-cat>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+      Nova categoria
+    </button>`;
+}
+
+document.getElementById('gradeCategorias').addEventListener('click', async (e) => {
+  if (e.target.closest('[data-nova-cat]')) abrirCategoria();
+  const editar = e.target.closest('[data-editar-cat]');
+  if (editar) abrirCategoria(Number(editar.dataset.editarCat));
+  const excluir = e.target.closest('[data-excluir-cat]');
+  if (excluir) {
+    const cat = dados.categorias.find(c => c.codCategoria === Number(excluir.dataset.excluirCat));
+    const ok = await confirmar({ titulo: `Excluir "${cat.nome}"?`, texto: 'Só é possível excluir categorias sem produtos. Esta ação não pode ser desfeita.', botao: 'Excluir categoria' });
+    if (!ok) return;
+    const r = await api('DELETE', `/categorias/${cat.codCategoria}`);
+    avisarResposta(r, `Categoria "${cat.nome}" excluída.`);
+    if (r.ok) carregarCategorias();
+  }
+});
+
+function abrirCategoria(id) {
+  const cat = id ? dados.categorias.find(c => c.codCategoria === id) : null;
+  document.getElementById('mcTitulo').textContent = cat ? 'Editar categoria' : 'Nova categoria';
+  document.getElementById('mcId').value = cat ? cat.codCategoria : '';
+  document.getElementById('mcNome').value = cat ? cat.nome : '';
+  document.getElementById('mcDescricao').value = cat ? (cat.descricao || '') : '';
+  abrirModal(document.getElementById('modalCategoria'));
+  setTimeout(() => document.getElementById('mcNome').focus(), 100);
+}
+
+document.getElementById('formCategoria').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('mcId').value;
+  const corpo = { nome: document.getElementById('mcNome').value.trim(), descricao: document.getElementById('mcDescricao').value.trim() || null };
+  if (!corpo.nome) { avisar('Informe o nome da categoria.', 'erro'); return; }
+  const r = id ? await api('PUT', `/categorias/${id}`, corpo) : await api('POST', '/categorias', corpo);
+  avisarResposta(r, id ? 'Categoria atualizada.' : `Categoria "${corpo.nome}" criada.`);
+  if (r.ok) { fecharModal(document.getElementById('modalCategoria')); carregarCategorias(); }
+});
+
+/* ============================================================
+   ESTOQUE
+   ============================================================ */
+const filtrosEstoque = { texto: '', tipo: '' };
+
+async function carregarEstoque() {
+  document.getElementById('tabelaEstoque').innerHTML = '<tr><td colspan="5" class="vazio">Carregando estoque...</td></tr>';
+  await Promise.all([buscarEstoques(), buscarProdutos()]);
+  atualizarContadores();
+  const total = dados.estoques.reduce((s, e) => s + e.quantidade_atual, 0);
+  const baixos = dados.estoques.filter(e => e.quantidade_atual > 0 && e.quantidade_atual <= e.quantidade_minima).length;
+  const zerados = dados.estoques.filter(e => e.quantidade_atual <= 0).length;
+  const valor = dados.estoques.reduce((s, e) => s + e.quantidade_atual * Number(e.produtoEstoque ? e.produtoEstoque.preco : 0), 0);
+  document.getElementById('resumoEstoque').innerHTML = `
+    <div class="kpi verde"><span>Unidades em estoque</span><strong>${total}</strong><small>${dados.estoques.length} produtos</small></div>
+    <div class="kpi rosa"><span>Valor em estoque</span><strong>${moeda(valor)}</strong><small>Pelo preço de venda</small></div>
+    <div class="kpi ambar"><span>Para repor</span><strong>${baixos}</strong><small>No mínimo ou abaixo</small></div>
+    <div class="kpi azul"><span>Esgotados</span><strong>${zerados}</strong><small>Sem unidades</small></div>`;
+  desenharEstoque();
+}
+
+function desenharEstoque() {
+  const termo = normalizar(filtrosEstoque.texto);
+  const lista = dados.estoques.filter(e => {
+    const nome = e.produtoEstoque ? e.produtoEstoque.nome : '';
+    if (termo && !normalizar(nome).includes(termo)) return false;
+    if (filtrosEstoque.tipo === 'baixo' && e.quantidade_atual > e.quantidade_minima) return false;
+    if (filtrosEstoque.tipo === 'zerado' && e.quantidade_atual > 0) return false;
+    return true;
+  }).sort((a, b) => (a.quantidade_atual - a.quantidade_minima) - (b.quantidade_atual - b.quantidade_minima));
+
+  const corpo = document.getElementById('tabelaEstoque');
+  if (!lista.length) { corpo.innerHTML = '<tr><td colspan="5"><div class="vazio">Nenhum item com esse filtro.</div></td></tr>'; return; }
+  corpo.innerHTML = lista.map(e => {
+    const produto = dados.produtos.find(p => p.codProduto === e.idProduto) || e.produtoEstoque || {};
+    const s = situacaoEstoque(e.quantidade_atual, e.quantidade_minima);
+    const escala = Math.max(e.quantidade_minima * 4, e.quantidade_atual, 1);
+    return `
+    <tr>
+      <td><div class="produto-celula">${miniatura(produto)}<div><strong>${esc(produto.nome || 'Produto')}</strong><small>Cód. ${e.idProduto}${produto.ativo === false ? ' · inativo' : ''}</small></div></div></td>
+      <td><div class="estoque-barra ${s.barra}"><div class="trilho"><div class="nivel" style="width:${Math.min(100, (e.quantidade_atual / escala) * 100)}%"></div></div><strong>${e.quantidade_atual}</strong></div></td>
+      <td class="num">${e.quantidade_minima}</td>
+      <td><span class="etiqueta ${s.classe}">${s.rotulo}</span></td>
+      <td class="acoes">
+        <button type="button" class="botao botao-claro botao-pequeno" data-mov="${e.idProduto}" data-tipo="SAIDA">− Saída</button>
+        <button type="button" class="botao botao-escuro botao-pequeno" data-mov="${e.idProduto}" data-tipo="ENTRADA">+ Entrada</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+document.getElementById('buscaEstoque').addEventListener('input', (e) => { filtrosEstoque.texto = e.target.value; desenharEstoque(); });
+document.getElementById('filtroEstoque').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  filtrosEstoque.tipo = btn.dataset.filtro;
+  e.currentTarget.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  desenharEstoque();
+});
+document.getElementById('tabelaEstoque').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-mov]');
+  if (btn) abrirMovimento(Number(btn.dataset.mov), btn.dataset.tipo);
+});
+
+/* ── Modal de movimentação ── */
+let tipoMovimento = 'ENTRADA';
+let estoqueEmEdicao = null;
+
+async function abrirMovimento(idProduto, tipo) {
+  if (!dados.estoques.length) await buscarEstoques();
+  if (!dados.produtos.length) await buscarProdutos();
+  estoqueEmEdicao = dados.estoques.find(e => e.idProduto === idProduto) || null;
+  const produto = dados.produtos.find(p => p.codProduto === idProduto) || {};
+  document.getElementById('meIdProduto').value = idProduto;
+  document.getElementById('meProduto').textContent = `${produto.nome || 'Produto'} — hoje com ${estoqueEmEdicao ? estoqueEmEdicao.quantidade_atual : 0} unidades.`;
+  document.getElementById('meQtd').value = '';
+  document.getElementById('meMinimo').value = estoqueEmEdicao ? estoqueEmEdicao.quantidade_minima : 5;
+  definirTipoMovimento(tipo || 'ENTRADA');
+  abrirModal(document.getElementById('modalEstoque'));
+  setTimeout(() => document.getElementById('meQtd').focus(), 100);
+}
+
+function definirTipoMovimento(tipo) {
+  tipoMovimento = tipo;
+  document.querySelectorAll('#modalEstoque .segmento button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tipo === tipo)));
+  document.querySelectorAll('#meChips button').forEach(b => { b.textContent = `${tipo === 'SAIDA' ? '−' : '+'}${b.dataset.q}`; });
+  previsaoMovimento();
+}
+
+function previsaoMovimento() {
+  const atual = estoqueEmEdicao ? estoqueEmEdicao.quantidade_atual : 0;
+  const qtd = parseInt(document.getElementById('meQtd').value) || 0;
+  const minimo = parseInt(document.getElementById('meMinimo').value);
+  const final = tipoMovimento === 'SAIDA' ? atual - qtd : atual + qtd;
+  const el = document.getElementById('mePrevisao');
+  if (!qtd) { el.textContent = 'Sem quantidade, só o mínimo de alerta é atualizado.'; el.style.color = ''; return; }
+  el.textContent = final < 0 ? `Não há unidades suficientes (estoque atual: ${atual}).` : `Ficará com ${final} unidades${final <= minimo ? ' — abaixo do mínimo de alerta' : ''}.`;
+  el.style.color = final < 0 ? 'var(--erro)' : final <= minimo ? 'var(--aviso)' : 'var(--ok)';
+}
+
+document.querySelector('#modalEstoque .segmento').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (btn) definirTipoMovimento(btn.dataset.tipo);
+});
+document.getElementById('meChips').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const campo = document.getElementById('meQtd');
+  campo.value = (parseInt(campo.value) || 0) + Number(btn.dataset.q);
+  previsaoMovimento();
+});
+document.getElementById('meQtd').addEventListener('input', previsaoMovimento);
+document.getElementById('meMinimo').addEventListener('input', previsaoMovimento);
+
+document.getElementById('formEstoque').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const idProduto = Number(document.getElementById('meIdProduto').value);
+  const quantidade = parseInt(document.getElementById('meQtd').value) || 0;
+  const minimoTexto = document.getElementById('meMinimo').value;
+  const minimo = minimoTexto === '' ? undefined : parseInt(minimoTexto);
+  if (quantidade < 0 || (minimo !== undefined && minimo < 0)) { avisar('Use apenas números positivos.', 'erro'); return; }
+
+  let r;
+  if (quantidade > 0) {
+    // Entrada/saída: POST /estoque
+    r = await api('POST', '/estoque', { idProduto, quantidade, tipo: tipoMovimento, quantidade_minima: minimo });
+    if (r.ok && tipoMovimento === 'SAIDA' && estoqueEmEdicao && minimo !== undefined && minimo !== estoqueEmEdicao.quantidade_minima) {
+      await api('PATCH', `/estoque/${estoqueEmEdicao.codEstoque}`, { quantidade_minima: minimo });
+    }
+    avisarResposta(r, `${tipoMovimento === 'SAIDA' ? 'Saída' : 'Entrada'} de ${quantidade} un. registrada.`);
+  } else if (estoqueEmEdicao && minimo !== undefined) {
+    // Só o mínimo mudou: PATCH /estoque/:id
+    r = await api('PATCH', `/estoque/${estoqueEmEdicao.codEstoque}`, { quantidade_minima: minimo });
+    avisarResposta(r, 'Mínimo de alerta atualizado.');
+  } else {
+    avisar('Informe a quantidade.', 'erro');
+    return;
+  }
+  if (!r.ok) return;
+  fecharModal(document.getElementById('modalEstoque'));
+  await buscarEstoques();
+  atualizarContadores();
+  if (PAINEIS[painelAtual]) PAINEIS[painelAtual].carregar();
+});
+
+/* ============================================================
+   PEDIDOS
+   ============================================================ */
+const filtrosPedido = { texto: '', status: '' };
+const pedidosAbertos = new Set();
+
+async function carregarPedidos() {
+  document.getElementById('tabelaPedidos').innerHTML = '<tr><td colspan="6" class="vazio">Carregando pedidos...</td></tr>';
+  await buscarPedidos();
+  atualizarContadores();
+  desenharFiltroPedidos();
+  desenharPedidos();
+}
+
+function desenharFiltroPedidos() {
+  const contagem = (s) => dados.pedidos.filter(p => !s || p.status === s).length;
+  document.getElementById('filtroPedidos').innerHTML = [['', 'Todos'], ...Object.entries(STATUS_PEDIDO).map(([k, v]) => [k, v.rotulo])]
+    .map(([k, rotulo]) => `<button type="button" data-status="${k}" aria-pressed="${filtrosPedido.status === k}">${rotulo}<span class="n">${contagem(k)}</span></button>`).join('');
+}
+
+function desenharPedidos() {
+  const termo = normalizar(filtrosPedido.texto).replace(/^#/, '');
+  const lista = dados.pedidos.filter(p => {
+    if (filtrosPedido.status && p.status !== filtrosPedido.status) return false;
+    if (!termo) return true;
+    const cliente = p.usuarioPedido ? `${p.usuarioPedido.nome} ${p.usuarioPedido.email}` : '';
+    return String(p.codPedido) === termo || normalizar(cliente).includes(termo);
+  });
+  const corpo = document.getElementById('tabelaPedidos');
+  if (!lista.length) {
+    corpo.innerHTML = `<tr><td colspan="6"><div class="vazio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg><p>${dados.pedidos.length ? 'Nenhum pedido com esse filtro.' : 'Nenhum pedido ainda.'}</p></div></td></tr>`;
+    return;
+  }
+  corpo.innerHTML = lista.map(p => {
+    const aberto = pedidosAbertos.has(p.codPedido);
+    const itens = p.itensPedido || [];
+    const ent = p.entregaPedido;
+    const sEnt = ent ? (STATUS_ENTREGA[ent.statusEntrega] || {}) : null;
+    return `
+    <tr class="${aberto ? 'aberto' : ''}">
+      <td><strong>#${p.codPedido}</strong><br><small style="color:var(--taupe)">${itens.reduce((s, i) => s + i.quantidade, 0)} itens</small></td>
+      <td><div class="produto-celula" style="min-width:180px"><div class="avatar">${esc(iniciais(p.usuarioPedido ? p.usuarioPedido.nome : '?'))}</div><div><strong>${esc(p.usuarioPedido ? p.usuarioPedido.nome : 'Cliente removido')}</strong><small>${esc(p.usuarioPedido ? p.usuarioPedido.email : '')}</small></div></div></td>
+      <td>${dataBR(p.dataPedido)}</td>
+      <td class="num"><strong>${moeda(p.valorTotal)}</strong></td>
+      <td>
+        <select class="status-select" data-status-pedido="${p.codPedido}" aria-label="Status do pedido ${p.codPedido}">
+          ${Object.entries(STATUS_PEDIDO).map(([k, v]) => `<option value="${k}" ${p.status === k ? 'selected' : ''}>${v.rotulo}</option>`).join('')}
+        </select>
+      </td>
+      <td class="acoes"><button type="button" class="botao botao-claro botao-pequeno" data-detalhe="${p.codPedido}" aria-expanded="${aberto}">Detalhes <svg class="seta-detalhe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M6 9l6 6 6-6"/></svg></button></td>
+    </tr>
+    ${aberto ? `
+    <tr class="detalhe-pedido"><td colspan="6">
+      <div class="detalhe-grade">
+        <div>
+          <h4>Itens</h4>
+          <ul>${itens.map(i => `<li><span>${i.quantidade}× ${esc(i.produtoItem ? i.produtoItem.nome : 'Produto')}</span><span>${moeda(i.valorTotalItem)}</span></li>`).join('')}
+            <li><span>Frete</span><span>${Number(p.valorFrete) ? moeda(p.valorFrete) : 'Grátis'}</span></li>
+            <li><strong>Total</strong><strong>${moeda(p.valorTotal)}</strong></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Endereço</h4>
+          <p>${ent ? `${esc(ent.logradouro)}, ${esc(ent.numero)}${ent.complemento ? ' — ' + esc(ent.complemento) : ''}<br>${esc(ent.bairro)} · ${esc(ent.localidade)}/${esc(ent.uf)}<br>CEP ${esc(ent.cep)}` : 'Sem endereço registrado.'}</p>
+        </div>
+        <div>
+          <h4>Entrega</h4>
+          ${ent ? `<p><span class="etiqueta ${sEnt.classe || 'e-neutro'}">${esc(sEnt.rotulo || ent.statusEntrega)}</span></p>
+          <p style="margin-top:8px">Previsão: ${ent.dataEstimada ? new Date(ent.dataEstimada + 'T12:00:00').toLocaleDateString('pt-BR') : '—'}<br>Rastreio: ${esc(ent.codigoRastreio || 'não informado')}</p>
+          <button type="button" class="botao botao-claro botao-pequeno" style="margin-top:10px" data-entrega="${p.codPedido}">Atualizar entrega</button>` : '<p>—</p>'}
+        </div>
+      </div>
+    </td></tr>` : ''}`;
+  }).join('');
+}
+
+document.getElementById('buscaPedidos').addEventListener('input', (e) => { filtrosPedido.texto = e.target.value; desenharPedidos(); });
+document.getElementById('filtroPedidos').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  filtrosPedido.status = btn.dataset.status;
+  desenharFiltroPedidos();
+  desenharPedidos();
+});
+document.getElementById('tabelaPedidos').addEventListener('click', (e) => {
+  const det = e.target.closest('[data-detalhe]');
+  if (det) {
+    const id = Number(det.dataset.detalhe);
+    pedidosAbertos.has(id) ? pedidosAbertos.delete(id) : pedidosAbertos.add(id);
+    desenharPedidos();
+  }
+  const ent = e.target.closest('[data-entrega]');
+  if (ent) abrirEntrega(Number(ent.dataset.entrega));
+});
+document.getElementById('tabelaPedidos').addEventListener('change', async (e) => {
+  const sel = e.target.closest('[data-status-pedido]');
+  if (!sel) return;
+  const id = Number(sel.dataset.statusPedido);
+  const pedido = dados.pedidos.find(p => p.codPedido === id);
+  const anterior = pedido.status;
+  if (sel.value === 'CANCELADO') {
+    const ok = await confirmar({ titulo: `Cancelar o pedido #${id}?`, texto: 'O pedido sai do faturamento. O estoque não é devolvido automaticamente: se os produtos voltarem, registre uma entrada no estoque.', botao: 'Cancelar pedido' });
+    if (!ok) { sel.value = anterior; return; }
+  }
+  const r = await api('PATCH', `/pedidos/${id}/status`, { status: sel.value });
+  avisarResposta(r, `Pedido #${id} agora está como "${STATUS_PEDIDO[sel.value].rotulo}".`);
+  if (r.ok) { pedido.status = sel.value; atualizarContadores(); desenharFiltroPedidos(); }
+  else sel.value = anterior;
+});
+
+/* ── Modal de entrega ── */
+function abrirEntrega(codPedido) {
+  const pedido = dados.pedidos.find(p => p.codPedido === codPedido);
+  const ent = pedido && pedido.entregaPedido;
+  if (!ent) return;
+  document.getElementById('mtPedido').textContent = `Pedido #${codPedido} · ${pedido.usuarioPedido ? pedido.usuarioPedido.nome : ''}`;
+  document.getElementById('mtId').value = ent.codEntrega;
+  document.getElementById('mtStatus').innerHTML = Object.entries(STATUS_ENTREGA).map(([k, v]) => `<option value="${k}" ${ent.statusEntrega === k ? 'selected' : ''}>${v.rotulo}</option>`).join('');
+  document.getElementById('mtRastreio').value = ent.codigoRastreio || '';
+  document.getElementById('mtData').value = ent.dataEstimada || '';
+  abrirModal(document.getElementById('modalEntrega'));
+}
+
+document.getElementById('formEntrega').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('mtId').value;
+  const corpo = {
+    statusEntrega: document.getElementById('mtStatus').value,
+    codigoRastreio: document.getElementById('mtRastreio').value.trim() || null,
+    dataEstimada: document.getElementById('mtData').value || null
+  };
+  const r = await api('PATCH', `/entregas/${id}`, corpo);
+  avisarResposta(r, 'Entrega atualizada.');
+  if (r.ok) { fecharModal(document.getElementById('modalEntrega')); carregarPedidos(); }
+});
+
+/* ============================================================
+   CLIENTES
+   ============================================================ */
+let textoClientes = '';
+
+async function carregarClientes() {
+  document.getElementById('tabelaClientes').innerHTML = '<tr><td colspan="6" class="vazio">Carregando clientes...</td></tr>';
+  const [r] = await Promise.all([api('GET', '/usuarios'), buscarPedidos()]);
+  if (r.ok) dados.usuarios = r.data;
+  desenharClientes();
+}
+
+function desenharClientes() {
+  const termo = normalizar(textoClientes);
+  const digitos = textoClientes.replace(/\D/g, '');
+  const lista = dados.usuarios.filter(u => u.tipo_usuario === 'CLIENTE').filter(u =>
+    !termo || normalizar(u.nome).includes(termo) || normalizar(u.email).includes(termo) || (digitos && String(u.cpf).includes(digitos))
+  );
+  const corpo = document.getElementById('tabelaClientes');
+  if (!lista.length) { corpo.innerHTML = '<tr><td colspan="6"><div class="vazio">Nenhum cliente encontrado.</div></td></tr>'; return; }
+  corpo.innerHTML = lista.map(u => {
+    const pedidos = dados.pedidos.filter(p => p.idUsuario === u.codUsuario);
+    const gasto = pedidos.filter(p => p.status !== 'CANCELADO').reduce((s, p) => s + Number(p.valorTotal), 0);
+    return `
+    <tr>
+      <td><div class="produto-celula"><div class="avatar">${esc(iniciais(u.nome))}</div><div><strong>${esc(u.nome)}</strong><small>${esc(u.email)}</small></div></div></td>
+      <td>${esc(u.telefone)}</td>
+      <td>${esc(mascaraCpf(u.cpf))}</td>
+      <td class="num">${pedidos.length}</td>
+      <td class="num">${moeda(gasto)}</td>
+      <td class="acoes"><button type="button" class="botao-icone perigo" data-remover-usuario="${u.codUsuario}" title="Remover conta" aria-label="Remover ${esc(u.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button></td>
+    </tr>`;
+  }).join('');
+}
+
+document.getElementById('buscaClientes').addEventListener('input', (e) => { textoClientes = e.target.value; desenharClientes(); });
+
+async function removerUsuario(id, depois) {
+  const u = dados.usuarios.find(x => x.codUsuario === id);
+  const ok = await confirmar({
+    titulo: `Remover ${u.nome}?`,
+    texto: u.tipo_usuario === 'ADMIN'
+      ? 'Esta pessoa perde o acesso ao painel imediatamente.'
+      : 'A conta é apagada junto com os pedidos e entregas desse cliente. Esta ação não pode ser desfeita.',
+    botao: 'Remover'
+  });
+  if (!ok) return;
+  const r = await api('DELETE', `/usuarios/${id}`);
+  avisarResposta(r, `${u.nome} foi removido.`);
+  if (r.ok) depois();
+}
+document.getElementById('tabelaClientes').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-remover-usuario]');
+  if (btn) removerUsuario(Number(btn.dataset.removerUsuario), carregarClientes);
+});
+
+/* ============================================================
+   RELATÓRIOS
+   ============================================================ */
+async function carregarRelatorios() {
+  const [rVendas, rFat, rEst] = await Promise.all([
+    api('GET', '/relatorios/vendas'),
+    api('GET', '/relatorios/faturamento'),
+    api('GET', '/relatorios/estoque')
+  ]);
+  if (rVendas.ok) graficoCategorias('relVendas', rVendas.data, 'bar');
+  if (rFat.ok) graficoFaturamento('relFaturamento', rFat.data);
+  if (!rEst.ok) return;
+  const baixos = rEst.data.filter(e => e.abaixoMinimo).length;
+  desenharGrafico('relSaude', {
+    type: 'doughnut',
+    data: { labels: ['Regular', 'No mínimo ou abaixo'], datasets: [{ data: [rEst.data.length - baixos, baixos], backgroundColor: ['#2f855a', '#d69e2e'], borderWidth: 3, borderColor: '#fff' }] },
+    options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 14 } } } }
+  });
+  document.getElementById('relEstoque').innerHTML = rEst.data.map(e => {
+    const s = situacaoEstoque(e.quantidade_atual, e.quantidade_minima);
+    return `<tr><td>${esc(e.produto)}</td><td class="num"><strong>${e.quantidade_atual}</strong></td><td class="num">${e.quantidade_minima}</td><td><span class="etiqueta ${s.classe}">${s.rotulo}</span></td></tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   CONTEÚDO DA PÁGINA INICIAL (GET/PUT /conteudos)
+   ============================================================ */
+const CAMPOS_SITE = [
+  { grupo: 'Barra de anúncio e foto inicial', dica: 'Topo de todas as páginas e a capa', campos: [
+    ['anuncio', 'Barra de anúncio (topo de todas as páginas)', 'texto'],
+    ['hero_titulo', 'Título sobre a foto', 'texto'],
+    ['hero_texto', 'Texto sobre a foto', 'area'],
+    ['hero_botao_1', 'Botão 1 (vai para o catálogo)', 'texto'],
+    ['hero_botao_2', 'Botão 2 (vai para os módulos)', 'texto'],
+    ['hero_imagem', 'Foto inicial', 'imagem'],
+    ['hero_imagem_alt', 'Descrição da foto (acessibilidade)', 'texto']
+  ]},
+  { grupo: 'Nossa história', dica: 'Seção logo abaixo da capa', campos: [
+    ['historia_titulo', 'Título', 'texto'],
+    ['historia_chamada', 'Chamada acima do título', 'texto'],
+    ['historia_texto', 'Texto (linha em branco separa parágrafos)', 'area'],
+    ['historia_imagem', 'Imagem principal do mosaico', 'imagem'],
+    ['historia_imagem_2', 'Segunda imagem do mosaico', 'imagem'],
+    ['historia_imagem_3', 'Terceira imagem do mosaico', 'imagem'],
+    ['historia_botao', 'Texto do link para a história', 'texto']
+  ]},
+  { grupo: 'Módulos de vantagens', dica: 'Faixa com entrega, segurança, troca e parcelamento', campos: [
+    ['modulo_1', 'Módulo 1 (entrega)', 'texto'],
+    ['modulo_2', 'Módulo 2 (segurança)', 'texto'],
+    ['modulo_3', 'Módulo 3 (troca)', 'texto'],
+    ['modulo_4', 'Módulo 4 (parcelamento)', 'texto']
+  ]},
+  { grupo: 'Promoções', dica: 'Campanha e seleção de ofertas', campos: [
+    ['promocoes_chamada', 'Chamada acima do título', 'texto'],
+    ['promocoes_titulo', 'Título da campanha', 'texto'],
+    ['promocoes_texto', 'Descrição da campanha', 'area'],
+    ['promocoes_botao', 'Texto do botão', 'texto'],
+    ['promocoes_imagem', 'Imagem da campanha', 'imagem'],
+    ['promocoes_imagem_alt', 'Descrição da imagem (acessibilidade)', 'texto'],
+    ['promocoes_lista_titulo', 'Título da seleção de ofertas', 'texto'],
+    ['promocoes_lista_texto', 'Texto abaixo do título da seleção', 'area'],
+    ['promocoes_vazio', 'Mensagem quando não houver ofertas', 'area']
+  ]},
+  { grupo: 'Catálogo e newsletter', dica: 'Apresentação do catálogo e chamada de e-mail', campos: [
+    ['catalogo_chamada', 'Chamada acima do catálogo', 'texto'],
+    ['catalogo_titulo', 'Título acima do filtro', 'texto'],
+    ['catalogo_subtitulo', 'Subtítulo do catálogo', 'texto'],
+    ['newsletter_titulo', 'Título da newsletter', 'texto'],
+    ['newsletter_texto', 'Texto da newsletter', 'area']
+  ]},
+  { grupo: 'Rodapé', dica: 'Texto ao lado da marca, em todas as páginas', campos: [
+    ['rodape_texto', 'Texto ao lado da marca', 'area']
+  ]},
+  { grupo: 'Redes sociais do rodapé', dica: 'Links do Instagram, TikTok e WhatsApp', campos: [
+    ['rede_instagram', 'Instagram — link completo do perfil', 'url'],
+    ['rede_tiktok', 'TikTok — link completo do perfil', 'url'],
+    ['rede_whatsapp', 'WhatsApp — número com DDD', 'telefone']
+  ]}
+];
+
+async function carregarConteudo() {
+  const raiz = document.getElementById('gruposConteudo');
+  raiz.innerHTML = '<p class="vazio">Carregando conteúdo...</p>';
+  const { ok, data } = await api('GET', '/conteudos');
+  if (!ok) { raiz.innerHTML = '<p class="vazio">Não foi possível carregar o conteúdo.</p>'; return; }
+
+  raiz.innerHTML = CAMPOS_SITE.map((g, gi) => `
+    <details class="cartao grupo-conteudo" ${gi === 0 ? 'open' : ''}>
+      <summary>
+        <div><h2>${esc(g.grupo)}</h2><small>${esc(g.dica)}</small></div>
+        <svg class="seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <form data-grupo="${gi}" novalidate>
+        ${g.grupo === 'Redes sociais do rodapé' ? '<p class="ajuda-bloco">Para Instagram e TikTok, cole o link completo com https://. Para WhatsApp, digite apenas o número com DDD, por exemplo (48) 99999-9999; +55 é opcional. O link é criado automaticamente. Deixe o campo vazio para ocultar o ícone.</p>' : ''}
+        ${g.grupo === 'Promoções' ? '<p class="ajuda-bloco">Para incluir um produto nas ofertas, vá a Produtos e informe um preço anterior maior que o preço atual. Apenas produtos ativos com estoque aparecem. O selo de maior desconto é calculado automaticamente.</p>' : ''}
+        <div class="campos">
+          ${g.campos.map(([chave, rotulo, tipo]) => `
+            <div class="campo ${tipo !== 'texto' || chave === 'anuncio' || chave === 'hero_titulo' ? 'inteiro' : ''}">
+              <label for="cs_${chave}${tipo === 'imagem' ? '_arquivo' : ''}">${esc(rotulo)}</label>
+              ${tipo === 'area'
+                ? `<textarea id="cs_${chave}" name="${chave}" rows="4">${esc(data[chave])}</textarea>`
+                : tipo === 'imagem' ? `<input type="hidden" id="cs_${chave}" name="${chave}" value="${esc(data[chave])}"><input type="file" id="cs_${chave}_arquivo" data-upload-conteudo="${chave}" accept="image/png,image/jpeg,image/webp"><small class="ajuda">PNG, JPG ou WebP · até 5 MB. Escolha a imagem e salve este bloco.</small>`
+                : `<input type="${tipo === 'url' ? 'url' : tipo === 'telefone' ? 'tel' : 'text'}" id="cs_${chave}" name="${chave}" value="${esc(data[chave])}" ${tipo === 'url' ? 'placeholder="https://"' : tipo === 'telefone' ? 'placeholder="(48) 99999-9999" inputmode="tel" autocomplete="tel"' : ''}>`}
+              ${tipo === 'imagem' ? `<img class="imagem-previa" src="${esc(caminhoImg(data[chave]))}" alt="Pré-visualização" data-previa="${chave}">` : ''}
+            </div>`).join('')}
+        </div>
+        <div class="acoes-form">
+          <a class="botao botao-claro" href="../index.html" target="_blank" rel="noopener">Ver na loja ↗</a>
+          <button type="submit" class="botao botao-primario">Salvar ${esc(g.grupo.toLowerCase())}</button>
+        </div>
+      </form>
+    </details>`).join('');
+
+  raiz.querySelectorAll('[data-upload-conteudo]').forEach(input => {
+    input.addEventListener('change', () => executarUpload(input, async files => {
+      const url = await enviarImagem(files[0]);
+      raiz.querySelector(`[name="${input.dataset.uploadConteudo}"]`).value = url;
+      raiz.querySelector(`[data-previa="${input.dataset.uploadConteudo}"]`).src = url;
+    }));
+  });
+  raiz.querySelectorAll('form[data-grupo]').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (Number(form.dataset.uploads || 0)) { avisar('Aguarde o envio da imagem antes de salvar.', 'erro'); return; }
+      const corpo = {};
+      form.querySelectorAll('[name]').forEach(campo => { corpo[campo.name] = campo.value; });
+      const r = await api('PUT', '/conteudos', corpo);
+      avisarResposta(r, 'Conteúdo salvo. Já está valendo na loja.');
+    });
+  });
+}
+
+/* ============================================================
+   PÁGINAS DO RODAPÉ (chaves pagina_*)
+   ============================================================ */
+const PAGINAS = [
+  ['sobre', 'Sobre a BE YOU'], ['trocas', 'Trocas e devoluções'], ['entrega', 'Prazos de entrega'],
+  ['pagamento', 'Formas de pagamento'], ['contato', 'Fale conosco'], ['privacidade', 'Política de privacidade'], ['termos', 'Termos de uso']
+];
+let paginaAtual = 'sobre';
+let conteudoPaginas = {};
+
+async function carregarPaginas() {
+  const { ok, data } = await api('GET', '/conteudos');
+  if (!ok) { avisar('Não foi possível carregar as páginas.', 'erro'); return; }
+  conteudoPaginas = data;
+  mostrarPagina(paginaAtual);
+}
+
+function mostrarPagina(chave) {
+  paginaAtual = chave;
+  document.getElementById('listaPaginas').innerHTML = PAGINAS.map(([k, nome]) => `<button type="button" data-pagina="${k}" aria-pressed="${k === chave}">${esc(nome)}</button>`).join('');
+  document.getElementById('paginaNome').textContent = PAGINAS.find(([k]) => k === chave)[1];
+  document.getElementById('paginaVer').href = `../pagina.html?p=${chave}`;
+  document.getElementById('paginaTexto').value = conteudoPaginas[`pagina_${chave}`] || '';
+  renderizarTexto(document.getElementById('paginaPrevia'), document.getElementById('paginaTexto').value);
+}
+
+document.getElementById('listaPaginas').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-pagina]');
+  if (btn) mostrarPagina(btn.dataset.pagina);
+});
+document.getElementById('paginaTexto').addEventListener('input', (e) => {
+  renderizarTexto(document.getElementById('paginaPrevia'), e.target.value);
+});
+document.getElementById('formPagina').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const texto = document.getElementById('paginaTexto').value;
+  const r = await api('PUT', '/conteudos', { [`pagina_${paginaAtual}`]: texto });
+  avisarResposta(r, 'Página salva.');
+  if (r.ok) conteudoPaginas[`pagina_${paginaAtual}`] = texto;
+});
+
+/* ============================================================
+   ADMINISTRADORES (POST /admin/usuarios)
+   ============================================================ */
+async function carregarEquipe() {
+  const r = await api('GET', '/usuarios');
+  if (r.ok) dados.usuarios = r.data;
+  const admins = dados.usuarios.filter(u => u.tipo_usuario === 'ADMIN');
+  document.getElementById('listaAdmins').innerHTML = admins.map(u => {
+    const voce = u.codUsuario === sessao.usuario.codUsuario;
+    return `
+    <div class="membro">
+      <div class="avatar">${esc(iniciais(u.nome))}</div>
+      <div class="dados"><strong>${esc(u.nome)} ${voce ? '<span class="etiqueta e-info" style="margin-left:6px">você</span>' : ''}</strong><small>${esc(u.email)} · ${esc(u.telefone)}</small></div>
+      ${voce ? '' : `<button type="button" class="botao-icone perigo" data-remover-admin="${u.codUsuario}" title="Remover acesso" aria-label="Remover ${esc(u.nome)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="17" height="17"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>`}
+    </div>`;
+  }).join('') || '<p class="vazio">Nenhum administrador.</p>';
+}
+
+document.getElementById('listaAdmins').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-remover-admin]');
+  if (btn) removerUsuario(Number(btn.dataset.removerAdmin), carregarEquipe);
+});
+
+document.getElementById('admCpf').addEventListener('input', (e) => {
+  e.target.value = mascaraCpf(e.target.value);
+  const ajuda = document.getElementById('admCpfAjuda');
+  const completo = e.target.value.replace(/\D/g, '').length === 11;
+  const valido = completo && validaCpf(e.target.value);
+  ajuda.textContent = completo ? (valido ? 'CPF válido ✓' : 'CPF inválido') : ' ';
+  ajuda.style.color = completo ? (valido ? 'var(--ok)' : 'var(--erro)') : '';
+});
+
+document.getElementById('formAdmin').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const corpo = {
+    nome: document.getElementById('admNome').value.trim(),
+    email: document.getElementById('admEmail').value.trim(),
+    telefone: document.getElementById('admTelefone').value.trim(),
+    cpf: document.getElementById('admCpf').value.trim(),
+    senha: document.getElementById('admSenha').value
+  };
+  if (!corpo.nome || !corpo.email || !corpo.telefone || !corpo.cpf || !corpo.senha) { avisar('Preencha todos os campos.', 'erro'); return; }
+  if (!validaCpf(corpo.cpf)) { avisar('CPF inválido.', 'erro'); return; }
+  if (corpo.senha.length < 6) { avisar('A senha precisa ter ao menos 6 caracteres.', 'erro'); return; }
+  if (corpo.senha !== document.getElementById('admSenha2').value) { avisar('As senhas não conferem.', 'erro'); return; }
+  const r = await api('POST', '/admin/usuarios', corpo);
+  avisarResposta(r, `${corpo.nome} agora tem acesso ao painel.`);
+  if (r.ok) {
+    e.target.reset();
+    document.getElementById('admCpfAjuda').textContent = ' ';
+    carregarEquipe();
+  }
+});
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+if (window.Chart) {
+  Chart.defaults.font.family = "'Jost', Arial, sans-serif";
+  Chart.defaults.color = '#6b5c58';
+}
+
+function iniciarPainel() {
+  document.body.classList.remove('sem-sessao');
+  const u = sessao.usuario;
+  document.getElementById('usuarioNome').textContent = u.nome;
+  document.getElementById('usuarioEmail').textContent = u.email;
+  document.getElementById('usuarioAvatar').textContent = iniciais(u.nome);
+  const video = document.getElementById('loginVideoEl');
+  if (!video.paused) video.pause();
+  painelAtual = null;
+  irPara(location.hash.slice(1) || 'dashboard');
+}
+
+if (sessaoAtiva()) iniciarPainel();
+else encerrarSessao(sessao.token ? 'Sua sessão expirou. Entre novamente.' : '');
+</script>
+</body>
+</html>

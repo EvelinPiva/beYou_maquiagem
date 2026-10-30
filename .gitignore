@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+!.env.example
+backups/
+entrega/
+backend/uploads/
+backend/acesso-local.txt
+.preview/

@@ -1,0 +1,4 @@
+MediaPipe Tasks Vision 0.10.21 — Google
+https://github.com/google-ai-edge/mediapipe
+Face Landmarker model: https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task
+Library and model run locally in the browser. No photos are sent to a server.

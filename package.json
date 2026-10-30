@@ -1,0 +1,12 @@
+{
+  "name": "beyou-maquiagem",
+  "private": true,
+  "scripts": {
+    "setup": "npm --prefix backend run setup",
+    "start": "npm --prefix backend start",
+    "dev": "npm --prefix backend run dev",
+    "admin": "npm --prefix backend run admin",
+    "test": "npm --prefix backend test",
+    "seed": "npm --prefix backend run seed"
+  }
+}

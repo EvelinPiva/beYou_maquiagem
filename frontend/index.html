@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<link rel="icon" type="image/png" href="/img/emblema.png?v=2">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BE YOU — Maquiagem</title>
-<link rel="stylesheet" href="styles.css">
+<meta name="description" content="BE YOU Maquiagem — rosto, lábios, olhos, sobrancelhas e paletas com tonalidades para todo tipo de pele.">
+<link rel="stylesheet" href="styles.css?v=zoom-produto">
 </head>
 <body>
 
 <!-- ANNOUNCEMENT -->
-<div class="announcement">
-  Frete grátis nas compras acima de <strong>R$ 150</strong> · 3x sem juros em todo o site
+<div class="announcement" data-conteudo="anuncio">
+  Frete grátis nas compras acima de <em>R$ 150</em> · 3x sem juros em todo o site
 </div>
 
 <!-- HEADER -->
 <header class="site-header">
   <div class="header-row">
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
       <span></span><span></span><span></span>
     </button>
 
-    <a href="#" class="logo-link">
+    <a href="index.html" class="logo-link">
       <img src="../img/logo_2.png" alt="BE YOU Maquiagem">
     </a>
 
-    <form class="search-form" role="search">
-      <input type="text" placeholder="Buscar batom, base, paleta..." aria-label="Buscar produtos">
+    <form class="search-form" id="formBusca" role="search">
+      <input type="search" id="buscaInput" name="busca" placeholder="Buscar batom, base, paleta..." aria-label="Buscar produtos" autocomplete="off">
       <button type="submit" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
       </button>
@@ -49,168 +51,152 @@
   </div>
 
   <!-- MEGA MENU NAV -->
-  <nav class="main-nav" id="mainNav">
+  <nav class="main-nav" id="mainNav" aria-label="Categorias">
     <div class="nav-row">
 
       <div class="nav-item">
-        <a href="#rosto">Rosto</a>
+        <a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Rosto</a>
         <div class="mega">
           <div class="mega-col">
             <h4>Preparação</h4>
             <ul>
-              <li><a href="#rosto">Primer</a></li>
-              <li><a href="#rosto">Base</a></li>
-              <li><a href="#rosto">Corretivo</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Primer</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Base</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Corretivo</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Acabamento</h4>
             <ul>
-              <li><a href="#rosto">Pó compacto</a></li>
-              <li><a href="#rosto">Pó solto</a></li>
-              <li><a href="#rosto">Blush</a></li>
-              <li><a href="#rosto">Contorno &amp; iluminador</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Pó compacto</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Pó solto</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Blush</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Contorno &amp; iluminador</a></li>
             </ul>
           </div>
           <div class="mega-promo">
             <p>Base + corretivo com <em>15% off</em> essa semana</p>
-            <a href="#rosto">Conferir</a>
+            <a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Conferir</a>
           </div>
         </div>
       </div>
 
       <div class="nav-item">
-        <a href="#labios">Lábios</a>
+        <a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lábios</a>
         <div class="mega">
           <div class="mega-col">
             <h4>Cor</h4>
             <ul>
-              <li><a href="#labios">Batom</a></li>
-              <li><a href="#labios">Batom líquido</a></li>
-              <li><a href="#labios">Gloss labial</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Batom</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Batom líquido</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Gloss labial</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Cuidado</h4>
             <ul>
-              <li><a href="#labios">Lápis de boca</a></li>
-              <li><a href="#labios">Lip balm</a></li>
-              <li><a href="#labios">Primer labial</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lápis de boca</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lip balm</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Primer labial</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Acabamento</h4>
             <ul>
-              <li><a href="#labios">Top coat</a></li>
-              <li><a href="#labios">Esfoliante</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Top coat</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Esfoliante</a></li>
             </ul>
           </div>
           <div class="mega-promo">
             <p>Novo: linha <em>Velvet Matte</em> em 12 tons</p>
-            <a href="#labios">Ver lançamento</a>
+            <a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Ver lançamento</a>
           </div>
         </div>
       </div>
 
       <div class="nav-item">
-        <a href="#olhos">Olhos</a>
+        <a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Olhos</a>
         <div class="mega">
           <div class="mega-col">
             <h4>Cor</h4>
             <ul>
-              <li><a href="#olhos">Sombra</a></li>
-              <li><a href="#olhos">Delineador</a></li>
-              <li><a href="#olhos">Lápis de olho</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Sombra</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Delineador</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Lápis de olho</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Volume &amp; definição</h4>
             <ul>
-              <li><a href="#olhos">Máscara de cílios</a></li>
-              <li><a href="#olhos">Primer para olhos</a></li>
-              <li><a href="#olhos">Cílios postiços</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Máscara de cílios</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Primer para olhos</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Cílios postiços</a></li>
             </ul>
           </div>
           <div class="mega-promo">
             <p>Leve 2 máscaras, pague 1</p>
-            <a href="#olhos">Aproveitar</a>
+            <a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Aproveitar</a>
           </div>
         </div>
       </div>
 
       <div class="nav-item">
-        <a href="#sobrancelhas">Sobrancelhas</a>
+        <a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sobrancelhas</a>
         <div class="mega">
           <div class="mega-col">
             <h4>Desenho</h4>
             <ul>
-              <li><a href="#sobrancelhas">Lápis para sobrancelha</a></li>
-              <li><a href="#sobrancelhas">Sombra em pó</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Lápis para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sombra em pó</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Fixação</h4>
             <ul>
-              <li><a href="#sobrancelhas">Gel para sobrancelha</a></li>
-              <li><a href="#sobrancelhas">Máscara para sobrancelha</a></li>
-              <li><a href="#sobrancelhas">Kit de sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Gel para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Máscara para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Kit de sobrancelha</a></li>
             </ul>
           </div>
           <div class="mega-promo">
             <p>Kit completo por um preço só</p>
-            <a href="#sobrancelhas">Ver kits</a>
+            <a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Ver kits</a>
           </div>
         </div>
       </div>
 
       <div class="nav-item">
-        <a href="#paletas">Paletas</a>
+        <a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paletas</a>
         <div class="mega">
           <div class="mega-col">
             <h4>Tipos</h4>
             <ul>
-              <li><a href="#paletas">Paleta de sombra</a></li>
-              <li><a href="#paletas">Paleta de contorno</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de sombra</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de contorno</a></li>
             </ul>
           </div>
           <div class="mega-col">
             <h4>Multiuso</h4>
             <ul>
-              <li><a href="#paletas">Paleta de iluminador</a></li>
-              <li><a href="#paletas">Paleta multifuncional</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de iluminador</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta multifuncional</a></li>
             </ul>
           </div>
           <div class="mega-promo">
             <p>A queridinha do momento: paleta <em>Nude Editorial</em></p>
-            <a href="#paletas">Conhecer</a>
+            <a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Conhecer</a>
           </div>
         </div>
       </div>
 
       <div class="nav-item simple">
-        <a href="#promocoes">Promoções</a>
+        <a href="index.html#promocoes">Promoções</a>
       </div>
 
-      <!-- Links Extras Solicitados (Admin e Auth) -->
-      <div style="flex:1;"></div> <!-- Spacer para empurrar os botões para a direita -->
-      
+      <div class="nav-spacer"></div>
+
       <div class="nav-item simple" id="navLoginTop" style="display:none;">
-        <a href="#" onclick="window.openModal('modalLogin'); return false;" style="color: var(--magenta); font-weight: 600;">Entrar / Cadastrar</a>
-      </div>
-
-      <div class="nav-item" id="navGestaoTop" style="display:none;">
-        <a href="admin.html" style="background: var(--magenta); color: white; padding: 6px 12px; border-radius: 6px;">Gestão ⚙️</a>
-        <div class="mega" style="right:0; width: 250px; padding: 20px;">
-          <div class="mega-col" style="width: 100%;">
-            <h4 style="color: var(--magenta);">Ações Rápidas</h4>
-            <ul style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
-              <li><a href="admin.html" style="font-weight:500;">📈 Painel Geral</a></li>
-              <li><a href="admin.html#produtos" style="font-weight:500;">💄 Cadastrar Produtos</a></li>
-              <li><a href="admin.html#estoque" style="font-weight:500;">📦 Consultar Estoque</a></li>
-              <li><a href="admin.html#vendas" style="font-weight:500;">🛒 Listar Vendas</a></li>
-            </ul>
-          </div>
-        </div>
+        <a href="#" onclick="window.openModal('modalLogin'); return false;" class="nav-login">Entrar / Cadastrar</a>
       </div>
 
     </div>
@@ -219,579 +205,152 @@
 
 <main>
 
-  <!-- HERO -->
+  <!-- HERO: foto da modelo + texto da marca -->
   <section class="hero">
     <div class="hero-inner">
-      
-      <!-- LADO ESQUERDO: Texto, Título e Chamadas -->
       <div class="hero-content">
-        <svg class="hero-eyebrow-mark" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <svg class="hero-eyebrow-mark" viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
           <path d="M14 16c0 14 6 24 16 24s16-10 16-24" stroke="#d88fa0"/>
           <line x1="42" y1="14" x2="50" y2="6" stroke="#fbf5f2"/>
           <line x1="50" y1="6" x2="46" y2="16" stroke="#fbf5f2"/>
         </svg>
-        <h1>Maquiagem que veste <em>a sua</em> versão favorita</h1>
-        <p>Do rosto aos olhos, tudo o que você precisa para montar seu look — selecionado a dedo, com tonalidades para todo tipo de pele.</p>
+        <h1 data-conteudo="hero_titulo">Maquiagem que veste <em>a sua</em> versão favorita</h1>
+        <p data-conteudo="hero_texto">Do rosto aos olhos, tudo o que você precisa para montar seu look — selecionado a dedo, com tonalidades para todo tipo de pele.</p>
         <div class="hero-ctas">
-          <a href="#paletas" class="btn btn-primary">Descobrir maquiagens</a>
-          <a href="#lancamentos-strip" class="btn btn-ghost">Ver lançamentos</a>
+          <a href="#catalogo" class="btn btn-primary" data-conteudo="hero_botao_1">Descobrir maquiagens</a>
+          <a href="#beneficios" class="btn btn-ghost" data-conteudo="hero_botao_2">Ver lançamentos</a>
         </div>
-      </div>
-
-    </div>
-
-    <!-- FOTO DA MODELO (ao lado do título, passa sozinha quando houver mais de uma) -->
-    <div class="hero-showcase" id="heroCarouselCard" aria-label="Fotos da modelo Evelin">
-      <div class="hero-carousel-track" id="heroCarouselTrack">
-
-        <div class="hero-slide">
-          <img src="../img/EVELIN.png" alt="Evelin Piva segurando batom vermelho BE YOU" class="hero-slide-img">
-        </div>
-
-        <!--
-          💡 PARA ADICIONAR MAIS FOTOS:
-          1. Salve a imagem na pasta img/ (ex: EVELIN_2.png)
-          2. Copie o bloco <div class="hero-slide"> acima e cole logo abaixo dele,
-             trocando o src e o alt.
-          Com 2 ou mais fotos elas passam sozinhas para o lado a cada 5 segundos.
-        -->
-
+        <ul class="hero-selos" aria-label="Vantagens">
+          <li><span aria-hidden="true">✦</span> Tons para todas as peles</li>
+          <li><span aria-hidden="true">✦</span> Frete grátis acima de R$ 150</li>
+          <li><span aria-hidden="true">✦</span> 3x sem juros</li>
+        </ul>
       </div>
     </div>
 
-    <!-- Swirl de Fundo -->
-    <svg class="hero-swirl" viewBox="0 0 200 240" fill="none" stroke="#fbf5f2" stroke-width="2">
-      <ellipse cx="100" cy="60" rx="34" ry="46" stroke-opacity=".55"/>
-      <rect x="86" y="96" width="28" height="80" rx="6" stroke-opacity=".55"/>
-      <line x1="100" y1="176" x2="100" y2="210" stroke-opacity=".55"/>
-      <circle cx="100" cy="222" r="10" stroke-opacity=".55"/>
-    </svg>
-  </section>
-
-<!-- CATEGORY TILES -->
-  <section class="cat-tiles" aria-label="Categorias">
-    <div class="section-head">
-      <h2>Compre por categoria</h2>
+    <div class="hero-showcase">
+      <img src="../img/EVELIN.png" alt="Evelin Piva segurando batom vermelho BE YOU" class="hero-img" data-conteudo-src="hero_imagem" data-conteudo-alt="hero_imagem_alt">
     </div>
-    <div class="tiles-grid">
-      <a class="tile" href="#rosto">
-        <span class="tile-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><rect x="22" y="10" width="20" height="14" rx="3"/><path d="M24 24v14a8 8 0 0 0 16 0V24"/><circle cx="32" cy="42" r="3" fill="currentColor" stroke="none"/></svg>
-        </span>
-        <span>Rosto</span>
-      </a>
-      <a class="tile" href="#labios">
-        <span class="tile-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><rect x="27" y="8" width="10" height="18" rx="3"/><path d="M22 26h20l-3 22a7 7 0 0 1-14 0l-3-22z"/></svg>
-        </span>
-        <span>Lábios</span>
-      </a>
-      <a class="tile" href="#olhos">
-        <span class="tile-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 32s9-14 22-14 22 14 22 14-9 14-22 14-22-14-22-14z"/><circle cx="32" cy="32" r="6"/></svg>
-        </span>
-        <span>Olhos</span>
-      </a>
-      <a class="tile" href="#sobrancelhas">
-        <span class="tile-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 30c4-8 14-12 22-9s14 3 18-1"/><line x1="16" y1="40" x2="46" y2="40"/></svg>
-        </span>
-        <span>Sobrancelhas</span>
-      </a>
-      <a class="tile" href="#paletas">
-        <span class="tile-icon">
-          <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="16" width="48" height="32" rx="5"/><circle cx="20" cy="32" r="5"/><circle cx="32" cy="32" r="5"/><circle cx="44" cy="32" r="5"/></svg>
-        </span>
-        <span>Paletas</span>
-      </a>
-    </div>
-  </section>
 
-  <!-- PROMO STRIP -->
-  <div class="promo-strip" id="lancamentos-strip">
-    <ul>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M18 10h2.5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H18"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="14" cy="19" r="1.6"/></svg> Entrega em todo o Brasil</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 16 0 8 8 0 1 0-16 0z"/><path d="M9 12l2 2 4-4"/></svg> Compra 100% segura</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg> Troca grátis em 30 dias</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 3x sem juros no cartão</li>
-    </ul>
-  </div>
-
-  <!-- ROSTO -->
-  <section class="product-section" id="rosto">
-    <div class="section-head">
-      <h2>Rosto</h2>
-      <a href="#rosto" class="see-all">Ver tudo em Rosto</a>
-    </div>
-    <p class="section-lede">Bases, corretivos e pós para uma pele uniforme — do efeito natural ao total cobertura.</p>
-    <div class="product-grid">
-
-      <article class="card" data-category="Rosto" data-price="129.90" data-modal-images="../img_base/base_claro01.png,../img_base/base_claro02.png,../img_base/base_medio03.png,../img_base/base_medio04.png,../img_base/base_moreno05.png,../img_base/base_moreno06.png,../img_base/base_escuro07.png,../img_base/base_escuro08.png" data-modal-shades='[{"name":"Claro 01","color":"#f3d9bd","img":"../img_base/base_claro01.png"},{"name":"Claro 02","color":"#ebc69e","img":"../img_base/base_claro02.png"},{"name":"Médio 03","color":"#dcb084","img":"../img_base/base_medio03.png"},{"name":"Médio 04","color":"#c99565","img":"../img_base/base_medio04.png"},{"name":"Moreno 05","color":"#b47d51","img":"../img_base/base_moreno05.png"},{"name":"Moreno 06","color":"#99623e","img":"../img_base/base_moreno06.png"},{"name":"Escuro 07","color":"#784a30","img":"../img_base/base_escuro07.png"},{"name":"Escuro 08","color":"#553323","img":"../img_base/base_escuro08.png"}]'>
-        <div class="card-media card-media--img">
-          <img src="../img_base/base_claro01.png" alt="Base Segunda Pele FPS 15" loading="lazy">
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">BASE</span>
-          <h3 class="card-name">Base Segunda Pele FPS 15</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#f3d9bd"></span><span class="shade-dot" style="background:#ebc69e"></span><span class="shade-dot" style="background:#dcb084"></span><span class="shade-dot" style="background:#c99565"></span><span class="shade-dot" style="background:#b47d51"></span><span class="shade-dot" style="background:#99623e"></span><span class="shade-dot" style="background:#784a30"></span><span class="shade-dot" style="background:#553323"></span></div>
-          <div class="card-price"><span class="price-now">R$ 129,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Rosto" data-price="59.90" data-modal-images="../img_blush/blush_rosa.png,../img_blush/blush_pessego.png,../img_blush/blush_queimado.png" data-modal-shades='[{"name":"Rosa","color":"#e2909e","img":"../img_blush/blush_rosa.png"},{"name":"Pêssego","color":"#eea07c","img":"../img_blush/blush_pessego.png"},{"name":"Queimado","color":"#b96b58","img":"../img_blush/blush_queimado.png"}]'>
-        <div class="card-media card-media--img"><img src="../img_blush/blush_rosa.png" alt="Blush Compacto Rosé" loading="lazy"></div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">BLUSH</span>
-          <h3 class="card-name">Blush Compacto Rosé</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#e2909e"></span><span class="shade-dot" style="background:#eea07c"></span><span class="shade-dot" style="background:#b96b58"></span></div>
-          <div class="card-price">
-            <span class="price-now">R$ 49,90</span>
-            <span class="price-old">R$ 59,90</span>
-          </div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-        <span class="badge-off">-17%</span>
-      </article>
-
-      <article class="card" data-category="Rosto" data-price="72.00" data-modal-images="../img_po/po_claro01.png,../img_po/po_medio02.png" data-modal-shades='[{"name":"Claro 01","color":"#f0d3b0","img":"../img_po/po_claro01.png"},{"name":"Médio 02","color":"#c98f5f","img":"../img_po/po_medio02.png"}]'>
-        <div class="card-media card-media--img"><img src="../img_po/po_claro01.png" alt="Pó Compacto Matte 12h" loading="lazy"></div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PÓ COMPACTO</span>
-          <h3 class="card-name">Pó Compacto Matte 12h</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#f0d3b0"></span><span class="shade-dot" style="background:#c98f5f"></span></div>
-          <div class="card-price"><span class="price-now">R$ 72,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Rosto" data-price="44.90" data-modal-images="../img_corretivo/corretivo_claro01.png,../img_corretivo/corretivo_medio02.png,../img_corretivo/corretivo_moreno03.png,../img_corretivo/corretivo_escuro04.png" data-modal-shades='[{"name":"Claro 01","color":"#f3d9b8","img":"../img_corretivo/corretivo_claro01.png"},{"name":"Médio 02","color":"#dba876","img":"../img_corretivo/corretivo_medio02.png"},{"name":"Moreno 03","color":"#ab744b","img":"../img_corretivo/corretivo_moreno03.png"},{"name":"Escuro 04","color":"#70472e","img":"../img_corretivo/corretivo_escuro04.png"}]'>
-        <div class="card-media card-media--img">
-          <img src="../img_corretivo/corretivo_claro01.png" alt="Corretivo Alta Cobertura" loading="lazy">
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">CORRETIVO</span>
-          <h3 class="card-name">Corretivo Alta Cobertura</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#f3d9b8"></span><span class="shade-dot" style="background:#dba876"></span><span class="shade-dot" style="background:#ab744b"></span><span class="shade-dot" style="background:#70472e"></span></div>
-          <div class="card-price"><span class="price-now">R$ 44,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Rosto" data-price="89.90" data-modal-images="../img_primer/primer.png" data-modal-shades='[]'>
-        <div class="card-media card-media--img">
-          <img src="../img_primer/primer.png" alt="Primer Efeito Filtro" loading="lazy">
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PRIMER</span>
-          <h3 class="card-name">Primer Efeito Filtro</h3>
-          <div class="card-price"><span class="price-now">R$ 89,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <!-- LÁBIOS -->
-  <div class="foundation-banner">
-    <a href="#rosto" aria-label="Conhecer a Base Segunda Pele e seus tons">
-      <img src="../img/outdoor.png" alt="Outdoor BE YOU" loading="lazy">
+    <!-- Etiqueta do produto que a modelo está usando -->
+    <a class="hero-etiqueta" href="index.html?busca=Velvet#catalogo">
+      <span class="hero-etiqueta-cor" aria-hidden="true"></span>
+      <span class="hero-etiqueta-texto">
+        <small>Ela está usando</small>
+        <strong>Batom Velvet Matte</strong>
+        <span>Vermelho Paixão</span>
+      </span>
+      <span class="hero-etiqueta-seta" aria-hidden="true">→</span>
     </a>
-  </div>
+  </section>
 
-  <section class="product-section" id="labios">
-    <div class="inner">
-    <div class="section-head">
-      <h2>Lábios</h2>
-      <a href="#labios" class="see-all">Ver tudo em Lábios</a>
-    </div>
-    <p class="section-lede">Batons, glosses e cuidados labiais em tons que vão do nude ao vermelho intenso.</p>
-    <div class="product-grid">
-
-      <article class="card" data-category="Lábios" data-price="69.90"
-       
-        data-modal-desc="Fórmula velvet de longa duração que proporciona cobertura total e acabamento aveludado. Hidrata e cuida dos lábios com vitamina E. Até 8 horas de durabilidade."
-        data-modal-images="../img_batom/batom_vermelho.png,../img_batom/batom_rosa.png,../img_batom/batom_nude.png,../img_batom/batom_vinho.png,../img_batom/batom_rosaForte.png" data-modal-shades='[{"name":"Vermelho Paixão","color":"#c0455a","img":"../img_batom/batom_vermelho.png"},{"name":"Rosa Romântico","color":"#d98a90","img":"../img_batom/batom_rosa.png"},{"name":"Nude Natural","color":"#a85d3a","img":"../img_batom/batom_nude.png"},{"name":"Vinho Intenso","color":"#8c1f2b","img":"../img_batom/batom_vinho.png"},{"name":"Rosa Forte","color":"#cf3976","img":"../img_batom/batom_rosaForte.png"}]'>
-        <div class="card-media card-media--img">
-          <img src="../img_batom/batom_vermelho.png" alt="Batom Velvet Matte" loading="lazy">
+  <!-- NOSSA HISTÓRIA -->
+  <section class="historia" id="historia" aria-labelledby="historiaTitulo">
+    <div class="historia-inner">
+      <div class="historia-media">
+        <img class="historia-foto-principal" src="../img_base/base_medio03.png" alt="Base Segunda Pele BE YOU" loading="lazy" data-conteudo-src="historia_imagem">
+        <img src="../img_blush/blush_rosa.png" alt="Blush Compacto Rosé BE YOU" loading="lazy" data-conteudo-src="historia_imagem_2">
+        <img src="../img_batom/batom_nude-claro.png" alt="Batom Velvet Matte Nude BE YOU" loading="lazy" data-conteudo-src="historia_imagem_3">
+        <div class="historia-selo" aria-hidden="true">
+          <strong>2026</strong>
+          <span>Tijucas · SC</span>
         </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">BATOM</span>
-          <h3 class="card-name">Batom Velvet Matte</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#c0455a"></span><span class="shade-dot" style="background:#d98a90"></span><span class="shade-dot" style="background:#a85d3a"></span><span class="shade-dot" style="background:#8c1f2b"></span><span class="shade-dot" style="background:#cf3976"></span></div>
-          <div class="card-price"><span class="price-now">R$ 69,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
+      </div>
+      <div class="historia-texto">
+        <span class="secao-eyebrow" data-conteudo="historia_chamada">Desde 2026</span>
+        <h2 id="historiaTitulo" data-conteudo="historia_titulo">Nossa <em>história</em></h2>
+        <div class="historia-paragrafos" data-conteudo="historia_texto" data-formato="texto">
+          <p>A BE YOU nasceu em 2026, quando decidi unir publicidade e maquiagem. Criando propagandas e testando diferentes produtos no meu próprio rosto, surgiu a ideia de uma marca com uma mensagem simples: <em>seja você</em>.</p>
+          <p>Produtos pensados para diferentes tipos e tons de pele, liberdade para experimentar e interesse pela inovação no cuidado com a pele. Uma história que começa com criatividade e continua com você.</p>
         </div>
-      </article>
-
-      <article class="card" data-category="Lábios" data-price="69.90"
-       
-        data-modal-desc="Batom líquido BE YOU dispon?vel nos tons Vermelho, Rosa Forte e Nude."
-        data-modal-images="../img_batom/batom_liquido_vermelho.png,../img_batom/batom_liquido_rosaForte.png,../img_batom/batom_liquido_nude.png" data-modal-shades='[{"name":"Vermelho","color":"#bd3545","img":"../img_batom/batom_liquido_vermelho.png"},{"name":"Rosa Forte","color":"#cf3976","img":"../img_batom/batom_liquido_rosaForte.png"},{"name":"Nude","color":"#b5816e","img":"../img_batom/batom_liquido_nude.png"}]'>
-        <div class="card-media card-media--img">
-          <img src="../img_batom/batom_liquido_vermelho.png" alt="Batom Líquido Matte" loading="lazy">
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">BATOM</span>
-          <h3 class="card-name">Batom Líquido Matte</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#bd3545"></span><span class="shade-dot" style="background:#cf3976"></span><span class="shade-dot" style="background:#b5816e"></span></div>
-          <div class="card-price"><span class="price-now">R$ 69,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Lábios" data-price="54.90"
-        data-modal-images="../img_batom/gloss_BEYOU.png,../img_batom/gloss_BEYOU2.png,../img_batom/gloss_dourado.png,../img_batom/gloss_dourado2.png"
-        data-modal-desc="Gloss labial com efeito espelhado e ultra brilhante. Fórmula não pegajosa enriquecida com óleos naturais que hidratam e volumizam os lábios. Perfeito para usar sozinho ou sobre batom."
-        data-modal-shades='[{"name":"BE YOU Rosa","color":"#f0c4c9","img":"../img_batom/gloss_BEYOU.png"},{"name":"BE YOU Pink","color":"#e39aa5","img":"../img_batom/gloss_BEYOU2.png"},{"name":"Dourado Luxo","color":"#d4a843","img":"../img_batom/gloss_dourado.png"}]'>
-        <div class="card-media card-media--img">
-          <img src="../img_batom/gloss_BEYOU2.png" alt="Gloss Efeito Vidro" loading="lazy">
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">GLOSS LABIAL</span>
-          <h3 class="card-name">Gloss Efeito Vidro</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#f0c4c9"></span>
-            <span class="shade-dot" style="background:#e39aa5"></span>
-          </div>
-          <div class="card-price">
-            <span class="price-now">R$ 39,90</span>
-            <span class="price-old">R$ 54,90</span>
-          </div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-        <span class="badge-off">-27%</span>
-      </article>
-
-      <article class="card" data-category="Lábios" data-price="42.00" data-modal-images="../img_lapis_de_boca/lapis_rosa.png,../img_lapis_de_boca/lapis_marrom.png" data-modal-shades='[{"name":"Rosa","color":"#cb7b8a","img":"../img_lapis_de_boca/lapis_rosa.png"},{"name":"Marrom","color":"#86533d","img":"../img_lapis_de_boca/lapis_marrom.png"}]'>
-        <div class="card-media card-media--img"><img src="../img_lapis_de_boca/lapis_rosa.png" alt="Lápis Delineador Labial" loading="lazy"></div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">LÁPIS DE BOCA</span>
-          <h3 class="card-name">Lápis Delineador Labial</h3>
-          <div class="card-shades"><span class="shade-dot" style="background:#cb7b8a"></span><span class="shade-dot" style="background:#86533d"></span></div>
-          <div class="card-price"><span class="price-now">R$ 42,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Lábios" data-price="34.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><ellipse cx="32" cy="24" rx="10" ry="14"/><rect x="27" y="36" width="10" height="18" rx="4"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">LIP BALM</span>
-          <h3 class="card-name">Lip Balm Hidratante Nude</h3>
-          <div class="card-price"><span class="price-now">R$ 34,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Lábios" data-price="79.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="18" y="24" width="28" height="14" rx="7"/><rect x="30" y="14" width="4" height="10"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PRIMER LABIAL</span>
-          <h3 class="card-name">Primer Labial Longa Duração</h3>
-          <div class="card-price"><span class="price-now">R$ 79,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-    </div>
+        <ul class="historia-numeros">
+          <li><strong>8</strong><span>tons de base, do claro ao escuro</span></li>
+          <li><strong>30</strong><span>dias para trocar sem custo</span></li>
+          <li><strong>27</strong><span>estados atendidos</span></li>
+        </ul>
+        <a href="pagina.html?p=sobre" class="historia-link"><span data-conteudo="historia_botao">Conheça a BE YOU</span> <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 
-  <!-- OLHOS -->
-  <section class="product-section" id="olhos">
-    <div class="section-head">
-      <h2>Olhos</h2>
-      <a href="#olhos" class="see-all">Ver tudo em Olhos</a>
+  <!-- MÓDULOS DE VANTAGENS -->
+  <section class="beneficios" id="beneficios" aria-label="Vantagens de comprar na BE YOU">
+    <ul class="beneficios-grid">
+      <li class="beneficio">
+        <span class="beneficio-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M18 10h2.5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H18"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="14" cy="19" r="1.6"/></svg></span>
+        <span data-conteudo="modulo_1">Entrega em todo o Brasil</span>
+      </li>
+      <li class="beneficio">
+        <span class="beneficio-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 1 0 16 0 8 8 0 1 0-16 0z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <span data-conteudo="modulo_2">Compra 100% segura</span>
+      </li>
+      <li class="beneficio">
+        <span class="beneficio-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg></span>
+        <span data-conteudo="modulo_3">Troca grátis em 30 dias</span>
+      </li>
+      <li class="beneficio">
+        <span class="beneficio-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span data-conteudo="modulo_4">3x sem juros no cartão</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- CATÁLOGO: filtro + seções de produtos (carregados da API) -->
+  <section class="ofertas" id="promocoes" aria-labelledby="ofertasTitulo">
+    <div class="ofertas-campanha">
+      <div class="ofertas-copy">
+        <span class="secao-eyebrow" data-conteudo="promocoes_chamada">Seleção especial BE YOU</span>
+        <h2 id="ofertasTitulo" data-conteudo="promocoes_titulo">Seu próximo favorito, por <em>menos</em>.</h2>
+        <p data-conteudo="promocoes_texto">Uma seleção de beleza com preços que dão vontade de levar. Encontre seu novo favorito entre os produtos em promoção.</p>
+        <a class="btn btn-primary" href="#ofertasProdutos"><span data-conteudo="promocoes_botao">Quero aproveitar</span> <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="ofertas-foto">
+        <img src="../img_batom/gloss_BEYOU-claro.png" alt="Gloss BE YOU em fundo rosa claro" loading="lazy" data-conteudo-src="promocoes_imagem" data-conteudo-alt="promocoes_imagem_alt">
+        <div class="ofertas-selo" id="ofertasSelo" hidden><small>até</small><strong id="ofertasDesconto"></strong><span>de desconto</span></div>
+      </div>
     </div>
-    <p class="section-lede">Sombras, delineadores e máscaras para um olhar marcante em qualquer ocasião.</p>
-    <div class="product-grid">
-
-      <article class="card" data-category="Olhos" data-price="64.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="20" y="10" width="10" height="6" rx="2"/><path d="M25 16v20l-6 18h6l4-14 4 14h6l-6-18V16"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">MÁSCARA DE CÍLIOS</span>
-          <h3 class="card-name">Máscara Volume Extremo</h3>
-          <div class="card-price"><span class="price-now">R$ 64,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Olhos" data-price="58.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="10" y="26" width="44" height="14" rx="7"/><circle cx="18" cy="33" r="4"/><circle cx="30" cy="33" r="4"/><circle cx="42" cy="33" r="4"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">SOMBRA</span>
-          <h3 class="card-name">Trio de Sombras Cintilantes</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#d4a86a"></span>
-            <span class="shade-dot" style="background:#8c6a4e"></span>
-            <span class="shade-dot" style="background:#c98f5f"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 58,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Olhos" data-price="46.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><path d="M14 40q10-22 20-22 6 0 10 8"/><rect x="40" y="12" width="6" height="10" transform="rotate(30 43 17)"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">DELINEADOR</span>
-          <h3 class="card-name">Delineador Líquido Preto Intenso</h3>
-          <div class="card-price">
-            <span class="price-now">R$ 36,90</span>
-            <span class="price-old">R$ 46,90</span>
-          </div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-        <span class="badge-off">-21%</span>
-      </article>
-
-      <article class="card" data-category="Olhos" data-price="38.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="28" y="10" width="8" height="36" rx="4"/><path d="M28 46l4 8 4-8z"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">LÁPIS DE OLHO</span>
-          <h3 class="card-name">Lápis Retrátil À Prova d'Água</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#1c1614"></span>
-            <span class="shade-dot" style="background:#3a2a20"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 38,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Olhos" data-price="49.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><path d="M12 40c6-16 14-24 20-24s14 8 20 24"/><path d="M18 40c2-8 8-14 14-14s12 6 14 14"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">CÍLIOS POSTIÇOS</span>
-          <h3 class="card-name">Cílios Postiços Efeito Fio a Fio</h3>
-          <div class="card-price"><span class="price-now">R$ 49,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
+    <div class="ofertas-lista" id="ofertasProdutos">
+      <div class="ofertas-cabecalho">
+        <div><h3 data-conteudo="promocoes_lista_titulo">Pequenos luxos. <em>Ótimos achados.</em></h3><p data-conteudo="promocoes_lista_texto">Os descontos já estão aplicados nos preços abaixo. Escolha o seu favorito.</p></div>
+        <a href="#catalogo" class="historia-link">Ver toda a vitrine <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="vitrine-grid ofertas-grid" id="ofertasGrid" aria-live="polite" aria-busy="true"><p class="vitrine-aviso">Carregando ofertas...</p></div>
+      <p class="ofertas-vazio" id="ofertasVazio" data-conteudo="promocoes_vazio" hidden>Novas ofertas estão a caminho. Enquanto isso, descubra nossos favoritos no catálogo.</p>
     </div>
   </section>
 
-  <!-- SOBRANCELHAS -->
-  <section class="product-section" id="sobrancelhas">
-    <div class="inner">
-    <div class="section-head">
-      <h2>Sobrancelhas</h2>
-      <a href="#sobrancelhas" class="see-all">Ver tudo em Sobrancelhas</a>
+  <section class="catalogo" id="catalogo" aria-labelledby="catalogoTitulo">
+    <div class="catalogo-head">
+      <div>
+        <span class="secao-eyebrow" data-conteudo="catalogo_chamada">Nossa vitrine</span>
+        <h2 id="catalogoTitulo" data-conteudo="catalogo_titulo">Compre por categoria</h2>
+        <p class="catalogo-sub" data-conteudo="catalogo_subtitulo">Escolha uma categoria ou veja tudo de uma vez.</p>
+      </div>
+      <p class="catalogo-contagem" id="catalogoContagem" aria-live="polite"></p>
     </div>
-    <p class="section-lede">Ferramentas de desenho e fixação para sobrancelhas alinhadas o dia todo.</p>
-    <div class="product-grid">
 
-      <article class="card" data-category="Sobrancelhas" data-price="42.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="28" y="10" width="8" height="36" rx="4"/><path d="M28 46l4 8 4-8z"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">LÁPIS PARA SOBRANCELHA</span>
-          <h3 class="card-name">Lápis Efeito Fio a Fio</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#4a3226"></span>
-            <span class="shade-dot" style="background:#2c1e17"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 42,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Sobrancelhas" data-price="52.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="20" y="24" width="24" height="14" rx="7"/><circle cx="32" cy="31" r="3" fill="#c2185f" stroke="none"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">GEL PARA SOBRANCELHA</span>
-          <h3 class="card-name">Gel Fixador Transparente</h3>
-          <div class="card-price"><span class="price-now">R$ 52,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Sobrancelhas" data-price="46.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="20" y="10" width="24" height="16" rx="3"/><circle cx="28" cy="18" r="3"/><circle cx="36" cy="18" r="3"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">SOMBRA EM PÓ</span>
-          <h3 class="card-name">Duo de Pó para Sobrancelha</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#6b4a34"></span>
-            <span class="shade-dot" style="background:#3a281d"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 46,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Sobrancelhas" data-price="39.90">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="24" y="8" width="16" height="8" rx="2"/><path d="M24 16v22a8 8 0 0 0 16 0V16"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">MÁSCARA PARA SOBRANCELHA</span>
-          <h3 class="card-name">Máscara Modeladora Tonalizante</h3>
-          <div class="card-price"><span class="price-now">R$ 39,90</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Sobrancelhas" data-price="98.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="12" y="18" width="40" height="28" rx="5"/><line x1="32" y1="18" x2="32" y2="46"/><circle cx="22" cy="32" r="4"/><circle cx="42" cy="32" r="4"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">KIT DE SOBRANCELHA</span>
-          <h3 class="card-name">Kit Design Completo</h3>
-          <div class="card-price"><span class="price-now">R$ 98,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
+    <div class="filtro-wrap">
+      <div class="filtro" id="filtroCategorias" role="toolbar" aria-label="Filtrar produtos por categoria"></div>
     </div>
+
+    <div class="busca-ativa" id="buscaAtiva" hidden>
+      <span>Resultados para “<strong id="buscaTermo"></strong>”</span>
+      <button type="button" id="limparBusca">Limpar busca ✕</button>
     </div>
   </section>
 
-  <!-- PALETAS -->
-  <section class="product-section" id="paletas">
-    <div class="section-head">
-      <h2>Paletas</h2>
-      <a href="#paletas" class="see-all">Ver tudo em Paletas</a>
-    </div>
-    <p class="section-lede">Combinações prontas para sombras, contorno e iluminação — praticidade em um único estojo.</p>
-    <div class="product-grid">
-
-      <article class="card" data-category="Paletas" data-price="149.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="8" y="16" width="48" height="32" rx="5"/><circle cx="20" cy="32" r="5"/><circle cx="32" cy="32" r="5"/><circle cx="44" cy="32" r="5"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PALETA DE SOMBRA</span>
-          <h3 class="card-name">Paleta Nude Editorial · 12 tons</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#e7c9a5"></span>
-            <span class="shade-dot" style="background:#c9986a"></span>
-            <span class="shade-dot" style="background:#8c6a4e"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 149,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Paletas" data-price="118.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="10" y="20" width="44" height="24" rx="5"/><line x1="32" y1="20" x2="32" y2="44"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PALETA DE CONTORNO</span>
-          <h3 class="card-name">Duo Contorno &amp; Iluminação</h3>
-          <div class="card-price">
-            <span class="price-now">R$ 94,90</span>
-            <span class="price-old">R$ 118,00</span>
-          </div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-        <span class="badge-off">-20%</span>
-      </article>
-
-      <article class="card" data-category="Paletas" data-price="86.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="14" y="18" width="36" height="28" rx="14"/><circle cx="32" cy="32" r="6" fill="#c2185f" stroke="none"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PALETA DE ILUMINADOR</span>
-          <h3 class="card-name">Paleta Glow Multitonal</h3>
-          <div class="card-price"><span class="price-now">R$ 86,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Paletas" data-price="169.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="8" y="12" width="48" height="40" rx="5"/><line x1="8" y1="26" x2="56" y2="26"/><line x1="8" y1="39" x2="56" y2="39"/><line x1="24" y1="12" x2="24" y2="52"/><line x1="40" y1="12" x2="40" y2="52"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PALETA MULTIFUNCIONAL</span>
-          <h3 class="card-name">Paleta Rosto Completo · Face Kit</h3>
-          <div class="card-price"><span class="price-now">R$ 169,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-      <article class="card" data-category="Paletas" data-price="132.00">
-        <div class="card-media">
-          <svg viewBox="0 0 64 64" fill="none" stroke="#c2185f" stroke-width="2"><rect x="10" y="16" width="44" height="32" rx="5"/><circle cx="24" cy="32" r="6"/><circle cx="40" cy="32" r="6"/></svg>
-        </div>
-        <div class="card-wishlist" data-wish><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg></div>
-        <div class="card-body">
-          <span class="card-cat">PALETA DE SOMBRA</span>
-          <h3 class="card-name">Paleta Dupla Sunset</h3>
-          <div class="card-shades">
-            <span class="shade-dot" style="background:#e08a5c"></span>
-            <span class="shade-dot" style="background:#c2185f"></span>
-          </div>
-          <div class="card-price"><span class="price-now">R$ 132,00</span></div>
-          <button class="add-btn" data-add>Adicionar à sacola</button>
-        </div>
-      </article>
-
-    </div>
-  </section>
+  <div class="catalogo-secoes" id="catalogoSecoes" aria-live="polite"></div>
 
   <!-- NEWSLETTER -->
-  <section class="newsletter" id="promocoes">
+  <section class="newsletter" id="newsletter">
     <div class="newsletter-inner">
-      <h2>Fique por dentro das promoções</h2>
-      <p>Cadastre seu e-mail e receba lançamentos, cupons e novidades da BE YOU antes de todo mundo.</p>
+      <h2 data-conteudo="newsletter_titulo">Fique por dentro das promoções</h2>
+      <p data-conteudo="newsletter_texto">Cadastre seu e-mail e receba lançamentos, cupons e novidades da BE YOU antes de todo mundo.</p>
       <form class="newsletter-form" id="newsletterForm">
         <label for="newsletterEmail" class="visually-hidden">Seu e-mail</label>
         <input type="email" id="newsletterEmail" placeholder="seu@email.com" required>
         <button type="submit">Quero receber</button>
       </form>
-      <p class="newsletter-note">Sem spam. Você pode cancelar quando quiser.</p>
     </div>
   </section>
 
@@ -801,66 +360,85 @@
 <footer class="site-footer">
   <div class="footer-top">
     <div class="footer-brand">
-      <img src="assets/logo.png" alt="BE YOU Maquiagem">
-      <p>A BE YOU nasceu para simplificar a maquiagem: produtos selecionados, tonalidades para todo tipo de pele e uma compra rápida, do clique à entrega.</p>
+      <a href="index.html" class="footer-logo" aria-label="BE YOU Maquiagem — página inicial">BE <span>YOU</span><small>MAQUIAGEM</small></a>
+      <p data-conteudo="rodape_texto">A BE YOU nasceu para simplificar a maquiagem: produtos selecionados, tonalidades para todo tipo de pele e uma compra rápida, do clique à entrega.</p>
       <div class="footer-social">
-        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
-        <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c.5 2.5 2 4 5 4.3"/></svg></a>
-        <a href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l1.3-4A8 8 0 1 1 9 19l-5 1z"/></svg></a>
+        <a data-conteudo-href="rede_instagram" aria-label="Instagram" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a data-conteudo-href="rede_tiktok" aria-label="TikTok" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c.5 2.5 2 4 5 4.3"/></svg></a>
+        <a data-conteudo-href="rede_whatsapp" aria-label="WhatsApp" hidden><svg class="icone-whatsapp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" stroke="none" aria-hidden="true"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.93 7.93 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93a7.898 7.898 0 0 0-2.327-5.607zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.25a6.56 6.56 0 0 1-1.007-3.502c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.588-6.592 6.588zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.099-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.072-.612-1.467-.16-.39-.323-.334-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.528.247c-.183.198-.692.677-.692 1.65s.711 1.912.81 2.045c.099.133 1.394 2.129 3.375 2.988.471.205.84.327 1.129.418.475.152.908.13 1.25.08.38-.057 1.17-.479 1.338-.943.163-.464.163-.859.114-.943-.05-.083-.182-.133-.38-.232z"/></svg></a>
       </div>
     </div>
 
-    <div class="footer-col">
-      <h5>CATEGORIAS</h5>
+    <nav class="footer-col" aria-label="Categorias">
+      <h5>Categorias</h5>
       <ul>
-        <li><a href="#rosto">Rosto</a></li>
-        <li><a href="#labios">Lábios</a></li>
-        <li><a href="#olhos">Olhos</a></li>
-        <li><a href="#sobrancelhas">Sobrancelhas</a></li>
-        <li><a href="#paletas">Paletas</a></li>
+        <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Rosto</a></li>
+        <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lábios</a></li>
+        <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Olhos</a></li>
+        <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sobrancelhas</a></li>
+        <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paletas</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="footer-col">
-      <h5>AJUDA</h5>
+    <nav class="footer-col" aria-label="Ajuda">
+      <h5>Ajuda</h5>
       <ul>
-        <li><a href="#">Trocas e devoluções</a></li>
-        <li><a href="#">Prazos de entrega</a></li>
-        <li><a href="#">Formas de pagamento</a></li>
-        <li><a href="#">Fale conosco</a></li>
+        <li><a href="pagina.html?p=trocas">Trocas e devoluções</a></li>
+        <li><a href="pagina.html?p=entrega">Prazos de entrega</a></li>
+        <li><a href="pagina.html?p=pagamento">Formas de pagamento</a></li>
+        <li><a href="pagina.html?p=contato">Fale conosco</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="footer-col">
-      <h5>INSTITUCIONAL</h5>
+    <nav class="footer-col" aria-label="Institucional">
+      <h5>Institucional</h5>
       <ul>
-        <li><a href="#">Sobre a BE YOU</a></li>
-        <li><a href="#">Política de privacidade</a></li>
-        <li><a href="#">Termos de uso</a></li>
+        <li><a href="pagina.html?p=sobre">Sobre a BE YOU</a></li>
+        <li><a href="pagina.html?p=privacidade">Política de privacidade</a></li>
+        <li><a href="pagina.html?p=termos">Termos de uso</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col footer-contato">
+      <h5>Atendimento</h5>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l1.3-4A8 8 0 1 1 9 19l-5 1z"/></svg>
+          <span><small>WhatsApp</small>(48) 99120-4150</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+          <span><small>E-mail</small>atendimento@beyoumaquiagem.com.br</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span><small>Horário</small>Seg. a sex., 8h–17h</span>
+        </li>
       </ul>
     </div>
   </div>
 
   <div class="footer-bottom">
     <div class="footer-bottom-row">
-      <p>© 2026 BE YOU Maquiagem. Todos os direitos reservados.</p>
-      <div class="payment-icons">
-        <span>PIX</span><span>VISA</span><span>MASTER</span><span>BOLETO</span>
+      <p>© 2026 BE YOU Maquiagem Ltda. · CNPJ 41.882.613/0001-27 · Tijucas/SC. Todos os direitos reservados.</p>
+      <div class="payment-icons" aria-label="Formas de pagamento">
+        <svg viewBox="0 0 48 30" role="img" aria-label="PIX"><rect width="48" height="30" rx="5" fill="#fff"/><g fill="#32BCAD"><path d="M11.6 9.2a2 2 0 0 1 2.8 0l2.3 2.3h-.6a2.6 2.6 0 0 0-1.9.8L13 13.5l-1.2-1.2a2.6 2.6 0 0 0-1.9-.8h-.6z"/><path d="M9.3 18.5h.6a2.6 2.6 0 0 0 1.9-.8L13 16.5l1.2 1.2a2.6 2.6 0 0 0 1.9.8h.6l-2.3 2.3a2 2 0 0 1-2.8 0z"/><path d="M8.6 12.6h1.3c.4 0 .8.2 1.1.5l1.4 1.4a.9.9 0 0 0 1.2 0l1.4-1.4c.3-.3.7-.5 1.1-.5h1.3l1.4 1.4a2 2 0 0 1 0 2.8l-1.4 1.4H16c-.4 0-.8-.2-1.1-.5l-1.4-1.4a.9.9 0 0 0-1.2 0l-1.4 1.4c-.3.3-.7.5-1.1.5H8.6l-1.4-1.4a2 2 0 0 1 0-2.8z"/></g><text x="22" y="19.2" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#4d4d4d">pix</text></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Visa"><rect width="48" height="30" rx="5" fill="#fff"/><text x="24" y="19.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="900" font-style="italic" letter-spacing=".5" fill="#1a1f71">VISA</text></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Mastercard"><rect width="48" height="30" rx="5" fill="#fff"/><circle cx="20" cy="15" r="8" fill="#eb001b"/><circle cx="28" cy="15" r="8" fill="#f79e1b"/><path d="M24 8.1a8 8 0 0 1 0 13.8 8 8 0 0 1 0-13.8z" fill="#ff5f00"/></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Boleto"><rect width="48" height="30" rx="5" fill="#fff"/><g fill="#1c1614"><rect x="8" y="6" width="1.6" height="13"/><rect x="11" y="6" width=".8" height="13"/><rect x="13" y="6" width="2.2" height="13"/><rect x="16.4" y="6" width=".8" height="13"/><rect x="18.6" y="6" width="1.6" height="13"/><rect x="21.4" y="6" width=".8" height="13"/><rect x="23.4" y="6" width="2.4" height="13"/><rect x="27" y="6" width=".8" height="13"/><rect x="29" y="6" width="1.6" height="13"/><rect x="31.8" y="6" width=".8" height="13"/><rect x="33.8" y="6" width="2.2" height="13"/><rect x="37.2" y="6" width=".8" height="13"/><rect x="39" y="6" width="1.2" height="13"/></g><text x="24" y="25.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="5.6" font-weight="700" letter-spacing=".6" fill="#1c1614">BOLETO</text></svg>
       </div>
     </div>
   </div>
 </footer>
 
-<div class="toast" id="toast">Produto adicionado à sacola</div>
+<div class="toast" id="toast" role="status" aria-live="polite">Produto adicionado à sacola</div>
 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- MODAL OVERLAY                                   -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalOverlay"></div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- MODAL LOGIN                                     -->
-<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL LOGIN -->
 <div class="modal" id="modalLogin" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
   <button class="modal-close" id="closeLogin" aria-label="Fechar">×</button>
   <div class="modal-header">
@@ -887,9 +465,7 @@
   <p class="modal-switch">Não tem conta? <button type="button" id="irParaCadastro">Cadastre-se</button></p>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- MODAL CADASTRO                                  -->
-<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL CADASTRO -->
 <div class="modal modal-wide" id="modalCadastro" role="dialog" aria-modal="true" aria-labelledby="cadastroTitle">
   <button class="modal-close" id="closeCadastro" aria-label="Fechar">×</button>
   <div class="modal-header">
@@ -939,9 +515,7 @@
   <p class="modal-switch">Já tem conta? <button type="button" id="irParaLogin">Entrar</button></p>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- CART DRAWER (Sacola lateral)                    -->
-<!-- ═══════════════════════════════════════════════ -->
+<!-- CART DRAWER (Sacola lateral) -->
 <div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Sua sacola">
   <div class="cart-drawer-header">
     <h3>Sua Sacola <span class="badge" id="cartDrawerCount">0</span></h3>
@@ -951,7 +525,7 @@
     <div class="cart-empty" id="cartEmpty">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10h48l-6 36H14L8 10z"/><path d="M21 10V7a11 11 0 0 1 22 0v3"/><circle cx="24" cy="52" r="4"/><circle cx="40" cy="52" r="4"/></svg>
       <p>Sua sacola está vazia</p>
-      <a href="#rosto" class="btn btn-primary" id="btnContShop">Ver produtos</a>
+      <a href="index.html#catalogo" class="btn btn-primary" id="btnContShop">Ver produtos</a>
     </div>
     <ul class="cart-list" id="cartList"></ul>
   </div>
@@ -966,10 +540,8 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- MODAL PERFIL / LOGOUT (quando logado)           -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="modal" id="modalPerfil" role="dialog" aria-modal="true">
+<!-- MODAL PERFIL / LOGOUT (quando logado) -->
+<div class="modal" id="modalPerfil" role="dialog" aria-modal="true" aria-label="Minha conta">
   <button class="modal-close" id="closePerfil" aria-label="Fechar">×</button>
   <div class="modal-header">
     <h2>Minha Conta</h2>
@@ -984,10 +556,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
       Meus pedidos
     </a>
-    <a href="admin.html" class="perfil-link" id="adminLink" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Painel Admin
-    </a>
     <button type="button" class="perfil-link logout-btn" id="btnLogout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Sair da conta
@@ -995,83 +563,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- MODAL PRODUTO (abre ao clicar no card)          -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="product-modal-overlay" id="productModalOverlay"></div>
-<div class="product-modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
-  <button class="product-modal-close" id="productModalClose" aria-label="Fechar">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-  </button>
-
-  <div class="pm-layout">
-    <!-- GALERIA -->
-    <div class="pm-gallery">
-      <div class="pm-main-img-wrap">
-        <img src="" alt="" id="pmMainImg" class="pm-main-img">
-        <button class="pm-gallery-nav pm-prev" id="pmPrev" aria-label="Imagem anterior">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="pm-gallery-nav pm-next" id="pmNext" aria-label="Próxima imagem">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <span class="pm-badge-off" id="pmBadge"></span>
-      </div>
-      <div class="pm-thumbs" id="pmThumbs"></div>
-    </div>
-
-    <!-- INFOS -->
-    <div class="pm-info">
-      <div class="pm-breadcrumb" id="pmBreadcrumb"></div>
-      <h2 class="pm-title" id="pmTitle"></h2>
-      <div class="pm-rating">
-        <span class="pm-stars">★★★★★</span>
-        <span class="pm-rating-count">4,9 · <a href="#" class="pm-reviews-link">128 avaliações</a></span>
-      </div>
-
-      <div class="pm-price-block">
-        <span class="pm-price-old" id="pmPriceOld"></span>
-        <span class="pm-price-now" id="pmPriceNow"></span>
-        <span class="pm-installments" id="pmInstallments"></span>
-      </div>
-
-      <div class="pm-shades-block" id="pmShadesBlock">
-        <p class="pm-label">Cor: <strong id="pmSelectedShade"></strong></p>
-        <div class="pm-shade-swatches" id="pmSwatches"></div>
-      </div>
-
-      <div class="pm-qty-block">
-        <p class="pm-label">Quantidade:</p>
-        <div class="pm-qty-ctrl">
-          <button class="pm-qty-btn" id="pmQtyMinus" aria-label="Diminuir">−</button>
-          <span class="pm-qty-val" id="pmQtyVal">1</span>
-          <button class="pm-qty-btn" id="pmQtyPlus" aria-label="Aumentar">+</button>
-        </div>
-      </div>
-
-      <div class="pm-actions">
-        <button class="pm-add-btn" id="pmAddBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-          Adicionar à Sacola
-        </button>
-        <button class="pm-wish-btn" id="pmWishBtn" aria-label="Adicionar aos favoritos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg>
-        </button>
-      </div>
-
-      <div class="pm-desc-block">
-        <h4 class="pm-desc-title">Sobre o produto</h4>
-        <p class="pm-desc" id="pmDesc"></p>
-      </div>
-
-      <div class="pm-shipping">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M18 10h2.5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H18"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="14" cy="19" r="1.6"/></svg>
-        <span>Frete grátis acima de <strong>R$ 150</strong> · Entrega em todo o Brasil</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script src="app.js"></script>
+<script src="app.js?v=zoom-produto"></script>
 </body>
 </html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<link rel="icon" type="image/png" href="/img/emblema.png?v=2">
+<meta charset="UTF-8">
+<base href="/frontend/">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acesso administrativo | BE YOU</title>
+<link rel="stylesheet" href="admin-login.css">
+<script src="admin-login.js" defer></script>
+</head>
+<body>
+<main class="access-layout">
+  <section class="brand-panel" aria-label="BE YOU Maquiagem">
+    <video class="brand-video" autoplay muted loop playsinline preload="metadata" poster="../img_batom/gloss_BEYOU2.png" aria-hidden="true">
+      <source src="../img/boca_video.mp4" type="video/mp4">
+    </video>
+    <a class="brand" href="index.html" aria-label="BE YOU — página inicial">BE <span>YOU</span><small>ADMIN</small></a>
+    <div class="brand-copy">
+      <span class="area-label"><i></i> Área administrativa</span>
+      <h1>BELEZA QUE<br><span>COMEÇA EM VOCÊ.</span></h1>
+      <p>Bem-vinda ao espaço BE YOU. Cuide da sua loja com<br class="desktop-break"> praticidade.</p>
+    </div>
+    <p class="protected-label"><i></i> Área administrativa protegida</p>
+  </section>
+  <section class="login-panel" aria-labelledby="loginTitle">
+    <a class="back-link" href="index.html">← Voltar ao site</a>
+    <div class="login-content">
+      <p class="eyebrow">Acesso administrativo</p>
+      <h2 id="loginTitle">Bem-vinda de volta</h2>
+      <p class="intro">Entre com seu e-mail e sua senha para acessar o painel.</p>
+      <form id="adminLoginForm">
+        <div class="field"><label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="username" placeholder="seuemail@gmail.com" required></div>
+        <div class="field"><label for="senha">Senha</label><div class="password-field"><input id="senha" name="senha" type="password" autocomplete="current-password" placeholder="Digite sua senha" required><button id="togglePassword" type="button" aria-controls="senha" aria-pressed="false">Mostrar</button></div></div>
+        <p id="loginError" class="error" role="alert" hidden></p>
+        <button class="submit-button" type="submit"><span id="submitLabel">Entrar</span><span aria-hidden="true">→</span></button>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<link rel="icon" type="image/png" href="/img/emblema.png?v=2">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Institucional — BE YOU Maquiagem</title>
+<meta name="description" content="Informações sobre a BE YOU Maquiagem: trocas, entregas, pagamento, privacidade e termos de uso.">
+<link rel="stylesheet" href="styles.css?v=zoom-produto">
+</head>
+<body>
+
+<!-- ANNOUNCEMENT -->
+<div class="announcement" data-conteudo="anuncio">
+  Frete grátis nas compras acima de <em>R$ 150</em> · 3x sem juros em todo o site
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-row">
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <a href="index.html" class="logo-link">
+      <img src="../img/logo_2.png" alt="BE YOU Maquiagem">
+    </a>
+
+    <form class="search-form" id="formBusca" role="search">
+      <input type="search" id="buscaInput" name="busca" placeholder="Buscar batom, base, paleta..." aria-label="Buscar produtos" autocomplete="off">
+      <button type="submit" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
+      </button>
+    </form>
+
+    <div class="header-actions">
+      <button class="header-action wishlist-btn" id="wishlistBtn" aria-label="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4.2 5.6 3.6c2.1-.4 4 .6 6.4 3 2.4-2.4 4.3-3.4 6.4-3 3.6.6 5.2 4.2 3.6 7.6-2.5 4.7-10 9.3-10 9.3z"/></svg>
+        Favoritos
+      </button>
+      <button class="header-action" id="contaBtn" aria-label="Minha conta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 5-6 8-6s6.4 2 8 6"/></svg>
+        <span id="contaBtnLabel">Conta</span>
+      </button>
+      <button class="header-action" id="cartBtn" aria-label="Sacola">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        Sacola
+        <span class="badge" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MEGA MENU NAV -->
+  <nav class="main-nav" id="mainNav" aria-label="Categorias">
+    <div class="nav-row">
+
+      <div class="nav-item">
+        <a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Rosto</a>
+        <div class="mega">
+          <div class="mega-col">
+            <h4>Preparação</h4>
+            <ul>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Primer</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Base</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Corretivo</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Acabamento</h4>
+            <ul>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Pó compacto</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Pó solto</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Blush</a></li>
+              <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Contorno &amp; iluminador</a></li>
+            </ul>
+          </div>
+          <div class="mega-promo">
+            <p>Base + corretivo com <em>15% off</em> essa semana</p>
+            <a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Conferir</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lábios</a>
+        <div class="mega">
+          <div class="mega-col">
+            <h4>Cor</h4>
+            <ul>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Batom</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Batom líquido</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Gloss labial</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Cuidado</h4>
+            <ul>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lápis de boca</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lip balm</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Primer labial</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Acabamento</h4>
+            <ul>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Top coat</a></li>
+              <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Esfoliante</a></li>
+            </ul>
+          </div>
+          <div class="mega-promo">
+            <p>Novo: linha <em>Velvet Matte</em> em 12 tons</p>
+            <a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Ver lançamento</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Olhos</a>
+        <div class="mega">
+          <div class="mega-col">
+            <h4>Cor</h4>
+            <ul>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Sombra</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Delineador</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Lápis de olho</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Volume &amp; definição</h4>
+            <ul>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Máscara de cílios</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Primer para olhos</a></li>
+              <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Cílios postiços</a></li>
+            </ul>
+          </div>
+          <div class="mega-promo">
+            <p>Leve 2 máscaras, pague 1</p>
+            <a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Aproveitar</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sobrancelhas</a>
+        <div class="mega">
+          <div class="mega-col">
+            <h4>Desenho</h4>
+            <ul>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Lápis para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sombra em pó</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Fixação</h4>
+            <ul>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Gel para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Máscara para sobrancelha</a></li>
+              <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Kit de sobrancelha</a></li>
+            </ul>
+          </div>
+          <div class="mega-promo">
+            <p>Kit completo por um preço só</p>
+            <a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Ver kits</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paletas</a>
+        <div class="mega">
+          <div class="mega-col">
+            <h4>Tipos</h4>
+            <ul>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de sombra</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de contorno</a></li>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4>Multiuso</h4>
+            <ul>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta de iluminador</a></li>
+              <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paleta multifuncional</a></li>
+            </ul>
+          </div>
+          <div class="mega-promo">
+            <p>A queridinha do momento: paleta <em>Nude Editorial</em></p>
+            <a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Conhecer</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-item simple">
+        <a href="index.html#promocoes">Promoções</a>
+      </div>
+
+      <div class="nav-spacer"></div>
+
+      <div class="nav-item simple" id="navLoginTop" style="display:none;">
+        <a href="#" onclick="window.openModal('modalLogin'); return false;" class="nav-login">Entrar / Cadastrar</a>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+<main class="pagina-main">
+
+  <!-- Páginas institucionais do rodapé (texto vem de GET /conteudos, editável no admin) -->
+  <div class="pagina-institucional">
+    <nav class="breadcrumb" aria-label="Você está em">
+      <a href="index.html">Início</a><span>/</span><span aria-current="page" id="paginaMigalha">Institucional</span>
+    </nav>
+    <div class="pagina-layout">
+      <aside class="pagina-aside">
+        <h2>Ajuda e institucional</h2>
+        <ul id="paginaMenu"></ul>
+      </aside>
+      <article class="pagina-artigo">
+        <h1 id="paginaTitulo">Institucional</h1>
+        <div class="pagina-corpo" id="paginaCorpo">
+          <p class="vitrine-aviso">Carregando...</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="index.html" class="footer-logo" aria-label="BE YOU Maquiagem — página inicial">BE <span>YOU</span><small>MAQUIAGEM</small></a>
+      <p data-conteudo="rodape_texto">A BE YOU nasceu para simplificar a maquiagem: produtos selecionados, tonalidades para todo tipo de pele e uma compra rápida, do clique à entrega.</p>
+      <div class="footer-social">
+        <a data-conteudo-href="rede_instagram" aria-label="Instagram" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a data-conteudo-href="rede_tiktok" aria-label="TikTok" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4v9.5a3.5 3.5 0 1 1-3-3.46"/><path d="M14 4c.5 2.5 2 4 5 4.3"/></svg></a>
+        <a data-conteudo-href="rede_whatsapp" aria-label="WhatsApp" hidden><svg class="icone-whatsapp" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" stroke="none" aria-hidden="true"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.93 7.93 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93a7.898 7.898 0 0 0-2.327-5.607zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.25a6.56 6.56 0 0 1-1.007-3.502c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.588-6.592 6.588zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.099-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.072-.612-1.467-.16-.39-.323-.334-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.528.247c-.183.198-.692.677-.692 1.65s.711 1.912.81 2.045c.099.133 1.394 2.129 3.375 2.988.471.205.84.327 1.129.418.475.152.908.13 1.25.08.38-.057 1.17-.479 1.338-.943.163-.464.163-.859.114-.943-.05-.083-.182-.133-.38-.232z"/></svg></a>
+      </div>
+    </div>
+
+    <nav class="footer-col" aria-label="Categorias">
+      <h5>Categorias</h5>
+      <ul>
+        <li><a href="index.html?categoria=Rosto#catalogo" data-filtro="Rosto">Rosto</a></li>
+        <li><a href="index.html?categoria=L%C3%A1bios#catalogo" data-filtro="Lábios">Lábios</a></li>
+        <li><a href="index.html?categoria=Olhos#catalogo" data-filtro="Olhos">Olhos</a></li>
+        <li><a href="index.html?categoria=Sobrancelhas#catalogo" data-filtro="Sobrancelhas">Sobrancelhas</a></li>
+        <li><a href="index.html?categoria=Paletas#catalogo" data-filtro="Paletas">Paletas</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Ajuda">
+      <h5>Ajuda</h5>
+      <ul>
+        <li><a href="pagina.html?p=trocas">Trocas e devoluções</a></li>
+        <li><a href="pagina.html?p=entrega">Prazos de entrega</a></li>
+        <li><a href="pagina.html?p=pagamento">Formas de pagamento</a></li>
+        <li><a href="pagina.html?p=contato">Fale conosco</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-col" aria-label="Institucional">
+      <h5>Institucional</h5>
+      <ul>
+        <li><a href="pagina.html?p=sobre">Sobre a BE YOU</a></li>
+        <li><a href="pagina.html?p=privacidade">Política de privacidade</a></li>
+        <li><a href="pagina.html?p=termos">Termos de uso</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer-col footer-contato">
+      <h5>Atendimento</h5>
+      <ul>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l1.3-4A8 8 0 1 1 9 19l-5 1z"/></svg>
+          <span><small>WhatsApp</small>(48) 99120-4150</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>
+          <span><small>E-mail</small>atendimento@beyoumaquiagem.com.br</span>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <span><small>Horário</small>Seg. a sex., 9h–18h · Sáb., 9h–13h</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-row">
+      <p>© 2026 BE YOU Maquiagem Ltda. · CNPJ 41.882.613/0001-27 · Florianópolis/SC. Todos os direitos reservados.</p>
+      <div class="payment-icons" aria-label="Formas de pagamento">
+        <svg viewBox="0 0 48 30" role="img" aria-label="PIX"><rect width="48" height="30" rx="5" fill="#fff"/><g fill="#32BCAD"><path d="M11.6 9.2a2 2 0 0 1 2.8 0l2.3 2.3h-.6a2.6 2.6 0 0 0-1.9.8L13 13.5l-1.2-1.2a2.6 2.6 0 0 0-1.9-.8h-.6z"/><path d="M9.3 18.5h.6a2.6 2.6 0 0 0 1.9-.8L13 16.5l1.2 1.2a2.6 2.6 0 0 0 1.9.8h.6l-2.3 2.3a2 2 0 0 1-2.8 0z"/><path d="M8.6 12.6h1.3c.4 0 .8.2 1.1.5l1.4 1.4a.9.9 0 0 0 1.2 0l1.4-1.4c.3-.3.7-.5 1.1-.5h1.3l1.4 1.4a2 2 0 0 1 0 2.8l-1.4 1.4H16c-.4 0-.8-.2-1.1-.5l-1.4-1.4a.9.9 0 0 0-1.2 0l-1.4 1.4c-.3.3-.7.5-1.1.5H8.6l-1.4-1.4a2 2 0 0 1 0-2.8z"/></g><text x="22" y="19.2" font-family="Arial, Helvetica, sans-serif" font-size="9.5" font-weight="700" fill="#4d4d4d">pix</text></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Visa"><rect width="48" height="30" rx="5" fill="#fff"/><text x="24" y="19.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="900" font-style="italic" letter-spacing=".5" fill="#1a1f71">VISA</text></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Mastercard"><rect width="48" height="30" rx="5" fill="#fff"/><circle cx="20" cy="15" r="8" fill="#eb001b"/><circle cx="28" cy="15" r="8" fill="#f79e1b"/><path d="M24 8.1a8 8 0 0 1 0 13.8 8 8 0 0 1 0-13.8z" fill="#ff5f00"/></svg>
+        <svg viewBox="0 0 48 30" role="img" aria-label="Boleto"><rect width="48" height="30" rx="5" fill="#fff"/><g fill="#1c1614"><rect x="8" y="6" width="1.6" height="13"/><rect x="11" y="6" width=".8" height="13"/><rect x="13" y="6" width="2.2" height="13"/><rect x="16.4" y="6" width=".8" height="13"/><rect x="18.6" y="6" width="1.6" height="13"/><rect x="21.4" y="6" width=".8" height="13"/><rect x="23.4" y="6" width="2.4" height="13"/><rect x="27" y="6" width=".8" height="13"/><rect x="29" y="6" width="1.6" height="13"/><rect x="31.8" y="6" width=".8" height="13"/><rect x="33.8" y="6" width="2.2" height="13"/><rect x="37.2" y="6" width=".8" height="13"/><rect x="39" y="6" width="1.2" height="13"/></g><text x="24" y="25.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="5.6" font-weight="700" letter-spacing=".6" fill="#1c1614">BOLETO</text></svg>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Produto adicionado à sacola</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MODAL OVERLAY                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<!-- MODAL LOGIN -->
+<div class="modal" id="modalLogin" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <button class="modal-close" id="closeLogin" aria-label="Fechar">×</button>
+  <div class="modal-header">
+    <h2 id="loginTitle">Entrar na sua conta</h2>
+    <p>Bem-vinda de volta! 🌸</p>
+  </div>
+  <form id="formLogin" class="modal-form" novalidate>
+    <div class="form-group">
+      <label for="loginEmail">E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" required autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="loginSenha">Senha</label>
+      <div class="input-icon-wrap">
+        <input type="password" id="loginSenha" placeholder="Sua senha" required autocomplete="current-password">
+        <button type="button" class="toggle-pw" data-target="loginSenha" aria-label="Mostrar senha">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="form-erro" id="erroLogin"></p>
+    <button type="submit" class="btn btn-primary w-full" id="btnLoginSubmit">Entrar</button>
+  </form>
+  <p class="modal-switch">Não tem conta? <button type="button" id="irParaCadastro">Cadastre-se</button></p>
+</div>
+
+<!-- MODAL CADASTRO -->
+<div class="modal modal-wide" id="modalCadastro" role="dialog" aria-modal="true" aria-labelledby="cadastroTitle">
+  <button class="modal-close" id="closeCadastro" aria-label="Fechar">×</button>
+  <div class="modal-header">
+    <h2 id="cadastroTitle">Criar sua conta</h2>
+    <p>Junte-se à BE YOU e receba ofertas exclusivas!</p>
+  </div>
+  <form id="formCadastro" class="modal-form" novalidate>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="cadNome">Nome completo *</label>
+        <input type="text" id="cadNome" placeholder="Maria Silva" required>
+      </div>
+      <div class="form-group">
+        <label for="cadEmail">E-mail *</label>
+        <input type="email" id="cadEmail" placeholder="seu@email.com" required autocomplete="email">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="cadCPF">CPF *</label>
+        <input type="text" id="cadCPF" placeholder="000.000.000-00" maxlength="14" required>
+        <span class="field-hint" id="cpfHint"></span>
+      </div>
+      <div class="form-group">
+        <label for="cadTelefone">Telefone *</label>
+        <input type="tel" id="cadTelefone" placeholder="(48) 99999-0000" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="cadSenha">Senha *</label>
+        <div class="input-icon-wrap">
+          <input type="password" id="cadSenha" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+          <button type="button" class="toggle-pw" data-target="cadSenha" aria-label="Mostrar senha">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cadIdentidade">RG (opcional)</label>
+        <input type="text" id="cadIdentidade" placeholder="Número do RG">
+      </div>
+    </div>
+    <p class="form-erro" id="erroCadastro"></p>
+    <button type="submit" class="btn btn-primary w-full" id="btnCadastroSubmit">Criar conta</button>
+  </form>
+  <p class="modal-switch">Já tem conta? <button type="button" id="irParaLogin">Entrar</button></p>
+</div>
+
+<!-- CART DRAWER (Sacola lateral) -->
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-modal="true" aria-label="Sua sacola">
+  <div class="cart-drawer-header">
+    <h3>Sua Sacola <span class="badge" id="cartDrawerCount">0</span></h3>
+    <button class="cart-close" id="closeCart" aria-label="Fechar sacola">×</button>
+  </div>
+  <div class="cart-drawer-body" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10h48l-6 36H14L8 10z"/><path d="M21 10V7a11 11 0 0 1 22 0v3"/><circle cx="24" cy="52" r="4"/><circle cx="40" cy="52" r="4"/></svg>
+      <p>Sua sacola está vazia</p>
+      <a href="index.html#catalogo" class="btn btn-primary" id="btnContShop">Ver produtos</a>
+    </div>
+    <ul class="cart-list" id="cartList"></ul>
+  </div>
+  <div class="cart-drawer-footer" id="cartFooter" style="display:none">
+    <div class="cart-totals">
+      <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+      <div class="cart-total-row" id="freteRow"><span>Frete</span><span id="cartFrete">R$ 15,90</span></div>
+      <div class="cart-total-row total-bold"><span>Total</span><span id="cartTotal">R$ 0,00</span></div>
+    </div>
+    <p class="frete-gratis-hint" id="freteHint"></p>
+    <a href="checkout.html" class="btn btn-primary w-full" id="btnCheckout">Finalizar compra</a>
+  </div>
+</div>
+
+<!-- MODAL PERFIL / LOGOUT (quando logado) -->
+<div class="modal" id="modalPerfil" role="dialog" aria-modal="true" aria-label="Minha conta">
+  <button class="modal-close" id="closePerfil" aria-label="Fechar">×</button>
+  <div class="modal-header">
+    <h2>Minha Conta</h2>
+    <p id="perfilNome" class="perfil-nome"></p>
+  </div>
+  <div class="perfil-links">
+    <a href="perfil.html" class="perfil-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 5-6 8-6s6.4 2 8 6"/></svg>
+      Meu perfil &amp; dados
+    </a>
+    <a href="perfil.html#pedidos" class="perfil-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      Meus pedidos
+    </a>
+    <button type="button" class="perfil-link logout-btn" id="btnLogout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair da conta
+    </button>
+  </div>
+</div>
+
+<script src="app.js?v=zoom-produto"></script>
+</body>
+</html>

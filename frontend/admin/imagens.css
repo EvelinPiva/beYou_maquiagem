@@ -1,0 +1,17 @@
+.campo textarea[hidden],.upload-tom [hidden]{display:none}
+.campo input[type=file],.upload-tom input[type=file]{padding:14px;border:1px dashed var(--rose);border-radius:12px;background:var(--cream);width:100%;font-size:.8rem}
+input[type=file]::file-selector-button{padding:9px 14px;border:0;border-radius:8px;background:var(--blush);color:var(--magenta);font:inherit;cursor:pointer;margin-right:12px}
+.upload-status{display:block;color:var(--taupe);font-size:.76rem;line-height:1.6;margin-top:8px}
+.upload-foto{width:130px;flex-shrink:0;padding:8px;border:1px solid var(--line);border-radius:12px;margin:0;background:var(--cream)}
+.miniaturas-previa .upload-foto img{width:100%;height:100px;object-fit:cover;border-radius:8px}
+.upload-foto figcaption{display:grid;gap:8px;padding:8px 0 2px;font-size:.65rem;text-align:center;color:var(--magenta)}
+.upload-foto button{font:inherit;color:var(--magenta);text-decoration:underline}
+.upload-foto figcaption>span{font-weight:600}
+#fpEditorTons{display:grid;gap:14px}
+.upload-tom{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--cream)}
+.upload-tom label{display:grid;gap:8px;font-size:.8rem;color:var(--ink-soft);margin-bottom:12px}
+.upload-tom-campos{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.upload-tom-campos>label:first-child{flex:1;min-width:130px}
+.upload-tom input[type=color]{width:52px;height:40px;padding:3px;cursor:pointer}
+.upload-tom .imagem-previa{width:90px;height:90px;object-fit:cover;margin:10px 0}
+@media(max-width:520px){.upload-tom{padding:12px}.upload-foto{width:110px}}
